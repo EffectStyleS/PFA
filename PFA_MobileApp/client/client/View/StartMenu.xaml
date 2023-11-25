@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="client.View.StartMenu"
+             Shell.NavBarIsVisible="False"            
+             Shell.FlyoutItemIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             xmlns:viewmodel="clr-namespace:client.ViewModel"
+             x:DataType="viewmodel:StartMenuViewModel">
+
+    <StackLayout VerticalOptions="FillAndExpand">
+        
+        <VerticalStackLayout x:Name="Title"
+                             VerticalOptions="Center"
+                             Margin="0,100,0,0">
+
+            <Label VerticalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   FontSize="34"
+                   Text="Personal" />
+            
+            <Label VerticalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   FontSize="34"
+                   Text="Finance" />
+
+            <Label VerticalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   FontSize="34"
+                   Text="Analysis" />
+
+            <BoxView HeightRequest="1"
+                     HorizontalOptions="Center"
+                     Margin="0,32,0,0"
+                     WidthRequest="240"/>
+            
+        </VerticalStackLayout>
+
+
+        <VerticalStackLayout x:Name="Buttons"
+                             Margin="0,168,0,0"
+                             VerticalOptions="FillAndExpand"
+                             Spacing="24">
+            
+            <Button x:Name="LoginButton"
+                    HorizontalOptions="Center"
+                    CornerRadius="20"
+                    WidthRequest="268"
+                    FontSize="24"
+                    Text="Log in"
+                    Command="{Binding LoginTapCommand}"
+                    />
+
+            <Button HorizontalOptions="Center"
+                    CornerRadius="20"
+                    FontSize="24"
+                    WidthRequest="268"
+                    Text="Sign Up"
+                    Command="{Binding SignUpTapCommand}"/>
+
+        </VerticalStackLayout>
+        
+        <VerticalStackLayout x:Name="Footer"
+                             Margin="0,0,0,16">
+
+            <Label HorizontalTextAlignment="Center">
+                PFA Mobile App @2023
+            </Label>
+            
+        </VerticalStackLayout>
+    
+    </StackLayout>
+</ContentPage>
+    

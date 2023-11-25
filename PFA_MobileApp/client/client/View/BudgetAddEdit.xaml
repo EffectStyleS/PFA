@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Shell.NavBarIsVisible="False"  
+             x:Class="client.View.BudgetAddEdit"
+             xmlns:viewmodel="clr-namespace:client.ViewModel"
+             xmlns:models="clr-namespace:client.Model.Models"
+             x:DataType="viewmodel:BudgetAddEditViewModel">
+    
+    <Grid Margin="16, 8, 16, 8"
+          RowDefinitions="100, *, Auto"
+          ColumnDefinitions=".75*, .25*"
+          Padding="8"
+          RowSpacing="16"
+          ColumnSpacing="8">
+
+        <VerticalStackLayout Grid.ColumnSpan="2">
+
+            <Label  Text="PFA"
+                    VerticalTextAlignment="Center"
+                    HorizontalOptions="Center"
+                    FontSize="34"/>
+
+            <BoxView HeightRequest="1"
+                     HorizontalOptions="Center"
+                     Margin="0,8,0,0"
+                     WidthRequest="180"/>
+
+            <Label  Text="{Binding PageTitle}"
+                    Margin="0,8,0,0"
+                    VerticalTextAlignment="Center"
+                    HorizontalOptions="Center"
+                    FontSize="28"/>
+
+        </VerticalStackLayout>
+        
+        <VerticalStackLayout Grid.Row="1"
+                             Grid.ColumnSpan="2"
+                             Spacing="16">
+
+            <Label FontSize="16"
+                   HorizontalOptions="Center"
+                   WidthRequest="268"
+                   Text="Name: "/>
+
+            <Border HorizontalOptions="Center"
+                    WidthRequest="268">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <Entry FontSize="18"
+                       Margin="8,4,8,4"
+                       Placeholder="Enter budget name"
+                       Text="{Binding Name}"/>
+
+            </Border>
+
+            <Label FontSize="16"
+                   HorizontalOptions="Center"
+                   WidthRequest="268"
+                   Text="Start Date: "/>
+
+            <Border HorizontalOptions="Center"
+                    WidthRequest="268">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <DatePicker FontSize="18"
+                            Margin="8,4,8,4"
+                            Date="{Binding StartDate}"/>
+
+            </Border>
+
+            <Label FontSize="16"
+                   HorizontalOptions="Center"
+                   WidthRequest="268"
+                   Text="Time Period: "/>
+
+            <Border HorizontalOptions="Center"
+                    WidthRequest="268">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <Picker FontSize="18"
+                        Margin="8,4,8,4"
+                        ItemsSource="{Binding TimePeriods}"
+                        SelectedIndex="{Binding TimePeriodId}"
+                        ItemDisplayBinding="{Binding Source={RelativeSource AncestorType={x:Type models:TimePeriodModel}}, Path=Name}"/>
+
+                <!--TODO: решить проблему с привязкой picker'а-->
+            </Border>
+
+            <Button x:Name="PlannedExpensesButton"
+                    Margin = "0, 20, 0, 0"
+                    CornerRadius="20"
+                    FontSize="20"
+                    WidthRequest="268"
+                    Text="Planned Expenses"
+                    Command="{Binding PlannedExpensesCommand}"/>
+
+            <Button x:Name="PlannedIncomesButton"
+                    CornerRadius="20"
+                    FontSize="20"
+                    WidthRequest="268"
+                    Text="Planned Incomes"
+                    Command="{Binding PlannedIncomesCommand}"/>
+
+        </VerticalStackLayout>
+
+        <HorizontalStackLayout Grid.Row="2"
+                               Grid.ColumnSpan="2"
+                               Spacing="16"
+                               HorizontalOptions="Center">
+
+            <Button x:Name="SaveButton"
+                    CornerRadius="20"
+                    FontSize="20"
+                    ImageSource="icon_done.png"
+                    Text="Save"
+                    Command="{Binding SaveCommand}"/>
+
+            <Button x:Name="CancelButton"
+                    CornerRadius="20"
+                    FontSize="20"
+                    ImageSource="icon_close.png"
+                    Text="Cancel"
+                    Command="{Binding CancelCommand}"/>
+
+        </HorizontalStackLayout>
+
+
+    </Grid>
+    
+</ContentPage>

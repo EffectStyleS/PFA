@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="client.View.SignUpMenu"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutItemIsVisible="False"
+             xmlns:viewmodel="clr-namespace:client.ViewModel"
+             x:DataType="viewmodel:SignUpMenuViewModel">
+
+    <StackLayout VerticalOptions="FillAndExpand">
+
+        <VerticalStackLayout x:Name="Title"
+                             VerticalOptions="Center"
+                             Margin="0,50,0,0">
+
+            <Label VerticalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   FontSize="34"
+                   Text="Personal" />
+
+            <Label VerticalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   FontSize="34"
+                   Text="Finance" />
+
+            <Label VerticalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   FontSize="34"
+                   Text="Analysis" />
+
+            <BoxView HeightRequest="1"
+                     HorizontalOptions="Center"
+                     Margin="0,32,0,0"
+                     WidthRequest="240"/>
+
+            <Label VerticalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   Margin="0,32,0,0"
+                   FontSize="28"
+                   Text="Sign up" />
+
+        </VerticalStackLayout>
+
+
+        <VerticalStackLayout x:Name="LoginForm"
+                             Margin="0,32,0,0"
+                             VerticalOptions="FillAndExpand"
+                             Spacing="16">
+
+            <Label FontSize="16"
+                   HorizontalOptions="Center"
+                   WidthRequest="268"
+                   Text="Login: "/>
+
+            <Border HorizontalOptions="Center"
+                    WidthRequest="268">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <Entry FontSize="18"
+                       Margin="8,4,8,4"
+                       Placeholder="Enter your login"/>
+
+            </Border>
+
+            <Label FontSize="16"
+                   HorizontalOptions="Center"
+                   WidthRequest="268"
+                   Text="Password: "/>
+
+            <Border HorizontalOptions="Center"
+                    WidthRequest="268">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <Entry FontSize="18"
+                       Margin="8,4,8,4"
+                       IsPassword="True"
+                       Placeholder="Enter your password"/>
+
+            </Border>
+
+            <Label FontSize="16"
+                   HorizontalOptions="Center"
+                   WidthRequest="268"
+                   Text="Repeat Password: "/>
+
+            <Border HorizontalOptions="Center"
+                    WidthRequest="268">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <Entry FontSize="18"
+                       Margin="8,4,8,4"
+                       IsPassword="True"
+                       Placeholder="Repeat password"/>
+
+            </Border>
+
+            <Button x:Name="SignUpButton"
+                    HorizontalOptions="Center"
+                    CornerRadius="20"
+                    FontSize="24"
+                    WidthRequest="268"
+                    Margin="0, 16, 0, 0"
+                    Text="Sign Up"
+                    Command="{Binding SignUpTapCommand}"/>
+
+        </VerticalStackLayout>
+
+
+        <VerticalStackLayout x:Name="Footer"
+                             Margin="0,0,0,16">
+
+            <Label HorizontalTextAlignment="Center">
+                PFA Mobile App @2023
+            </Label>
+
+        </VerticalStackLayout>
+
+    </StackLayout>
+</ContentPage>

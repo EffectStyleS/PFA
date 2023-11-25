@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                  x:Class="client.View.IncomesPopup"
+                  xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+                  BackgroundColor="#80000000"
+                  xmlns:models="clr-namespace:client.Model.Models"
+                  xmlns:viewmodel="clr-namespace:client.ViewModel"
+                  x:DataType="viewmodel:IncomesPopupViewModel">
+
+    <ScrollView HorizontalOptions="Center"
+                VerticalOptions="Center">
+        
+        <Border WidthRequest="300"
+                HeightRequest="700"
+                BackgroundColor="White"
+                HorizontalOptions="Center">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20"/>
+            </Border.StrokeShape>
+            
+            <Grid Margin="16"
+                  RowDefinitions="100, *, Auto"
+                  ColumnDefinitions=".75*, .25*"
+                  Padding="8"
+                  RowSpacing="16"
+                  ColumnSpacing="8">
+
+                <VerticalStackLayout Grid.ColumnSpan="2">
+
+                    <Label  Text="PFA"
+                            VerticalTextAlignment="Center"
+                            HorizontalOptions="Center"
+                            FontSize="28"/>
+
+                    <BoxView HeightRequest="1"
+                             HorizontalOptions="Center"
+                             Margin="0,8,0,0"
+                             WidthRequest="180"/>
+
+                    <Label  Text="{Binding PageTitle}"
+                            Margin="0,8,0,0"
+                            VerticalTextAlignment="Center"
+                            HorizontalOptions="Center"
+                            FontSize="24"/>
+
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="1"
+                                     Grid.ColumnSpan="2"
+                                     Spacing="16">
+
+                    <Label FontSize="16"
+                           HorizontalOptions="Center"
+                           WidthRequest="268"
+                           Text="Name: "/>
+
+                    <Border HorizontalOptions="Center"
+                            WidthRequest="268">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+
+                        <Entry FontSize="18"
+                               Margin="8,4,8,4"
+                               Placeholder="Enter income name"
+                               Text="{Binding Name}"/>
+
+                    </Border>
+
+                    <Label FontSize="16"
+                           HorizontalOptions="Center"
+                           WidthRequest="268"
+                           Text="Value: "/>
+
+                    <HorizontalStackLayout Spacing="8">
+                        <Border HorizontalOptions="Start"
+                                WidthRequest="208">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20" />
+                            </Border.StrokeShape>
+
+                            <Entry FontSize="18"
+                                   Keyboard="Numeric"
+                                   Margin="8,4,8,4"
+                                   Placeholder="Enter income value"
+                                   Text="{Binding Value}"/>
+
+                        </Border>
+
+                        <Label FontSize="16"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Text="Pуб." />
+                    </HorizontalStackLayout>
+
+                    <Label FontSize="16"
+                           HorizontalOptions="Center"
+                           WidthRequest="268"
+                           Text="Date: "/>
+
+                    <Border HorizontalOptions="Center"
+                            WidthRequest="268">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+
+                        <DatePicker FontSize="18"
+                                    Margin="8,4,8,4"
+                                    Date="{Binding Date}"
+                                    />
+
+                    </Border>
+
+                    <Label FontSize="16"
+                           HorizontalOptions="Center"
+                           WidthRequest="268"
+                           Text="IncomeType: "/>
+
+                    <Border HorizontalOptions="Center"
+                            WidthRequest="268">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+
+                        <Picker FontSize="18"
+                                Margin="8,4,8,4"
+                                ItemsSource="{Binding IncomeTypes}"
+                                SelectedIndex="{Binding IncomeTypeId}"
+                                ItemDisplayBinding="{Binding Source={RelativeSource AncestorType={x:Type models:IncomeTypeModel}}, Path=Name}"/>
+                        
+                        <!--TODO: решить проблему с привязкой picker'а-->
+                    </Border>
+
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="2"
+                                       Grid.ColumnSpan="2"
+                                       Spacing="16"
+                                       HorizontalOptions="Center">
+
+                    <Button x:Name="SaveButton"
+                            CornerRadius="20"
+                            FontSize="20"
+                            ImageSource="icon_done.png"
+                            Text="Save"
+                            Command="{Binding SaveCommand}"/>
+
+                    <Button x:Name="CancelButton"
+                            CornerRadius="20"
+                            FontSize="20"
+                            ImageSource="icon_close.png"
+                            Text="Cancel"
+                            Command="{Binding CancelCommand}"/>
+
+                </HorizontalStackLayout>
+
+            </Grid>
+        </Border>
+    </ScrollView>
+</mopups:PopupPage>

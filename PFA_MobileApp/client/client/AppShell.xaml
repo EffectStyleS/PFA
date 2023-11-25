@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="client.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:client.View"
+    Shell.FlyoutBehavior="Flyout"
+    xmlns:viewmodel="clr-namespace:client.ViewModel"
+    x:DataType="viewmodel:AppShellViewModel">
+
+    <Shell.FlyoutHeader>
+        <Label Text="PFA"
+               Margin="0, 16, 0, 16"
+               FontSize="28"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"/>
+    </Shell.FlyoutHeader>
+
+    <Shell.FlyoutFooter>
+        <Label Text="PFA Mobile App @2023"
+               Margin="16"
+               FontSize="16"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"/>
+    </Shell.FlyoutFooter>
+
+    <ShellContent
+        FlyoutItemIsVisible="False"
+        Title="Start"
+        FlyoutIcon="dotnet_bot.png"
+        ContentTemplate="{DataTemplate local:StartMenu}"
+        Route="StartMenu" />
+
+    <ShellContent
+        Title="Incomes"
+        FlyoutIcon="icon_income.png"
+        ContentTemplate="{DataTemplate local:IncomesMenu}"
+        Route="IncomesMenu" />
+
+    <ShellContent
+        Title="Expenses"
+        FlyoutIcon="icon_expense.png"
+        ContentTemplate="{DataTemplate local:ExpensesMenu}"
+        Route="ExpensesMenu" />
+
+    <ShellContent
+        Title="Goals"
+        FlyoutIcon="icon_goal.png"
+        ContentTemplate="{DataTemplate local:GoalsMenu}"
+        Route="GoalsMenu" />
+
+    <ShellContent
+        Title="Budgets"
+        FlyoutIcon="icon_budget.png"
+        ContentTemplate="{DataTemplate local:BudgetsMenu}"
+        Route="BudgetsMenu" />
+  
+    <!-- Заменить на MenuItem в будущем-->
+    <MenuItem
+        Text="Exit"
+        IconImageSource="icon_exit.png"
+        Command="{Binding ExitCommand}" />
+
+</Shell>
