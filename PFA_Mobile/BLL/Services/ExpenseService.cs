@@ -76,6 +76,25 @@ namespace BLL.Services
         }
         #endregion
 
+        private DateTime GetEndDate(Budget budget)
+        {
+            DateTime endDate = new DateTime();
+            switch (budget.TimePeriodId)
+            {
+                case 1:
+                    endDate = budget.StartDate.AddMonths(1);
+                    break;
+                case 2:
+                    endDate = budget.StartDate.AddMonths(3);
+                    break;
+                case 3:
+                    endDate = budget.StartDate.AddYears(1);
+                    break;
+            }
+
+            return endDate;
+        }
+
         public async Task<List<ExpenseDTO>> GetAllUserExpenses(int userId)
         {
             var items = await _unitOfWork.Expense.GetAll();
@@ -86,6 +105,45 @@ namespace BLL.Services
                 .ToList();
 
             return result;
+        }
+
+        public async Task<List<BudgetOverrunDTO>> GetBudgetOverruns(int userId)
+        {
+            List<BudgetOverrunDTO> overruns = new();
+
+            List<Budget> userBudgets = 
+                (await _unitOfWork.Budget.GetAll()).Where(x => x.UserId == userId)
+                                                   .ToList();
+
+            foreach (var budget in userBudgets) 
+            {
+                var plannedExpenses = (await _unitOfWork.PlannedExpenses.GetAll()).Where(x => x.BudgetId == budget.Id).ToList();
+                
+                foreach (var plannedExpensesItem in plannedExpenses)
+                {
+                    var expensesByType = (await _unitOfWork.Expense.GetAll())
+                        .Where(x => x.UserId == userId &&
+                            x.ExpenseTypeId == plannedExpensesItem.ExpenseTypeId &&
+                            x.Date > budget.StartDate &&
+                            x.Date < GetEndDate(budget))
+                        .ToList();
+
+                    var sumOfExpensesByType = expensesByType.Sum(x => x.Value);
+                    var difference = sumOfExpensesByType - plannedExpensesItem.Sum;
+
+                    if (difference > 0) 
+                    {
+                        overruns.Add(new BudgetOverrunDTO()
+                        {
+                            BudgetName = budget.Name,
+                            ExpenseType = (await _unitOfWork.ExpenseType.GetAll()).FirstOrDefault(x => x.Id == plannedExpensesItem.ExpenseTypeId).Name,
+                            Difference = difference
+                        });
+                    }
+                }           
+            }
+
+            return overruns;
         }
     }
 }

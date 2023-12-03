@@ -50,7 +50,7 @@ namespace client.ViewModel
         string _name;
 
         [ObservableProperty]
-        decimal _value;
+        decimal? _value;
 
         [ObservableProperty]
         DateTime _date;
@@ -65,8 +65,8 @@ namespace client.ViewModel
         [RelayCommand]
         async Task Save()
         {
-            _income.Name = Name;
-            _income.Value = Value;
+            _income.Name = Name ?? "New Income";
+            _income.Value = Value ?? 0;
             _income.Date = Date;
             _income.IncomeTypeId = IncomeType.Id;
             _income.IncomeType = IncomeType.Name;

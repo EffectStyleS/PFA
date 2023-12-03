@@ -68,12 +68,17 @@
                                             CommandParameter="{Binding .}"/>
                             </Frame.GestureRecognizers>
 
-                            <StackLayout Spacing="8">
+                            <VerticalStackLayout Spacing="8">
                                 <Label Text="{Binding Name}" FontSize = "20" />
-                                <Label Text="{Binding StartDate}" FontSize = "20" />
-                                <Label Text="{Binding EndDate}" FontSize = "20" />
-                                <Label Text="{Binding Sum}" FontSize = "20" />
-                            </StackLayout>
+                                
+                                <HorizontalStackLayout Spacing="4">
+                                    <Label Text="{Binding StartDate, StringFormat='{0:d}'}" FontSize = "20" />
+                                    <Label Text="-" FontSize = "20" />
+                                    <Label Text="{Binding EndDate, StringFormat='{0:d}'}" FontSize = "20" />
+                                </HorizontalStackLayout>
+                                
+                                <Label Text="{Binding Sum, StringFormat='{0:C}'}" FontSize = "20" />
+                            </VerticalStackLayout>
                         </Frame>
                     </SwipeView>
                 </DataTemplate>

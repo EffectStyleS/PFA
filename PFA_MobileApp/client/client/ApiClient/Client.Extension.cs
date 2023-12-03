@@ -10,6 +10,8 @@ namespace ApiClient
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
         }
 
+        public void ResetBearerToken() => _httpClient.DefaultRequestHeaders.Authorization = null;
+
         public string GetCurrentUserLogin()
         {
             var stream = _httpClient.DefaultRequestHeaders.Authorization.Parameter;

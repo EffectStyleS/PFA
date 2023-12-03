@@ -37,6 +37,11 @@ namespace client.ViewModel
         [RelayCommand]
         async Task Save()
         {
+            foreach (var plannedExpensesItem in PlannedExpenses)
+            {
+                plannedExpensesItem.Sum ??= 0;
+            }
+
             _budget.PlannedExpenses = new List<PlannedExpensesModel>(PlannedExpenses);
             await _popupNavigation.PopAsync();
         }

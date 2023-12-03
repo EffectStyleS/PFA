@@ -139,9 +139,7 @@ namespace client.ViewModel
         [RelayCommand]
         async Task OpenBudgetOverruns()
         {
-            // TODO: удаление сервисом
-            var user = new UserModel();
-            await _popupNavigation.PushAsync(new BudgetOverrunsPopup(new BudgetOverrunsPopupViewModel(user)));
+            await _popupNavigation.PushAsync(new BudgetOverrunsPopup(new BudgetOverrunsPopupViewModel(_client, User.Id)));
         }
 
     }

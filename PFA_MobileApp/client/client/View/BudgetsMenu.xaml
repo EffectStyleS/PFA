@@ -70,8 +70,9 @@
 
                             <StackLayout Spacing="8">
                                 <Label Text="{Binding Name}" FontSize = "20" />
-                                <Label Text="{Binding StartDate}" FontSize = "20" />
+                                <Label Text="{Binding StartDate, StringFormat='{0:d}'}" FontSize = "20" />
                                 <Label Text="{Binding TimePeriod}" FontSize = "20" />
+                                <Label Text="{Binding Saldo, StringFormat='Saldo: {0:C}'}" FontSize = "20"/>
                             </StackLayout>
                         </Frame>
                     </SwipeView>

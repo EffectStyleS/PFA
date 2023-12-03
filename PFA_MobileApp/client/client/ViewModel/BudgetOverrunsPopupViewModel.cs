@@ -1,4 +1,5 @@
-﻿using client.Model.Models;
+﻿using ApiClient;
+using client.Model.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 
@@ -6,41 +7,42 @@ namespace client.ViewModel
 {
     public partial class BudgetOverrunsPopupViewModel : BaseViewModel
     {
-        public BudgetOverrunsPopupViewModel(UserModel user)
+        private readonly Client _client;
+        private readonly int _userId;
+
+        public BudgetOverrunsPopupViewModel(Client client, int userId)
         {
-            // TODO: из сервиса подгружать
-            BudgetOverruns = new ObservableCollection<BudgetOverrunsModel>()
-            {
-                new BudgetOverrunsModel() 
-                {
-                    BudgetName = "Budget 1",
-                    ExpenseType = "бубубу",
-                    Difference = 2174182 
-                },
-
-                new BudgetOverrunsModel()
-                {
-                    BudgetName = "Budget 2",
-                    ExpenseType = "бубубу",
-                    Difference = 2174182
-                },
-
-                new BudgetOverrunsModel()
-                {
-                    BudgetName = "Budget 3",
-                    ExpenseType = "бубубу",
-                    Difference = 2174182
-                },
-
-                new BudgetOverrunsModel()
-                {
-                    BudgetName = "Budget 4",
-                    ExpenseType = "бубубу",
-                    Difference = 2174182
-                },
-            };
+            _client = client;
+            _userId = userId;
+            GetBudgetsDifferences();
 
             PageTitle = "Budget Overruns";
+        }
+
+        private async Task GetBudgetsDifferences()
+        {
+            ICollection<BudgetOverrunDTO> result = new List<BudgetOverrunDTO>();
+
+            try
+            {
+                result = _client.DifferenceAsync(_userId).Result;
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
+                return;
+            }
+
+            BudgetOverruns = new ObservableCollection<BudgetOverrunsModel>();
+            foreach (var item in result)
+            {
+                BudgetOverruns.Add(new BudgetOverrunsModel()
+                {
+                    BudgetName = item.BudgetName,
+                    ExpenseType = item.ExpenseType,
+                    Difference = (decimal)item.Difference,
+                });
+            }
         }
 
         [ObservableProperty]

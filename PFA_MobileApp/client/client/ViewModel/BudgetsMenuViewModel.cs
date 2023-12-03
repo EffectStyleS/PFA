@@ -1,4 +1,5 @@
 ﻿using ApiClient;
+using client.Model.Interfaces;
 using client.Model.Models;
 using client.View;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -10,10 +11,12 @@ namespace client.ViewModel
     public partial class BudgetsMenuViewModel : BaseViewModel
     {
         private readonly Client _client;
+        private readonly IBudgetService _budgetService;
 
-        public BudgetsMenuViewModel(Client client)
+        public BudgetsMenuViewModel(Client client, IBudgetService budgetService)
         {
             _client = client;
+            _budgetService = budgetService;
 
             PageTitle = "Budgets";
         }
@@ -182,6 +185,11 @@ namespace client.ViewModel
                 }
 
                 Budgets.Where(x => x.Id == budgetDto.Id).FirstOrDefault().PlannedIncomes = plannedIncomesModels;
+            }
+
+            foreach (var budget in Budgets)
+            {
+                budget.Saldo = _budgetService.GetSaldo(budget);
             }
         }
 

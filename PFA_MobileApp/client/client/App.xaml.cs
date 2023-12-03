@@ -1,5 +1,4 @@
-﻿using client.View;
-using client.ViewModel;
+﻿using client.ViewModel;
 
 namespace client
 {

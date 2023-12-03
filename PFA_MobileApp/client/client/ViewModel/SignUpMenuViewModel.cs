@@ -24,9 +24,6 @@ namespace client.ViewModel
         [ObservableProperty]
         string _passwordConfirm;
 
-        [ObservableProperty]
-        UserModel _user;
-
         [RelayCommand]
         async Task SignUpTap()
         {
@@ -53,20 +50,9 @@ namespace client.ViewModel
                 return;
             }
 
-            var userDto = await _client.UserAsync(result.Login);
-            User = new UserModel();
-            User.Id = userDto.Id;
-            User.Login = userDto.Login;
-            User.RefreshToken = userDto.RefreshToken;
-            User.RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime;
+            _client.AddBearerToken(result.Token);
 
-            // TODO: мб на null проверять?
-
-            var navigationParameter = new Dictionary<string, object>
-            {
-                { "User", User }
-            };
-            await Shell.Current.GoToAsync($"//{nameof(IncomesMenu)}", navigationParameter);
+            await Shell.Current.GoToAsync($"//{nameof(IncomesMenu)}");
         }
     }
 }

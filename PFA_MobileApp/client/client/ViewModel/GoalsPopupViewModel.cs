@@ -53,7 +53,7 @@ namespace client.ViewModel
         string _name;
 
         [ObservableProperty]
-        decimal _sum;
+        decimal? _sum;
 
         [ObservableProperty]
         DateTime _startDate;
@@ -67,8 +67,8 @@ namespace client.ViewModel
         [RelayCommand]
         async Task Save()
         {
-            _goal.Name = Name;
-            _goal.Sum = Sum;
+            _goal.Name = Name ?? "New Goal";
+            _goal.Sum = Sum ?? 0;
             _goal.StartDate = StartDate;
             _goal.EndDate = EndDate;
             _goal.IsCompleted = IsCompleted;

@@ -1,4 +1,5 @@
-﻿using client.View;
+﻿using ApiClient;
+using client.View;
 using CommunityToolkit.Mvvm.Input;
 
 namespace client.ViewModel
@@ -8,7 +9,12 @@ namespace client.ViewModel
         [RelayCommand]
         async Task Exit()
         {
-            await Shell.Current.GoToAsync($"//{nameof(StartMenu)}");
+            var navigationParameter = new Dictionary<string, object>()
+            {
+                { "IsRevoke", true },
+            };
+
+            await Shell.Current.GoToAsync($"//{nameof(StartMenu)}", navigationParameter);
         }
     }
 }

@@ -77,7 +77,7 @@ namespace client.ViewModel
         [RelayCommand]
         async Task Save()
         {
-            Budget.Name = Name;
+            Budget.Name = Name ?? "New Budget";
             Budget.StartDate = StartDate;
             Budget.TimePeriodId = TimePeriod.Id;
             Budget.TimePeriod = TimePeriod.Name;

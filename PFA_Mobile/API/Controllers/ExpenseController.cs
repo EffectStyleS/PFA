@@ -92,5 +92,13 @@ namespace API.Controllers
             await _expenseService.Delete(id);
             return Ok(id);
         }
+
+        // GET api/<ExpenseController>/difference/userId
+        [HttpGet("difference/{userId}")]
+        public async Task<ActionResult<List<BudgetOverrunDTO>>> GetBudgetsOverruns(int userId)
+        {
+            var overruns = await _expenseService.GetBudgetOverruns(userId);
+            return Ok(overruns);
+        }
     }
 }

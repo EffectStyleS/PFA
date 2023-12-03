@@ -62,7 +62,7 @@
                                     <StackLayout Spacing="8">
                                         <Label Text="{Binding BudgetName}" FontSize = "20" />
                                         <Label Text="{Binding ExpenseType}" FontSize = "20" />
-                                        <Label Text="{Binding Difference}" FontSize = "20" />
+                                        <Label Text="{Binding Difference, StringFormat='Overrun: {0:C}'}" FontSize = "20" />
                                     </StackLayout>
                                 </Frame>
                             </SwipeView>
