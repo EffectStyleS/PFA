@@ -59,7 +59,8 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return Ok(income);
+            var createdItem = await _incomeService.GetById((await _incomeService.GetAllUserIncomes(income.UserId)).Max(x => x.Id));
+            return Ok(createdItem);
         }
 
         // PUT api/<IncomeController>/5

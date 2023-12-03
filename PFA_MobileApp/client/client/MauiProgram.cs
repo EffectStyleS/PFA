@@ -1,4 +1,5 @@
-﻿using client.View;
+﻿using ApiClient;
+using client.View;
 using client.ViewModel;
 using Mopups.Hosting;
 using Mopups.Interfaces;
@@ -8,6 +9,8 @@ namespace client
 {
     public static class MauiProgram
     {
+        private static readonly string _baseUrl = "https://fd88-94-25-227-38.ngrok-free.app";
+
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -39,6 +42,8 @@ namespace client
                 });
 
             builder.Services.AddSingleton<IPopupNavigation>(MopupService.Instance);
+
+            #region Views and ViewModels injection
 
             builder.Services.AddSingleton<AppShellViewModel>();
 
@@ -76,6 +81,19 @@ namespace client
             builder.Services.AddTransient<PlannedExpensesPopupViewModel>();
             builder.Services.AddTransient<PlannedIncomesPopup>();
             builder.Services.AddTransient<PlannedIncomesPopupViewModel>();
+            #endregion
+
+            builder.Services.AddHttpClient("myhttpclient")
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return new SocketsHttpHandler()
+                    {
+                        PooledConnectionLifetime = TimeSpan.FromMinutes(2)
+                    };
+                })
+                .SetHandlerLifetime(Timeout.InfiniteTimeSpan);
+
+            builder.Services.AddSingleton<Client>(provider => new Client(_baseUrl, provider.GetService<HttpClient>()));
 
             return builder.Build();
         }

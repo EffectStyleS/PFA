@@ -1,5 +1,6 @@
 ﻿using BLL.DTOs;
 using BLL.Interfaces;
+using BLL.Services;
 using DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -60,7 +61,8 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return Ok(timePeriod);
+            var createdItem = await _timePeriodService.GetById((await _timePeriodService.GetAll()).Max(x => x.Id));
+            return Ok(createdItem);
         }
 
         // PUT api/<TimePeriodController>/5

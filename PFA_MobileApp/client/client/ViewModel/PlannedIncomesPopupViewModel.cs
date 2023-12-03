@@ -1,19 +1,22 @@
 ﻿using client.Model.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
+using Mopups.Interfaces;
 using System.Collections.ObjectModel;
 
 namespace client.ViewModel
 {
     public partial class PlannedIncomesPopupViewModel : BaseViewModel
     {
-        private BudgetModel _budget;
+        private readonly IPopupNavigation _popupNavigation;
+        private readonly BudgetModel _budget;
 
-        public PlannedIncomesPopupViewModel(BudgetModel budget)
+        public PlannedIncomesPopupViewModel(IPopupNavigation popupNavigation, BudgetModel budget)
         {
-            PageTitle = "Planned Incomes";
+            _popupNavigation = popupNavigation;
             _budget = budget;
+
+            PageTitle = "Planned Incomes";
 
             PlannedIncomes = new ObservableCollection<PlannedIncomesModel>(_budget.PlannedIncomes);
             if (PlannedIncomes.Any(x => x.Sum == null))
@@ -34,15 +37,14 @@ namespace client.ViewModel
         [RelayCommand]
         async Task Save()
         {
-            // TODO: реализовать сохранение
-            await MopupService.Instance.PopAsync();
+            _budget.PlannedIncomes = new List<PlannedIncomesModel>(PlannedIncomes);
+            await _popupNavigation.PopAsync();
         }
 
         [RelayCommand]
         async Task Cancel()
         {
-            // TODO: реализовать отмену
-            await MopupService.Instance.PopAsync();
+            await _popupNavigation.PopAsync();
         }
     }
 }

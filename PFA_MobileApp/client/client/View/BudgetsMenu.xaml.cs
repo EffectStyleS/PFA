@@ -4,9 +4,19 @@ namespace client.View;
 
 public partial class BudgetsMenu : ContentPage
 {
-	public BudgetsMenu(BudgetsMenuViewModel vm)
+    public delegate Task TaskDelegate();
+    public event TaskDelegate OnNavigatedToEvent;
+
+    public BudgetsMenu(BudgetsMenuViewModel vm)
 	{
 		InitializeComponent();
-		BindingContext = vm;
+        OnNavigatedToEvent += vm.CompleteDataAfterNavigation;
+        BindingContext = vm;
 	}
+
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+        OnNavigatedToEvent();
+    }
 }

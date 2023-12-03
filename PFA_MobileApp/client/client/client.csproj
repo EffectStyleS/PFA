@@ -83,7 +83,9 @@
 
 	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+	  <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 	  <PackageReference Include="Mopups" Version="1.0.4" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.33.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -129,11 +131,6 @@
 	  <MauiXaml Update="View\StartMenu.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Model\Services\" />
-	  <Folder Include="Model\Interfaces\" />
 	</ItemGroup>
 
 </Project>

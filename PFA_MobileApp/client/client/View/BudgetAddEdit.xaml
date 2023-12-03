@@ -90,8 +90,8 @@
                 <Picker FontSize="18"
                         Margin="8,4,8,4"
                         ItemsSource="{Binding TimePeriods}"
-                        SelectedIndex="{Binding TimePeriodId}"
-                        ItemDisplayBinding="{Binding Source={RelativeSource AncestorType={x:Type models:TimePeriodModel}}, Path=Name}"/>
+                        SelectedItem="{Binding TimePeriod}"
+                        ItemDisplayBinding="{Binding Name}"/>
 
                 <!--TODO: решить проблему с привязкой picker'а-->
             </Border>

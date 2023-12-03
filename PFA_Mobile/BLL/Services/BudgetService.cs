@@ -16,6 +16,7 @@ namespace BLL.Services
             var budget = new Budget()
             {
                 Id              = itemDTO.Id,
+                Name            = itemDTO.Name,
                 StartDate       = itemDTO.StartDate,
                 TimePeriodId    = itemDTO.TimePeriodId,
                 UserId          = itemDTO.UserId,
@@ -78,6 +79,7 @@ namespace BLL.Services
             Budget b = await _unitOfWork.Budget.GetItem(itemDTO.Id);
 
             b.Id              = itemDTO.Id;
+            b.Name            = itemDTO.Name;
             b.UserId          = itemDTO.UserId;
             b.StartDate       = itemDTO.StartDate;
             b.TimePeriodId    = itemDTO.TimePeriodId;

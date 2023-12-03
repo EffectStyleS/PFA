@@ -1,67 +1,141 @@
-﻿using client.Model.Models;
+﻿using ApiClient;
+using client.Model.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
+using Mopups.Interfaces;
 using System.Collections.ObjectModel;
 
 namespace client.ViewModel
 {
     public partial class ExpensesPopupViewModel : BaseViewModel
     {
-        public ExpensesPopupViewModel(ExpenseModel expense = null)
+        private readonly Client _client;
+        private readonly IPopupNavigation _popupNavigation;
+        private readonly ObservableCollection<ExpenseModel> _expenses;
+        private readonly ExpenseModel _expense;
+        private readonly bool _isEdited;
+
+        public ExpensesPopupViewModel(IPopupNavigation popupNavigation, Client client, ExpenseModel expense, ObservableCollection<ExpenseModel> expenses, List<ExpenseTypeModel> expenseTypes, bool isEdited)
         {
-            PageTitle = expense == null ? "Add Expense" : "Edit Expense";
+            _client = client;
+            _popupNavigation = popupNavigation;
 
-            Id = expense?.Id;
-            Name = expense?.Name;
-            Value = expense?.Value;
-            Date = expense?.Date;
-            ExpenseTypeId = expense == null ? 0 : expense.ExpenseTypeId;
+            _expense = expense;
+            _expenses = expenses;
+            ExpenseTypes = new ObservableCollection<ExpenseTypeModel>(expenseTypes);
+            _isEdited = isEdited;
 
-            // TODO: из сервиса подгружать
-            ExpenseTypes = new ObservableCollection<ExpenseTypeModel>()
+            if (_isEdited)
             {
-                new ExpenseTypeModel() { Name = "Type 1" },
-                new ExpenseTypeModel() { Name = "Type 2" },
-                new ExpenseTypeModel() { Name = "Type 3" },
-                new ExpenseTypeModel() { Name = "Type 4" },
-            };
+                PageTitle = "Edit Expense";
+
+                Name = expense.Name;
+                Date = expense.Date;
+                Value = expense.Value;
+                ExpenseType = ExpenseTypes.Where(x => x.Id == expense.ExpenseTypeId).FirstOrDefault();
+
+                return;
+            }
+
+            PageTitle = "Add Expense";
+
+            Date = DateTime.Today;
+            Value = 0;
+            ExpenseType = ExpenseTypes[0];
         }
 
         [ObservableProperty]
         string _pageTitle;
 
         [ObservableProperty]
-        int? _id;
-
-        [ObservableProperty]
         string _name;
 
         [ObservableProperty]
-        decimal? _value;
+        decimal _value;
 
         [ObservableProperty]
-        DateTime? _date;
-
-        [ObservableProperty]
-        int _expenseTypeId;
+        DateTime _date;
 
         [ObservableProperty]
         ObservableCollection<ExpenseTypeModel> _expenseTypes;
 
+        [ObservableProperty]
+        ExpenseTypeModel _expenseType;
+
         [RelayCommand]
         async Task Save()
         {
-            // TODO: реализовать сохранение
-            await MopupService.Instance.PopAsync();
+            _expense.Name = Name;
+            _expense.Value = Value;
+            _expense.Date = Date;
+            _expense.ExpenseTypeId = ExpenseType.Id;
+            _expense.ExpenseType = ExpenseType.Name;
 
+            ExpenseDTO postResult = new();
+
+            try
+            {
+                if (_isEdited)
+                {
+                    var expenseRequest = new ExpenseDTO()
+                    {
+                        Id = _expense.Id,
+                        Name = _expense.Name,
+                        Value = (double)_expense.Value,
+                        Date = _expense.Date,
+                        ExpenseTypeId = _expense.ExpenseTypeId,
+                        UserId = _expense.UserId,
+                    };
+
+                    await _client.ExpensePUTAsync(_expense.Id, expenseRequest);
+                }
+                else
+                {
+                    postResult = await _client.ExpensePOSTAsync(
+                        new ExpenseDTO()
+                        {
+                            Name = _expense.Name,
+                            Value = (double)_expense.Value,
+                            Date = _expense.Date,
+                            ExpenseTypeId = _expense.ExpenseTypeId,
+                            UserId = _expense.UserId,
+                        });
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
+                return;
+            }
+
+            // обновление списка расходов
+            if (_isEdited)
+            {
+                var found = _expenses.FirstOrDefault(x => x.Id == _expense.Id);
+                int i = _expenses.IndexOf(found);
+                _expenses[i] = _expense;
+            }
+            else
+            {
+                _expenses.Add(new ExpenseModel()
+                {
+                    Id = postResult.Id,
+                    Name = postResult.Name,
+                    Value = (decimal)postResult.Value,
+                    Date = postResult.Date.DateTime,
+                    ExpenseTypeId = postResult.ExpenseTypeId,
+                    ExpenseType = ExpenseTypes.Where(x => x.Id == postResult.ExpenseTypeId).FirstOrDefault().Name,
+                    UserId = postResult.UserId
+                });
+            }
+
+            await _popupNavigation.PopAsync();
         }
 
         [RelayCommand]
-        async Task Cancel()
+        Task Cancel()
         {
-            // TODO: реализовать отмену
-            await MopupService.Instance.PopAsync();
+            return _popupNavigation.PopAsync();
         }
     }
 }

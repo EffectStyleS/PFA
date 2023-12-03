@@ -176,6 +176,18 @@ namespace API.Controllers
             return Ok();
         }
 
+        [Authorize]
+        [HttpGet]
+        [Route("user/{login}")]
+        public async Task<ActionResult<UserDTO>> GetUserByLogin(string login)
+        {
+            var user = await _userService.GetByLoginAsync(login, _userManager);
+
+            if (user == null)
+                return BadRequest("Invalid user login");
+
+            return user;
+        }
 
     }
 }

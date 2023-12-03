@@ -1,5 +1,6 @@
 ﻿using BLL.DTOs;
 using BLL.Interfaces;
+using BLL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -59,7 +60,8 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return Ok(incomeType);
+            var createdItem = await _incomeTypeService.GetById((await _incomeTypeService.GetAll()).Max(x => x.Id));
+            return Ok(createdItem);
         }
 
         // PUT api/<IncomeTypeController>/5

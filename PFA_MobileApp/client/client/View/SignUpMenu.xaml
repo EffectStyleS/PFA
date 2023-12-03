@@ -61,7 +61,8 @@
 
                 <Entry FontSize="18"
                        Margin="8,4,8,4"
-                       Placeholder="Enter your login"/>
+                       Placeholder="Enter your login"
+                       Text="{Binding Login}"/>
 
             </Border>
 
@@ -80,7 +81,8 @@
                 <Entry FontSize="18"
                        Margin="8,4,8,4"
                        IsPassword="True"
-                       Placeholder="Enter your password"/>
+                       Placeholder="Enter your password"
+                       Text="{Binding Password}"/>
 
             </Border>
 
@@ -99,7 +101,8 @@
                 <Entry FontSize="18"
                        Margin="8,4,8,4"
                        IsPassword="True"
-                       Placeholder="Repeat password"/>
+                       Placeholder="Repeat password"
+                       Text="{Binding PasswordConfirm}"/>
 
             </Border>
 

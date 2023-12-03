@@ -1,5 +1,6 @@
 ﻿using BLL.DTOs;
 using BLL.Interfaces;
+using BLL.Services;
 using DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -60,7 +61,8 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return Ok(plannedIncomes);
+            var createdItem = await _plannedIncomesService.GetById((await _plannedIncomesService.GetAllBudgetPlannedIncomes(plannedIncomes.BudgetId)).Max(x => x.Id));
+            return Ok(createdItem);
         }
 
         // PUT api/<PlannedIncomesController>/5

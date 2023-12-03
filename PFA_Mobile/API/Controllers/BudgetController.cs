@@ -56,8 +56,10 @@ namespace API.Controllers
                 return NotFound();
             }
 
+            var budgetId = (await _budgetService.GetById((await _budgetService.GetAllUserBudgets(budget.Budget.UserId)).Max(x => x.Id))).Id;
             foreach (var plannedExpenses in budget.PlannedExpenses)
             {
+                plannedExpenses.BudgetId = budgetId;
                 if (!await _plannedExpensesService.Create(plannedExpenses))
                 {
                     return NotFound();
@@ -66,13 +68,21 @@ namespace API.Controllers
 
             foreach (var plannedIncomes in budget.PlannedIncomes)
             {
+                plannedIncomes.BudgetId = budgetId;
                 if (!await _plannedIncomesService.Create(plannedIncomes))
                 {
                     return NotFound();
                 }
             }
 
-            return Ok(budget);
+            var createdBudgetRequestModel = new BudgetRequestModel()
+            {
+                Budget = await _budgetService.GetById((await _budgetService.GetAllUserBudgets(budget.Budget.UserId)).Max(x => x.Id)),
+                PlannedExpenses = await _plannedExpensesService.GetAllBudgetPlannedExpenses(budget.Budget.UserId),
+                PlannedIncomes = await _plannedIncomesService.GetAllBudgetPlannedIncomes(budget.Budget.UserId)
+            };
+
+            return Ok(createdBudgetRequestModel);
         }
 
         // PUT api/<BudgetController>/5
@@ -120,8 +130,6 @@ namespace API.Controllers
             await _budgetService.Delete(id);
             return Ok(id);
         }
-
-
     }
 }
 

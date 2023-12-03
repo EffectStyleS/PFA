@@ -4,10 +4,20 @@ namespace client.View
 {
 	public partial class IncomesMenu : ContentPage
 	{
-		public IncomesMenu(IncomesMenuViewModel vm)
+        public delegate Task TaskDelegate();
+        public event TaskDelegate OnNavigatedToEvent;
+
+        public IncomesMenu(IncomesMenuViewModel vm)
 		{
 			InitializeComponent();
-			BindingContext = vm;
+            OnNavigatedToEvent += vm.CompleteDataAfterNavigation;
+            BindingContext = vm;
 		}
-	}
+
+        protected override void OnNavigatedTo(NavigatedToEventArgs args)
+        {
+            base.OnNavigatedTo(args);
+            OnNavigatedToEvent();
+        }
+    }
 }

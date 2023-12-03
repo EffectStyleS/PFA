@@ -59,7 +59,8 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return Ok(expense);
+            var createdItem = await _expenseService.GetById((await _expenseService.GetAllUserExpenses(expense.UserId)).Max(x => x.Id));
+            return Ok(createdItem);
         }
 
         // PUT api/<ExpenseController>/5

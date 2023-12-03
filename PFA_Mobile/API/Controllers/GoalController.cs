@@ -1,5 +1,7 @@
 ﻿using BLL.DTOs;
 using BLL.Interfaces;
+using BLL.Services;
+using DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -59,7 +61,8 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return Ok(goal);
+            var createdItem = await _goalService.GetById((await _goalService.GetAllUserGoals(goal.UserId)).Max(x => x.Id));
+            return Ok(createdItem);
         }
 
         // PUT api/<GoalController>/5

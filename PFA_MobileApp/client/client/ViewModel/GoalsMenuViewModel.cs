@@ -1,4 +1,5 @@
-﻿using client.Model.Models;
+﻿using ApiClient;
+using client.Model.Models;
 using client.View;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,52 +10,54 @@ namespace client.ViewModel
 {
     public partial class GoalsMenuViewModel : BaseViewModel
     {
-        IPopupNavigation _popupNavigation;
+        private readonly IPopupNavigation _popupNavigation;
+        private readonly Client _client;
 
-        public GoalsMenuViewModel(IPopupNavigation popupNavigation)
+        public GoalsMenuViewModel(IPopupNavigation popupNavigation, Client client)
         {
             _popupNavigation = popupNavigation;
-            // TODO: из сервиса получим потом
-            Goals = new ObservableCollection<GoalModel>
-            {
-                new GoalModel()
-                {
-                    Name = "Goal 1",
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now,
-                    Sum = 12523,
-                    IsCompleted = false,
-                },
-
-                new GoalModel()
-                {
-                    Name = "Goal 2",
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now,
-                    Sum = 12523,
-                    IsCompleted = true,
-                },
-
-                new GoalModel()
-                {
-                    Name = "Goal 3",
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now,
-                    Sum = 12523,
-                    IsCompleted = false,
-                },
-
-                new GoalModel()
-                {
-                    Name = "Goal 4",
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now,
-                    Sum = 12523,
-                    IsCompleted = true,
-                },
-            };
+            _client = client;
 
             PageTitle = "Goals";
+        }
+
+        public async Task CompleteDataAfterNavigation()
+        {
+            var userLogin = _client.GetCurrentUserLogin();
+            var userDto = await _client.UserAsync(userLogin);
+            User = new UserModel();
+            User.Id = userDto.Id;
+            User.Login = userDto.Login;
+            User.RefreshToken = userDto.RefreshToken;
+            User.RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime;
+
+            Goals = new ObservableCollection<GoalModel>();
+
+            ICollection<GoalDTO> result = new List<GoalDTO>();
+
+            try
+            {
+                result = _client.UserAll3Async(User.Id).Result;
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
+                return;
+            }
+
+            foreach (var goal in result)
+            {
+                Goals.Add(new GoalModel()
+                {
+                    Id = goal.Id,
+                    Name = goal.Name,
+                    StartDate = goal.StartDate.DateTime,
+                    EndDate = goal.EndDate.Value.DateTime,
+                    Sum = (decimal?)goal.Sum,
+                    IsCompleted = goal.IsCompleted,
+                    UserId = goal.UserId
+                });
+            }
         }
 
         [ObservableProperty]
@@ -63,24 +66,41 @@ namespace client.ViewModel
         [ObservableProperty]
         ObservableCollection<GoalModel> _goals;
 
+        [ObservableProperty]
+        UserModel _user;
+
         [RelayCommand]
-        void DeleteGoal()
+        async Task DeleteGoal(GoalModel goal)
         {
-            // TODO: удаление сервисом
+            try
+            {
+                await _client.GoalDELETEAsync(goal.Id);
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
+                return;
+            }
+
+            Goals.Remove(goal);
         }
 
         [RelayCommand]
         async Task AddGoal()
         {
-            // TODO: добавление сервисом
-            await _popupNavigation.PushAsync(new GoalsPopup(new GoalsPopupViewModel()));
+            GoalModel goal = new()
+            {
+                UserId = User.Id,
+            };
+            bool isEdited = false;
+            await _popupNavigation.PushAsync(new GoalsPopup(new GoalsPopupViewModel(_popupNavigation, _client, goal, Goals, isEdited)));
         }
 
         [RelayCommand]
         async Task EditGoal(GoalModel goal)
         {
-            // TODO: изменение сервисом
-            await _popupNavigation.PushAsync(new GoalsPopup(new GoalsPopupViewModel(goal)));
+            bool isEdited = true;
+            await _popupNavigation.PushAsync(new GoalsPopup(new GoalsPopupViewModel(_popupNavigation, _client, goal, Goals, isEdited)));
         }
     }
 }
