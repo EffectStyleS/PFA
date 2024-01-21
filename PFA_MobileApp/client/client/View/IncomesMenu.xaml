@@ -9,42 +9,28 @@
              x:DataType="viewmodel:IncomesMenuViewModel">
 
     <Grid Margin="16, 8, 16, 8"
-          RowDefinitions="100, Auto, *"
-          ColumnDefinitions=".75*, .25*"
+          RowDefinitions="Auto, *"
+          ColumnDefinitions=".2*, .100*, .2*"
           Padding="8"
           RowSpacing="16"
           ColumnSpacing="8">
-
-        <VerticalStackLayout Grid.ColumnSpan="2">
-
-            <Label  Text="PFA"
-                    VerticalTextAlignment="Center"
-                    HorizontalOptions="Center"
-                    FontSize="34"/>
-
-            <BoxView HeightRequest="1"
-                     HorizontalOptions="Center"
-                     Margin="0,8,0,0"
-                     WidthRequest="180"/>
-
-            <Label  Text="{Binding PageTitle}"
-                    Margin="0,8,0,0"
-                    VerticalTextAlignment="Center"
-                    HorizontalOptions="Center"
-                    FontSize="28"/>
-
-        </VerticalStackLayout>
-
+        
         <Button x:Name="AddIncomeButton"
-                Grid.Row="1"
                 CornerRadius="20"
-                FontSize="24"
-                Text="Add Income"
+                ImageSource="icon_plus.png"
                 Command="{Binding AddIncomeCommand}"/>
         
-        <CollectionView x:Name="incomesView"
-                        Grid.Row="2"
-                        Grid.ColumnSpan="2"
+        <!-- Изменить команду на переключение на страницу анализа-->
+        <Button x:Name="AnalysisIncomesButton"
+                Grid.Column="2"
+                CornerRadius="20"
+                HeightRequest="55"
+                ImageSource="icon_chart.png"
+                Command="{Binding AddIncomeCommand}"/>
+        
+        <CollectionView x:Name="IncomesView"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="3"
                         ItemsSource="{Binding Incomes}"
                         HorizontalOptions="Center"
                         SelectionMode="None">
@@ -54,18 +40,18 @@
                     <SwipeView Margin="0,8,0,0">
                         <SwipeView.RightItems>
                             <SwipeItems>
-                                <SwipeItem Text="Delete"
-                                           BackgroundColor="Red"
-                                           Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:IncomesMenuViewModel}}, Path=DeleteIncomeCommand}"
-                                           CommandParameter="{Binding .}"/>
+                                <SwipeItem 
+                                    IconImageSource="icon_trash.png"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:IncomesMenuViewModel}}, Path=DeleteIncomeCommand}"
+                                    CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
 
                         <Frame CornerRadius="20">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:IncomesMenuViewModel}}, Path=EditIncomeCommand}"
-                                            CommandParameter="{Binding .}"/>
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:IncomesMenuViewModel}}, Path=EditIncomeCommand}"
+                                    CommandParameter="{Binding .}"/>
                             </Frame.GestureRecognizers>
 
                             <StackLayout Spacing="8">

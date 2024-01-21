@@ -189,7 +189,7 @@ namespace client.ViewModel
 
             foreach (var budget in Budgets)
             {
-                budget.Saldo = _budgetService.GetSaldo(budget);
+                budget.Saldo = _budgetService.GetBalance(budget);
             }
         }
 

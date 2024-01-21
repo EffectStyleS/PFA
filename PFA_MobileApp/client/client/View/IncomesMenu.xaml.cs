@@ -17,7 +17,7 @@ namespace client.View
         protected override void OnNavigatedTo(NavigatedToEventArgs args)
         {
             base.OnNavigatedTo(args);
-            OnNavigatedToEvent();
+            OnNavigatedToEvent?.Invoke();
         }
     }
 }

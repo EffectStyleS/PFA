@@ -4,6 +4,6 @@ namespace client.Model.Interfaces
 {
     public interface IBudgetService
     {
-        decimal? GetSaldo(BudgetModel budget);
+        decimal? GetBalance(BudgetModel budget);
     }
 }

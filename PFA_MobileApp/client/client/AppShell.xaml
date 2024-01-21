@@ -54,8 +54,7 @@
         FlyoutIcon="icon_budget.png"
         ContentTemplate="{DataTemplate local:BudgetsMenu}"
         Route="BudgetsMenu" />
-  
-    <!-- Заменить на MenuItem в будущем-->
+    
     <MenuItem
         Text="Exit"
         IconImageSource="icon_exit.png"

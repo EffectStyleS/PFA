@@ -5,7 +5,7 @@ namespace client.Model.Services
 {
     public class BudgetService : IBudgetService
     {
-        public decimal? GetSaldo(BudgetModel budget)
+        public decimal? GetBalance(BudgetModel budget)
         {
             var sumOfPlannedExpenses = budget.PlannedExpenses.Sum(x => x.Sum);
             var sumOfPlannedIncomes = budget.PlannedIncomes.Sum(x => x.Sum);

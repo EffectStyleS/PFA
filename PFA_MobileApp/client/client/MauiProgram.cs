@@ -11,7 +11,7 @@ namespace client
 {
     public static class MauiProgram
     {
-        private static readonly string _baseUrl = "https://65ad-94-25-227-38.ngrok-free.app";
+        private static readonly string _baseUrl = "https://31e1-94-25-227-62.ngrok-free.app";
 
         public static MauiApp CreateMauiApp()
         {

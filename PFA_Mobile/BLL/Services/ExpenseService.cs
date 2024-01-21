@@ -136,7 +136,7 @@ namespace BLL.Services
                         overruns.Add(new BudgetOverrunDTO()
                         {
                             BudgetName = budget.Name,
-                            ExpenseType = (await _unitOfWork.ExpenseType.GetAll()).FirstOrDefault(x => x.Id == plannedExpensesItem.ExpenseTypeId).Name,
+                            ExpenseType = (await _unitOfWork.ExpenseType.GetAll()).FirstOrDefault(x => x.Id == plannedExpensesItem.ExpenseTypeId)!.Name,
                             Difference = difference
                         });
                     }

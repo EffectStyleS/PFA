@@ -52,13 +52,15 @@ namespace client.ViewModel
         {
             var userLogin = _client.GetCurrentUserLogin();
             var userDto = await _client.UserAsync(userLogin);
-            User = new UserModel();
-            User.Id = userDto.Id;
-            User.Login = userDto.Login;
-            User.RefreshToken = userDto.RefreshToken;
-            User.RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime;
+            User = new UserModel
+            {
+                Id = userDto.Id,
+                Login = userDto.Login,
+                RefreshToken = userDto.RefreshToken,
+                RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime
+            };
 
-            await GetAllIncomeTypes();
+            await GetAllIncomeTypes().ConfigureAwait(false);
             Incomes = new ObservableCollection<IncomeModel>();
 
             ICollection<IncomeDTO> result = new List<IncomeDTO>();
@@ -88,20 +90,16 @@ namespace client.ViewModel
             }
         }
 
-        [ObservableProperty]
-        string _pageTitle;
+        [ObservableProperty] private string _pageTitle;
 
-        [ObservableProperty]
-        ObservableCollection<IncomeModel> _incomes;
+        [ObservableProperty] private ObservableCollection<IncomeModel> _incomes;
 
-        [ObservableProperty]
-        List<IncomeTypeModel> _incomeTypes;
+        [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
 
-        [ObservableProperty]
-        UserModel _user;
+        [ObservableProperty] private UserModel _user;
 
         [RelayCommand]
-        async Task DeleteIncome(IncomeModel income)
+        private async Task DeleteIncome(IncomeModel income)
         {
             try
             {
@@ -117,22 +115,21 @@ namespace client.ViewModel
         }
 
         [RelayCommand]
-        async Task AddIncome()
+        private async Task AddIncome()
         {
             IncomeModel income = new()
             {
                 UserId = User.Id,
             };
-            bool isEdited = false;
-            await _popupNavigation.PushAsync(new IncomesPopup(new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, isEdited)));
+            await _popupNavigation.PushAsync(new IncomesPopup(new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, false)))
+                .ConfigureAwait(false);
         }
 
         [RelayCommand]
-        async Task EditIncome(IncomeModel income)
+        private async Task EditIncome(IncomeModel income)
         {
-            // TODO: изменение сервисом
-            bool isEdited = true;
-            await _popupNavigation.PushAsync(new IncomesPopup(new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, isEdited)));
+            await _popupNavigation.PushAsync(new IncomesPopup(new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, true)))
+                .ConfigureAwait(false);
         }
     }
 }

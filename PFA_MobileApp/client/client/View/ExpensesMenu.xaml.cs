@@ -17,6 +17,6 @@ public partial class ExpensesMenu : ContentPage
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-        OnNavigatedToEvent();
+        OnNavigatedToEvent?.Invoke();
     }
 }
