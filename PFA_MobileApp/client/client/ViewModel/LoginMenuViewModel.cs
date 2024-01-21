@@ -1,5 +1,5 @@
 ﻿using ApiClient;
-using client.Model.Models;
+using client.Infrastructure;
 using client.View;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,22 +9,19 @@ namespace client.ViewModel
     public partial class LoginMenuViewModel : BaseViewModel
     {
         private readonly Client _client;
+        
         public LoginMenuViewModel(Client client)
         {
             _client = client;
+            EventManager.OnUserExit += UserExitHandler;
         }
 
-        [ObservableProperty]
-        string _login;
+        [ObservableProperty] private string _login;
 
-        [ObservableProperty]
-        string _password;
-
-        [ObservableProperty]
-        UserModel _user;
+        [ObservableProperty] private string _password;
 
         [RelayCommand]
-        async Task SignInTap()
+        private async Task SignInTap()
         {
             AuthResponse result;
 
@@ -51,6 +48,12 @@ namespace client.ViewModel
             _client.AddBearerToken(result.Token);
 
             await Shell.Current.GoToAsync($"//{nameof(IncomesMenu)}");
+        }
+
+        private async Task UserExitHandler()
+        {
+            Login = string.Empty;
+            Password = string.Empty;
         }
     }
 }

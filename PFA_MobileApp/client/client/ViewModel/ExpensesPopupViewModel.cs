@@ -13,9 +13,9 @@ namespace client.ViewModel
         private readonly IPopupNavigation _popupNavigation;
         private readonly ObservableCollection<ExpenseModel> _expenses;
         private readonly ExpenseModel _expense;
-        private readonly bool _isEdited;
+        private readonly bool _isEdit;
 
-        public ExpensesPopupViewModel(IPopupNavigation popupNavigation, Client client, ExpenseModel expense, ObservableCollection<ExpenseModel> expenses, List<ExpenseTypeModel> expenseTypes, bool isEdited)
+        public ExpensesPopupViewModel(IPopupNavigation popupNavigation, Client client, ExpenseModel expense, ObservableCollection<ExpenseModel> expenses, List<ExpenseTypeModel> expenseTypes, bool isEdit)
         {
             _client = client;
             _popupNavigation = popupNavigation;
@@ -23,9 +23,9 @@ namespace client.ViewModel
             _expense = expense;
             _expenses = expenses;
             ExpenseTypes = new ObservableCollection<ExpenseTypeModel>(expenseTypes);
-            _isEdited = isEdited;
+            _isEdit = isEdit;
 
-            if (_isEdited)
+            if (_isEdit)
             {
                 PageTitle = "Edit Expense";
 
@@ -75,7 +75,7 @@ namespace client.ViewModel
 
             try
             {
-                if (_isEdited)
+                if (_isEdit)
                 {
                     var expenseRequest = new ExpenseDTO()
                     {
@@ -109,7 +109,7 @@ namespace client.ViewModel
             }
 
             // обновление списка расходов
-            if (_isEdited)
+            if (_isEdit)
             {
                 var found = _expenses.FirstOrDefault(x => x.Id == _expense.Id);
                 int i = _expenses.IndexOf(found);

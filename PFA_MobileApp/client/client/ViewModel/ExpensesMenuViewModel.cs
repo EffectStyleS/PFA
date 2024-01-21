@@ -1,4 +1,5 @@
 ﻿using ApiClient;
+using client.Infrastructure;
 using client.Model.Models;
 using client.View;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -18,8 +19,8 @@ namespace client.ViewModel
         {
             _popupNavigation = popupNavigation;
             _client = client;
-
-            PageTitle = "Expenses";
+            EventManager.OnUserExit += UserExitHandler;
+            
         }
 
         private async Task GetAllExpenseTypes()
@@ -53,11 +54,13 @@ namespace client.ViewModel
         {
             var userLogin = _client.GetCurrentUserLogin();
             var userDto = await _client.UserAsync(userLogin);
-            User = new UserModel();
-            User.Id = userDto.Id;
-            User.Login = userDto.Login;
-            User.RefreshToken = userDto.RefreshToken;
-            User.RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime;
+            User = new UserModel
+            {
+                Id = userDto.Id,
+                Login = userDto.Login,
+                RefreshToken = userDto.RefreshToken,
+                RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime
+            };
 
             await GetAllExpenseTypes();
             Expenses = new ObservableCollection<ExpenseModel>();
@@ -89,20 +92,14 @@ namespace client.ViewModel
             }
         }
 
-        [ObservableProperty]
-        string _pageTitle;
+        [ObservableProperty] private ObservableCollection<ExpenseModel> _expenses;
 
-        [ObservableProperty]
-        ObservableCollection<ExpenseModel> _expenses;
+        [ObservableProperty] private List<ExpenseTypeModel> _expenseTypes;
 
-        [ObservableProperty]
-        List<ExpenseTypeModel> _expenseTypes;
-
-        [ObservableProperty]
-        UserModel _user;
+        [ObservableProperty] private UserModel _user;
 
         [RelayCommand]
-        async Task DeleteExpense(ExpenseModel expense)
+        private async Task DeleteExpense(ExpenseModel expense)
         {
             try
             {
@@ -118,29 +115,27 @@ namespace client.ViewModel
         }
 
         [RelayCommand]
-        async Task AddExpense()
+        private async Task AddExpense()
         {
             ExpenseModel expense = new()
             {
                 UserId = User.Id,
             };
-            bool isEdited = false;
-            await _popupNavigation.PushAsync(new ExpensesPopup(new ExpensesPopupViewModel(_popupNavigation, _client, expense, Expenses, ExpenseTypes, isEdited)));
+            
+            await _popupNavigation.PushAsync(new ExpensesPopup(new ExpensesPopupViewModel(_popupNavigation, _client, expense, Expenses, ExpenseTypes, false)));
         }
 
         [RelayCommand]
-        async Task EditExpense(ExpenseModel expense)
-        {
-            bool isEdited = true;
-            await _popupNavigation.PushAsync(new ExpensesPopup(new ExpensesPopupViewModel(_popupNavigation, _client, expense, Expenses, ExpenseTypes, isEdited)));
-        }
-
+        private Task EditExpense(ExpenseModel expense) 
+            => _popupNavigation.PushAsync(new ExpensesPopup(new ExpensesPopupViewModel(_popupNavigation, _client, expense, Expenses, ExpenseTypes, true)));
 
         [RelayCommand]
-        async Task OpenBudgetOverruns()
+        private Task OpenBudgetOverruns() => _popupNavigation.PushAsync(new BudgetOverrunsPopup(new BudgetOverrunsPopupViewModel(_client, User.Id)));
+        
+        private async Task UserExitHandler()
         {
-            await _popupNavigation.PushAsync(new BudgetOverrunsPopup(new BudgetOverrunsPopupViewModel(_client, User.Id)));
+            User = null;
+            Expenses = new ObservableCollection<ExpenseModel>();
         }
-
     }
 }

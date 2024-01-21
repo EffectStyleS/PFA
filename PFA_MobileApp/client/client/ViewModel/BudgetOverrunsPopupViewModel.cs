@@ -1,4 +1,5 @@
 ﻿using ApiClient;
+using client.Infrastructure;
 using client.Model.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
@@ -14,6 +15,8 @@ namespace client.ViewModel
         {
             _client = client;
             _userId = userId;
+            
+            EventManager.OnUserExit += UserExitHandler;
             GetBudgetsDifferences();
 
             PageTitle = "Budget Overruns";
@@ -40,15 +43,18 @@ namespace client.ViewModel
                 {
                     BudgetName = item.BudgetName,
                     ExpenseType = item.ExpenseType,
-                    Difference = (decimal)item.Difference,
+                    Difference = (decimal)item.Difference!,
                 });
             }
         }
 
-        [ObservableProperty]
-        string _pageTitle;
+        [ObservableProperty] private string _pageTitle;
 
-        [ObservableProperty]
-        ObservableCollection<BudgetOverrunsModel> _budgetOverruns;
+        [ObservableProperty] private ObservableCollection<BudgetOverrunsModel> _budgetOverruns;
+        
+        private async Task UserExitHandler()
+        {
+            BudgetOverruns = new ObservableCollection<BudgetOverrunsModel>();
+        }
     }
 }

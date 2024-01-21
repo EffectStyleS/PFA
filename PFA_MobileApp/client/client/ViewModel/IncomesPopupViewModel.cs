@@ -13,9 +13,9 @@ namespace client.ViewModel
         private readonly IPopupNavigation _popupNavigation;
         private readonly ObservableCollection<IncomeModel> _incomes;
         private readonly IncomeModel _income;
-        private readonly bool _isEdited; 
+        private readonly bool _isEdit; 
 
-        public IncomesPopupViewModel(IPopupNavigation popupNavigation, Client client, IncomeModel income, ObservableCollection<IncomeModel> incomes, List<IncomeTypeModel> incomeTypes, bool isEdited) 
+        public IncomesPopupViewModel(IPopupNavigation popupNavigation, Client client, IncomeModel income, ObservableCollection<IncomeModel> incomes, List<IncomeTypeModel> incomeTypes, bool isEdit) 
         {
             _client = client;
             _popupNavigation = popupNavigation;
@@ -23,16 +23,16 @@ namespace client.ViewModel
             _income = income;
             _incomes = incomes;
             IncomeTypes = new ObservableCollection<IncomeTypeModel>(incomeTypes);
-            _isEdited = isEdited;
+            _isEdit = isEdit;
 
-            if (_isEdited)
+            if (_isEdit)
             {
                 PageTitle = "Edit Income";
 
                 Name = income.Name;
                 Date = income.Date;
                 Value = income.Value;
-                IncomeType = IncomeTypes.Where(x => x.Id == income.IncomeTypeId).FirstOrDefault();
+                IncomeType = IncomeTypes.Where(x => x.Id == income.IncomeTypeId).FirstOrDefault()!;
                 return;
             }
 
@@ -75,7 +75,7 @@ namespace client.ViewModel
 
             try
             {
-                if (_isEdited)
+                if (_isEdit)
                 {
                     var incomeRequest = new IncomeDTO()
                     {
@@ -109,7 +109,7 @@ namespace client.ViewModel
             }
             
             // обновление списка доходов
-            if (_isEdited) 
+            if (_isEdit) 
             {
                 var found = _incomes.FirstOrDefault(x => x.Id == _income.Id);
                 int i = _incomes.IndexOf(found);

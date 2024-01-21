@@ -1,4 +1,5 @@
 ﻿using ApiClient;
+using client.Infrastructure;
 using client.Model.Interfaces;
 using client.Model.Models;
 using client.View;
@@ -17,8 +18,7 @@ namespace client.ViewModel
         {
             _client = client;
             _budgetService = budgetService;
-
-            PageTitle = "Budgets";
+            EventManager.OnUserExit += UserExitHandler;
         }
 
         private async Task GetAllTimePeriods()
@@ -106,11 +106,13 @@ namespace client.ViewModel
         {
             var userLogin = _client.GetCurrentUserLogin();
             var userDto = await _client.UserAsync(userLogin);
-            User = new UserModel();
-            User.Id = userDto.Id;
-            User.Login = userDto.Login;
-            User.RefreshToken = userDto.RefreshToken;
-            User.RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime;
+            User = new UserModel
+            {
+                Id = userDto.Id,
+                Login = userDto.Login,
+                RefreshToken = userDto.RefreshToken,
+                RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime
+            };
 
             await GetAllTimePeriods();
             await GetAllIncomeTypes();
@@ -169,7 +171,7 @@ namespace client.ViewModel
                         BudgetId = plannedExpenses.BudgetId,
                     });
                 }
-                Budgets.Where(x => x.Id == budgetDto.Id).FirstOrDefault().PlannedExpenses = plannedExpensesModels;
+                Budgets.Where(x => x.Id == budgetDto.Id).FirstOrDefault()!.PlannedExpenses = plannedExpensesModels;
 
                 var plannedIncomesModels = new List<PlannedIncomesModel>();
                 foreach (var plannedIncomes in plannedIncomesResult)
@@ -184,7 +186,7 @@ namespace client.ViewModel
                     });
                 }
 
-                Budgets.Where(x => x.Id == budgetDto.Id).FirstOrDefault().PlannedIncomes = plannedIncomesModels;
+                Budgets.Where(x => x.Id == budgetDto.Id).FirstOrDefault()!.PlannedIncomes = plannedIncomesModels;
             }
 
             foreach (var budget in Budgets)
@@ -192,27 +194,20 @@ namespace client.ViewModel
                 budget.Saldo = _budgetService.GetBalance(budget);
             }
         }
+        
 
-        [ObservableProperty]
-        string _pageTitle;
+        [ObservableProperty] private ObservableCollection<BudgetModel> _budgets;
 
-        [ObservableProperty]
-        ObservableCollection<BudgetModel> _budgets;
+        [ObservableProperty] private List<TimePeriodModel> _timePeriods;
 
-        [ObservableProperty]
-        List<TimePeriodModel> _timePeriods;
+        [ObservableProperty] private List<ExpenseTypeModel> _expenseTypes;
 
-        [ObservableProperty]
-        List<ExpenseTypeModel> _expenseTypes;
+        [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
 
-        [ObservableProperty]
-        List<IncomeTypeModel> _incomeTypes;
-
-        [ObservableProperty]
-        UserModel _user;
+        [ObservableProperty] private UserModel _user;
 
         [RelayCommand]
-        async Task DeleteBudget(BudgetModel budget)
+        private async Task DeleteBudget(BudgetModel budget)
         {
             try
             {
@@ -228,10 +223,10 @@ namespace client.ViewModel
         }
 
         [RelayCommand]
-        async Task AddBudget()
+        private async Task AddBudget()
         {
             var newPlannedExpenses = new List<PlannedExpensesModel>();
-            for (int i = 0; i < ExpenseTypes.Count; i++)
+            for (var i = 0; i < ExpenseTypes.Count; i++)
             {
                 newPlannedExpenses.Add(new PlannedExpensesModel()
                 {
@@ -270,14 +265,14 @@ namespace client.ViewModel
                 { "ExpenseTypes", ExpenseTypes },
                 { "IncomeTypes", IncomeTypes },
                 { "TimePeriods", TimePeriods },
-                { "IsEdited", false }
+                { "IsEdit", false }
             };
 
             await Shell.Current.GoToAsync($"{nameof(BudgetAddEdit)}", navigationParameter);
         }
 
         [RelayCommand]
-        async Task EditBudget(BudgetModel budget)
+        private async Task EditBudget(BudgetModel budget)
         {
             var navigationParameter = new Dictionary<string, object>
             {
@@ -286,10 +281,15 @@ namespace client.ViewModel
                 { "ExpenseTypes", ExpenseTypes },
                 { "IncomeTypes", IncomeTypes },
                 { "TimePeriods", TimePeriods },
-                { "IsEdited", true }
+                { "IsEdit", true }
             };
             await Shell.Current.GoToAsync($"{nameof(BudgetAddEdit)}", navigationParameter);
         }
-
+        
+        private async Task UserExitHandler()
+        {
+            User = null;
+            Budgets = new ObservableCollection<BudgetModel>();
+        }
     }
 }

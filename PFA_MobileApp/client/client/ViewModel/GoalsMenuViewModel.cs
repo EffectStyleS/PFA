@@ -1,4 +1,5 @@
 ﻿using ApiClient;
+using client.Infrastructure;
 using client.Model.Models;
 using client.View;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -17,8 +18,7 @@ namespace client.ViewModel
         {
             _popupNavigation = popupNavigation;
             _client = client;
-
-            PageTitle = "Goals";
+            EventManager.OnUserExit += UserExitHandler;
         }
 
         public async Task CompleteDataAfterNavigation()
@@ -59,18 +59,13 @@ namespace client.ViewModel
                 });
             }
         }
+        
+        [ObservableProperty] private ObservableCollection<GoalModel> _goals;
 
-        [ObservableProperty]
-        string _pageTitle;
-
-        [ObservableProperty]
-        ObservableCollection<GoalModel> _goals;
-
-        [ObservableProperty]
-        UserModel _user;
+        [ObservableProperty] private UserModel _user;
 
         [RelayCommand]
-        async Task DeleteGoal(GoalModel goal)
+        private async Task DeleteGoal(GoalModel goal)
         {
             try
             {
@@ -86,21 +81,24 @@ namespace client.ViewModel
         }
 
         [RelayCommand]
-        async Task AddGoal()
+        private async Task AddGoal()
         {
             GoalModel goal = new()
             {
                 UserId = User.Id,
             };
-            bool isEdited = false;
-            await _popupNavigation.PushAsync(new GoalsPopup(new GoalsPopupViewModel(_popupNavigation, _client, goal, Goals, isEdited)));
+
+            await _popupNavigation.PushAsync(new GoalsPopup(new GoalsPopupViewModel(_popupNavigation, _client, goal, Goals, false)));
         }
 
         [RelayCommand]
-        async Task EditGoal(GoalModel goal)
+        private Task EditGoal(GoalModel goal) 
+            => _popupNavigation.PushAsync(new GoalsPopup(new GoalsPopupViewModel(_popupNavigation, _client, goal, Goals, true)));
+        
+        private async Task UserExitHandler()
         {
-            bool isEdited = true;
-            await _popupNavigation.PushAsync(new GoalsPopup(new GoalsPopupViewModel(_popupNavigation, _client, goal, Goals, isEdited)));
+            User = null;
+            Goals = new ObservableCollection<GoalModel>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ApiClient;
+using client.Infrastructure;
 using client.View;
 using CommunityToolkit.Mvvm.Input;
 
@@ -6,15 +7,19 @@ namespace client.ViewModel
 {
     public partial class AppShellViewModel : BaseViewModel
     {
-        [RelayCommand]
-        async Task Exit()
+        public delegate Task TaskDelegate();
+        public event TaskDelegate OnUserExit;
+        
+        public AppShellViewModel()
         {
-            var navigationParameter = new Dictionary<string, object>()
-            {
-                { "IsRevoke", true },
-            };
-
-            await Shell.Current.GoToAsync($"//{nameof(StartMenu)}", navigationParameter);
+            OnUserExit += EventManager.UserExitHandler;
+        }
+        
+        [RelayCommand]
+        private async Task Exit()
+        {
+            OnUserExit?.Invoke();
+            await Shell.Current.GoToAsync($"//{nameof(StartMenu)}");
         }
     }
 }

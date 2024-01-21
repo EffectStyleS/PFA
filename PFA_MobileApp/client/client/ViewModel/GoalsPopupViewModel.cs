@@ -14,18 +14,18 @@ namespace client.ViewModel
         private readonly IPopupNavigation _popupNavigation;
         private readonly ObservableCollection<GoalModel> _goals;
         private readonly GoalModel _goal;
-        private readonly bool _isEdited;
+        private readonly bool _isEdit;
 
-        public GoalsPopupViewModel(IPopupNavigation popupNavigation, Client client, GoalModel goal, ObservableCollection<GoalModel> goals, bool isEdited)
+        public GoalsPopupViewModel(IPopupNavigation popupNavigation, Client client, GoalModel goal, ObservableCollection<GoalModel> goals, bool isEdit)
         {
             _client = client;
             _popupNavigation = popupNavigation;
 
             _goal = goal;
             _goals = goals;
-            _isEdited = isEdited;
+            _isEdit = isEdit;
 
-            if (_isEdited)
+            if (_isEdit)
             {
                 PageTitle = "Edit Goal";
 
@@ -77,7 +77,7 @@ namespace client.ViewModel
 
             try
             {
-                if (_isEdited)
+                if (_isEdit)
                 {
                     var goalRequest = new GoalDTO()
                     {
@@ -113,7 +113,7 @@ namespace client.ViewModel
             }
 
             // обновление списка доходов
-            if (_isEdited)
+            if (_isEdit)
             {
                 var found = _goals.FirstOrDefault(x => x.Id == _goal.Id);
                 int i = _goals.IndexOf(found);

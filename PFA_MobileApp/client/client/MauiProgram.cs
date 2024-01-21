@@ -11,7 +11,7 @@ namespace client
 {
     public static class MauiProgram
     {
-        private static readonly string _baseUrl = "https://31e1-94-25-227-62.ngrok-free.app";
+        private static readonly string _baseUrl = "https://80d6-94-25-227-62.ngrok-free.app";
 
         public static MauiApp CreateMauiApp()
         {
@@ -53,30 +53,30 @@ namespace client
             builder.Services.AddSingleton<StartMenu>();
             builder.Services.AddSingleton<StartMenuViewModel>();
 
-            builder.Services.AddSingleton<LoginMenu>();
-            builder.Services.AddSingleton<LoginMenuViewModel>();
+            builder.Services.AddScoped<LoginMenu>();
+            builder.Services.AddScoped<LoginMenuViewModel>();
 
-            builder.Services.AddSingleton<SignUpMenu>();
-            builder.Services.AddSingleton<SignUpMenuViewModel>();
+            builder.Services.AddScoped<SignUpMenu>();
+            builder.Services.AddScoped<SignUpMenuViewModel>();
 
-            builder.Services.AddSingleton<IncomesMenu>();
-            builder.Services.AddSingleton<IncomesMenuViewModel>();
+            builder.Services.AddScoped<IncomesMenu>();
+            builder.Services.AddScoped<IncomesMenuViewModel>();
 
             builder.Services.AddTransient<IncomesPopup>();
             builder.Services.AddTransient<IncomesPopupViewModel>();
 
-            builder.Services.AddSingleton<ExpensesMenu>();
-            builder.Services.AddSingleton<ExpensesMenuViewModel>();
+            builder.Services.AddScoped<ExpensesMenu>();
+            builder.Services.AddScoped<ExpensesMenuViewModel>();
             builder.Services.AddTransient<BudgetOverrunsPopup>();
             builder.Services.AddTransient<BudgetOverrunsPopupViewModel>();
 
-            builder.Services.AddSingleton<GoalsMenu>();
-            builder.Services.AddSingleton<GoalsMenuViewModel>();
+            builder.Services.AddScoped<GoalsMenu>();
+            builder.Services.AddScoped<GoalsMenuViewModel>();
             builder.Services.AddTransient<GoalsPopup>();
             builder.Services.AddTransient<GoalsPopupViewModel>();
 
-            builder.Services.AddSingleton<BudgetsMenu>();
-            builder.Services.AddSingleton<BudgetsMenuViewModel>();
+            builder.Services.AddScoped<BudgetsMenu>();
+            builder.Services.AddScoped<BudgetsMenuViewModel>();
 
             builder.Services.AddTransient<BudgetAddEdit>();
             builder.Services.AddTransient<BudgetAddEditViewModel>();

@@ -19,23 +19,22 @@ namespace client.ViewModel
             PageTitle = "Planned Expenses";
 
             PlannedExpenses = new ObservableCollection<PlannedExpensesModel>(_budget.PlannedExpenses);
-            if (PlannedExpenses.Any(x => x.Sum == null))
+            
+            if (PlannedExpenses.All(x => x.Sum != null))
+                return;
+            
+            foreach (var plannedExpensesItem in PlannedExpenses)
             {
-                foreach (var plannedExpensesItem in PlannedExpenses)
-                {
-                    plannedExpensesItem.Sum = 0;
-                }
+                plannedExpensesItem.Sum = 0;
             }
         }
 
-        [ObservableProperty]
-        string _pageTitle;
+        [ObservableProperty] private string _pageTitle;
 
-        [ObservableProperty]
-        ObservableCollection<PlannedExpensesModel> _plannedExpenses;
+        [ObservableProperty] private ObservableCollection<PlannedExpensesModel> _plannedExpenses;
 
         [RelayCommand]
-        async Task Save()
+        private async Task Save()
         {
             foreach (var plannedExpensesItem in PlannedExpenses)
             {
@@ -47,7 +46,7 @@ namespace client.ViewModel
         }
 
         [RelayCommand]
-        async Task Cancel()
+        private async Task Cancel()
         {
             await _popupNavigation.PopAsync();
         }

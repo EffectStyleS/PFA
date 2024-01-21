@@ -1,4 +1,5 @@
 ﻿using ApiClient;
+using client.Infrastructure;
 using client.Model.Models;
 using client.View;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -17,8 +18,7 @@ namespace client.ViewModel
         {
             _popupNavigation = popupNavigation;
             _client = client;
-
-            PageTitle = "Incomes";
+            EventManager.OnUserExit += UserExitHandler;
         }
 
         private async Task GetAllIncomeTypes()
@@ -77,7 +77,7 @@ namespace client.ViewModel
 
             foreach (var income in result)
             {
-                Incomes.Add(new IncomeModel()
+                Incomes.Add(new IncomeModel
                 {
                     Id = income.Id,
                     Name = income.Name,
@@ -89,8 +89,6 @@ namespace client.ViewModel
                 });
             }
         }
-
-        [ObservableProperty] private string _pageTitle;
 
         [ObservableProperty] private ObservableCollection<IncomeModel> _incomes;
 
@@ -130,6 +128,12 @@ namespace client.ViewModel
         {
             await _popupNavigation.PushAsync(new IncomesPopup(new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, true)))
                 .ConfigureAwait(false);
+        }
+        
+        private async Task UserExitHandler()
+        {
+            User = null;
+            Incomes = new ObservableCollection<IncomeModel>();
         }
     }
 }

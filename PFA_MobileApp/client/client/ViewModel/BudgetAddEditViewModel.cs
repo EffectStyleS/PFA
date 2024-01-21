@@ -13,7 +13,7 @@ namespace client.ViewModel
     [QueryProperty(nameof(ExpenseTypes), "ExpenseTypes")]
     [QueryProperty(nameof(IncomeTypes), "IncomeTypes")]
     [QueryProperty(nameof(TimePeriods), "TimePeriods")]
-    [QueryProperty(nameof(IsEdited), "IsEdited")]
+    [QueryProperty(nameof(IsEdit), "IsEdit")]
 
     public partial class BudgetAddEditViewModel : BaseViewModel
     {
@@ -28,7 +28,7 @@ namespace client.ViewModel
 
         public void CompleteDataAfterNavigation()
         {
-            if (IsEdited)
+            if (IsEdit)
             {
                 PageTitle = "Edit Budget";
 
@@ -45,37 +45,28 @@ namespace client.ViewModel
             TimePeriod = TimePeriods[0];
         }
 
-        [ObservableProperty]
-        BudgetModel _budget;
+        [ObservableProperty] private BudgetModel _budget;
 
-        [ObservableProperty]
-        string _pageTitle;
+        [ObservableProperty] private string _pageTitle;
 
-        [ObservableProperty]
-        string _name;
+        [ObservableProperty] private string _name;
 
-        [ObservableProperty]
-        DateTime _startDate;
+        [ObservableProperty] private DateTime _startDate;
 
-        [ObservableProperty]
-        TimePeriodModel _timePeriod;
+        [ObservableProperty] private TimePeriodModel _timePeriod;
 
-        [ObservableProperty]
-        List<TimePeriodModel> _timePeriods;  
+        [ObservableProperty] private List<TimePeriodModel> _timePeriods;  
 
-        [ObservableProperty]
-        List<ExpenseTypeModel> _expenseTypes;
+        [ObservableProperty] private List<ExpenseTypeModel> _expenseTypes;
 
-        [ObservableProperty]
-        List<IncomeTypeModel> _incomeTypes;
+        [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
 
-        [ObservableProperty]
-        ObservableCollection<BudgetModel> _budgets;
+        [ObservableProperty] private ObservableCollection<BudgetModel> _budgets;
 
-        public bool IsEdited { get; set; }
+        public bool IsEdit { get; set; }
 
         [RelayCommand]
-        async Task Save()
+        private async Task Save()
         {
             Budget.Name = Name ?? "New Budget";
             Budget.StartDate = StartDate;
@@ -89,7 +80,7 @@ namespace client.ViewModel
                 var plannedExpensesRequest = new List<PlannedExpensesDTO>();
                 var plannedIncomesRequest = new List<PlannedIncomesDTO>();
 
-                if (IsEdited)
+                if (IsEdit)
                 {
                     foreach (var plannedExpenses in Budget.PlannedExpenses)
                     {
@@ -173,7 +164,7 @@ namespace client.ViewModel
             }
 
             // обновление списка бюджетов
-            if (IsEdited)
+            if (IsEdit)
             {
                 var found = Budgets.FirstOrDefault(x => x.Id == Budget.Id);
                 int i = Budgets.IndexOf(found);
@@ -225,19 +216,19 @@ namespace client.ViewModel
         }
 
         [RelayCommand]
-        async Task Cancel()
+        private async Task Cancel()
         {
             await Shell.Current.GoToAsync("..");
         }
 
         [RelayCommand]
-        async Task PlannedExpenses()
+        private async Task PlannedExpenses()
         {
             await _popupNavigation.PushAsync(new PlannedExpensesPopup(new PlannedExpensesPopupViewModel(_popupNavigation, Budget)));
         }
 
         [RelayCommand]
-        async Task PlannedIncomes()
+        private async Task PlannedIncomes()
         {
             await _popupNavigation.PushAsync(new PlannedIncomesPopup(new PlannedIncomesPopupViewModel(_popupNavigation, Budget)));
         }

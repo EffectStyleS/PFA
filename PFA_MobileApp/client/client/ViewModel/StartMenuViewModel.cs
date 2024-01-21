@@ -1,4 +1,5 @@
 ﻿using ApiClient;
+using client.Infrastructure;
 using client.View;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -7,34 +8,27 @@ namespace client.ViewModel
 {
     public partial class StartMenuViewModel : BaseViewModel
     {
-        public readonly Client _client;
+        private readonly Client _client;
         public StartMenuViewModel(Client client)
         {
             _client = client;
-            _isRevoke = false;
+            EventManager.OnUserExit += UserExitHandler;
         }
 
-        [ObservableProperty]
-        bool _isRevoke;
-
-        public async Task CompleteDataAfterNavigation()
+        private async Task UserExitHandler()
         {
-            if (!IsRevoke)
-                return;
-
-
             await _client.RevokeAsync(_client.GetCurrentUserLogin());
             _client.ResetBearerToken();
         }
 
         [RelayCommand]
-        async Task LoginTap()
+        private async Task LoginTap()
         {
             await Shell.Current.GoToAsync($"{nameof(LoginMenu)}");
         }
 
         [RelayCommand]
-        async Task SignUpTap()
+        private async Task SignUpTap()
         {
             await Shell.Current.GoToAsync($"{nameof(SignUpMenu)}");
         }
