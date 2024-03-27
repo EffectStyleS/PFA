@@ -2,12 +2,12 @@
 {
     public interface ICrud<T> where T : class
     {
-        /// <param name="itemDTO">DTO сущности</param>
+        /// <param name="itemDto">DTO сущности</param>
         /// <returns>
         ///     Возращает true при успешном создании экземпляра сущности T,
         ///     иначе false
         /// </returns>
-        Task<bool> Create(T itemDTO);
+        Task<bool> Create(T itemDto);
 
         /// <returns>
         ///     Возращает true при успешном удалении экзмпляра сущности T,
@@ -33,6 +33,6 @@
         ///     Возращает true при успешном обновлении экземпляра сущности,
         ///     иначе false
         /// </returns>
-        Task<bool> Update(T itemDTO);
+        Task<bool> Update(T itemDto);
     }
 }

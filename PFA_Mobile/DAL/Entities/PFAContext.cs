@@ -103,6 +103,5 @@ namespace DAL.Entities
                       .HasForeignKey(b => b.UserId);
             });
         }
-
     }
 }

@@ -126,6 +126,6 @@ return;
 async void OnAppStarted()
 {
     var db = new PFAContext(builder.Configuration);
-    await db.Database.MigrateAsync();
+    // await db.Database.MigrateAsync();
 }
 

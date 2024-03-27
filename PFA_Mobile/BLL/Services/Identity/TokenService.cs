@@ -17,9 +17,9 @@ namespace BLL.Services.Identity
             _configuration = configuration;
         }
 
-        public async Task<string> CreateToken(UserDTO userDTO, UserManager<AppUser> userManager, List<IdentityRole<int>> roles)
+        public async Task<string> CreateToken(UserDTO userDto, UserManager<AppUser> userManager, List<IdentityRole<int>> roles)
         {
-            var user = await userManager.FindByNameAsync(userDTO.Login);
+            var user = await userManager.FindByNameAsync(userDto.Login);
 
             var token = user
                 .CreateClaims(roles)

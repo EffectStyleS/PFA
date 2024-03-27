@@ -23,7 +23,7 @@ namespace API.Controllers
         }
 
         // GET: api/<ExpenseController>/user/userId
-        [HttpGet("user/{userId}")]
+        [HttpGet("user/{userId:int}")]
         public async Task<ActionResult<IEnumerable<ExpenseDTO>>> GetAllUserExpenses(int userId)
         {
             var expenses = (await _expenseService.GetAllUserExpenses(userId)).ToList();
@@ -32,7 +32,7 @@ namespace API.Controllers
         }
 
         // GET api/<ExpenseController>/id
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<ExpenseDTO>> GetById(int id)
         {
             var expense = await _expenseService.GetById(id);
