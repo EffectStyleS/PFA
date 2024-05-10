@@ -60,11 +60,11 @@
 
                             <Label FontSize="16"
                                    HorizontalOptions="Center"
-                                   WidthRequest="268"
+                                   WidthRequest="248"
                                    Text="{Binding ExpenseType}"/>
 
                             <Border HorizontalOptions="Center"
-                                    WidthRequest="268">
+                                    WidthRequest="248">
 
                                 <Border.StrokeShape>
                                     <RoundRectangle CornerRadius="20" />

@@ -5,137 +5,139 @@ using CommunityToolkit.Mvvm.Input;
 using Mopups.Interfaces;
 using System.Collections.ObjectModel;
 
-namespace client.ViewModel
+
+namespace client.ViewModel;
+
+public partial class IncomesPopupViewModel : BaseViewModel
 {
-    public partial class IncomesPopupViewModel : BaseViewModel
+    private readonly Client _client;
+    private readonly IPopupNavigation _popupNavigation;
+    private readonly ObservableCollection<IncomeModel> _incomes;
+    private readonly IncomeModel _income;
+    private readonly bool _isEdit;
+
+    public IncomesPopupViewModel(IPopupNavigation popupNavigation, Client client, IncomeModel income,
+        ObservableCollection<IncomeModel> incomes, List<IncomeTypeModel> incomeTypes, bool isEdit)
     {
-        private readonly Client _client;
-        private readonly IPopupNavigation _popupNavigation;
-        private readonly ObservableCollection<IncomeModel> _incomes;
-        private readonly IncomeModel _income;
-        private readonly bool _isEdit; 
+        _client = client;
+        _popupNavigation = popupNavigation;
 
-        public IncomesPopupViewModel(IPopupNavigation popupNavigation, Client client, IncomeModel income, ObservableCollection<IncomeModel> incomes, List<IncomeTypeModel> incomeTypes, bool isEdit) 
+        _income = income;
+        _incomes = incomes;
+        IncomeTypes = new ObservableCollection<IncomeTypeModel>(incomeTypes);
+        _isEdit = isEdit;
+
+        if (_isEdit)
         {
-            _client = client;
-            _popupNavigation = popupNavigation;
+            PageTitle = "Edit Income";
 
-            _income = income;
-            _incomes = incomes;
-            IncomeTypes = new ObservableCollection<IncomeTypeModel>(incomeTypes);
-            _isEdit = isEdit;
-
-            if (_isEdit)
-            {
-                PageTitle = "Edit Income";
-
-                Name = income.Name;
-                Date = income.Date;
-                Value = income.Value;
-                IncomeType = IncomeTypes.Where(x => x.Id == income.IncomeTypeId).FirstOrDefault()!;
-                return;
-            }
-
-            PageTitle = "Add Income";
-
-            Date = DateTime.Today;
-            Value = 0;
-            IncomeType = IncomeTypes[0];
+            Name = income.Name;
+            Date = income.Date;
+            Value = income.Value;
+            IncomeType = IncomeTypes.FirstOrDefault(x => x.Id == income.IncomeTypeId)!;
+            return;
         }
 
-        [ObservableProperty]
-        string _pageTitle;
+        PageTitle = "Add Income";
 
-        [ObservableProperty]
-        string _name;
+        Date = DateTime.Today;
+        Value = 0;
+        IncomeType = IncomeTypes[0];
+    }
 
-        [ObservableProperty]
-        decimal? _value;
+    [ObservableProperty] private string _pageTitle;
 
-        [ObservableProperty]
-        DateTime _date;
+    [ObservableProperty] private string _name;
 
-        [ObservableProperty]
-        ObservableCollection<IncomeTypeModel> _incomeTypes;
+    [ObservableProperty] private decimal? _value;
 
-        [ObservableProperty]
-        IncomeTypeModel _incomeType;
+    [ObservableProperty] private DateTime _date;
 
+    [ObservableProperty] private ObservableCollection<IncomeTypeModel> _incomeTypes;
 
-        [RelayCommand]
-        async Task Save()
+    [ObservableProperty] private IncomeTypeModel _incomeType;
+        
+    [RelayCommand]
+    private async Task Save()
+    {
+        _income.Name = Name ?? "New Income";
+        _income.Value = Value ?? 0;
+        _income.Date = Date;
+        _income.IncomeTypeId = IncomeType.Id;
+        _income.IncomeType = IncomeType.Name;
+
+        IncomeDto postResult = new();
+
+        try
         {
-            _income.Name = Name ?? "New Income";
-            _income.Value = Value ?? 0;
-            _income.Date = Date;
-            _income.IncomeTypeId = IncomeType.Id;
-            _income.IncomeType = IncomeType.Name;
-
-            IncomeDTO postResult = new();
-
-            try
+            if (_isEdit)
             {
-                if (_isEdit)
+                var incomeRequest = new IncomeDto
                 {
-                    var incomeRequest = new IncomeDTO()
+                    Id = _income.Id,
+                    Name = _income.Name,
+                    Value = (double)_income.Value,
+                    Date = _income.Date,
+                    IncomeTypeId = _income.IncomeTypeId,
+                    UserId = _income.UserId,
+                };
+
+                await _client.IncomePUTAsync(_income.Id, incomeRequest);
+            }
+            else
+            {
+                postResult = await _client.IncomePOSTAsync(
+                    new IncomeDto
                     {
-                        Id = _income.Id,
                         Name = _income.Name,
                         Value = (double)_income.Value,
                         Date = _income.Date,
                         IncomeTypeId = _income.IncomeTypeId,
                         UserId = _income.UserId,
-                    };
-
-                    await _client.IncomePUTAsync(_income.Id, incomeRequest);
-                }
-                else
-                {
-                    postResult = await _client.IncomePOSTAsync(
-                        new IncomeDTO()
-                        {
-                            Name = _income.Name,
-                            Value = (double)_income.Value,
-                            Date = _income.Date,
-                            IncomeTypeId = _income.IncomeTypeId,
-                            UserId = _income.UserId,
-                        });
-                }
+                    });
             }
-            catch (Exception ex)
+        }
+        catch
+        {
+            var mainPage = Application.Current!.MainPage;
+            if (mainPage is not null)
             {
-                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
-                return;
+                await mainPage.DisplayAlert("Fail", Resources.AddEditIncomeFailed, "OK");
             }
+                
+            return;
+        }
             
-            // обновление списка доходов
-            if (_isEdit) 
+        // обновление списка доходов
+        if (_isEdit) 
+        {
+            var found = _incomes.FirstOrDefault(x => x.Id == _income.Id);
+            if (found is not null)
             {
-                var found = _incomes.FirstOrDefault(x => x.Id == _income.Id);
-                int i = _incomes.IndexOf(found);
+                var i = _incomes.IndexOf(found);
                 _incomes[i] = _income;
             }
-            else
-            {
-                _incomes.Add(new IncomeModel()
-                {
-                    Id = postResult.Id,
-                    Name = postResult.Name,
-                    Value = (decimal)postResult.Value,
-                    Date = postResult.Date.DateTime,
-                    IncomeTypeId = postResult.IncomeTypeId,
-                    IncomeType = IncomeTypes.Where(x => x.Id == postResult.IncomeTypeId).FirstOrDefault().Name,
-                    UserId = postResult.UserId
-                });
-            }
-
-            await _popupNavigation.PopAsync();
         }
-
-        [RelayCommand]
-        Task Cancel()
+        else
         {
-            return _popupNavigation.PopAsync();
+            _incomes.Add(new IncomeModel
+            {
+                Id = postResult.Id,
+                Name = postResult.Name,
+                Value = (decimal)postResult.Value,
+                Date = postResult.Date.DateTime,
+                IncomeTypeId = postResult.IncomeTypeId,
+                IncomeType = IncomeTypes.FirstOrDefault(x => x.Id == postResult.IncomeTypeId)!.Name,
+                UserId = postResult.UserId
+            });
         }
+
+        await _popupNavigation.PopAsync();
+    }
+
+    [RelayCommand]
+    private Task Cancel()
+    {
+        return _popupNavigation.PopAsync();
     }
 }

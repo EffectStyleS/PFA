@@ -1,13 +1,21 @@
-﻿namespace client.Model.Models
-{
-    public class GoalModel : BaseModel
-    {
-        public string Name { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public decimal? Sum { get; set; }
-        public bool IsCompleted { get; set; }
-        public int UserId { get; set; }
+﻿using client.Model.Enums;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-    }
+namespace client.Model.Models;
+
+public partial class GoalModel : BaseModel
+{
+    [ObservableProperty] private string _name;
+    
+    [ObservableProperty] private DateTime _startDate;
+    
+    [ObservableProperty] private DateTime _endDate;
+    
+    [ObservableProperty] private decimal? _sum;
+    
+    [ObservableProperty] private bool _isCompleted;
+    
+    [ObservableProperty] private GoalStatuses _status;
+    
+    public int UserId { get; set; }
 }

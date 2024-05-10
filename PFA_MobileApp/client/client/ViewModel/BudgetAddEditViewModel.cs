@@ -6,109 +6,130 @@ using CommunityToolkit.Mvvm.Input;
 using Mopups.Interfaces;
 using System.Collections.ObjectModel;
 
-namespace client.ViewModel
+namespace client.ViewModel;
+
+[QueryProperty(nameof(Budget), "Budget")]
+[QueryProperty(nameof(Budgets), "Budgets")]
+[QueryProperty(nameof(ExpenseTypes), "ExpenseTypes")]
+[QueryProperty(nameof(IncomeTypes), "IncomeTypes")]
+[QueryProperty(nameof(TimePeriods), "TimePeriods")]
+[QueryProperty(nameof(IsEdit), "IsEdit")]
+public partial class BudgetAddEditViewModel : BaseViewModel
 {
-    [QueryProperty(nameof(Budget), "Budget")]
-    [QueryProperty(nameof(Budgets), "Budgets")]
-    [QueryProperty(nameof(ExpenseTypes), "ExpenseTypes")]
-    [QueryProperty(nameof(IncomeTypes), "IncomeTypes")]
-    [QueryProperty(nameof(TimePeriods), "TimePeriods")]
-    [QueryProperty(nameof(IsEdit), "IsEdit")]
+    private readonly IPopupNavigation _popupNavigation;
+    private readonly Client _client;
 
-    public partial class BudgetAddEditViewModel : BaseViewModel
+    public BudgetAddEditViewModel(IPopupNavigation popupNavigation, Client client)
     {
-        private readonly IPopupNavigation _popupNavigation;
-        private readonly Client _client;
+        _popupNavigation = popupNavigation;
+        _client = client;
+    }
 
-        public BudgetAddEditViewModel(IPopupNavigation popupNavigation, Client client)
+    public void CompleteDataAfterNavigation()
+    {
+        if (IsEdit)
         {
-            _popupNavigation = popupNavigation;
-            _client = client;
+            PageTitle = "Edit Budget";
+
+            Name = Budget.Name;
+            StartDate = Budget.StartDate;
+            TimePeriod = TimePeriods.FirstOrDefault(x => x.Id == Budget.TimePeriodId)!;
+                
+            return;
         }
 
-        public void CompleteDataAfterNavigation()
+        PageTitle = "Add Budget";
+
+        StartDate = DateTime.Today;
+        TimePeriod = TimePeriods[0];
+    }
+
+    [ObservableProperty] private BudgetModel _budget;
+
+    [ObservableProperty] private string _pageTitle;
+
+    [ObservableProperty] private string _name;
+
+    [ObservableProperty] private DateTime _startDate;
+
+    [ObservableProperty] private TimePeriodModel _timePeriod;
+
+    [ObservableProperty] private List<TimePeriodModel> _timePeriods;  
+
+    [ObservableProperty] private List<ExpenseTypeModel> _expenseTypes;
+
+    [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
+
+    [ObservableProperty] private ObservableCollection<BudgetModel> _budgets;
+
+    public bool IsEdit { get; set; }
+
+    [RelayCommand]
+    private async Task Save()
+    {
+        Budget.Name = Name ?? "New Budget";
+        Budget.StartDate = StartDate;
+        Budget.TimePeriodId = TimePeriod.Id;
+        Budget.TimePeriod = TimePeriod.Name;
+
+        BudgetRequestModel postResult = new();
+
+        try
         {
+            var plannedExpensesRequest = new List<PlannedExpensesDto>();
+            var plannedIncomesRequest = new List<PlannedIncomesDto>();
+
             if (IsEdit)
             {
-                PageTitle = "Edit Budget";
+                plannedExpensesRequest.AddRange(Budget.PlannedExpenses.Select(plannedExpenses =>
+                    new PlannedExpensesDto
+                    {
+                        Id = plannedExpenses.Id, Sum = (double?)plannedExpenses.Sum,
+                        BudgetId = plannedExpenses.BudgetId, ExpenseTypeId = plannedExpenses.ExpenseTypeId
+                    }));
 
-                Name = Budget.Name;
-                StartDate = Budget.StartDate;
-                TimePeriod = TimePeriods.Where(x => x.Id == Budget.TimePeriodId).FirstOrDefault();
-
-                return;
-            }
-
-            PageTitle = "Add Budget";
-
-            StartDate = DateTime.Today;
-            TimePeriod = TimePeriods[0];
-        }
-
-        [ObservableProperty] private BudgetModel _budget;
-
-        [ObservableProperty] private string _pageTitle;
-
-        [ObservableProperty] private string _name;
-
-        [ObservableProperty] private DateTime _startDate;
-
-        [ObservableProperty] private TimePeriodModel _timePeriod;
-
-        [ObservableProperty] private List<TimePeriodModel> _timePeriods;  
-
-        [ObservableProperty] private List<ExpenseTypeModel> _expenseTypes;
-
-        [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
-
-        [ObservableProperty] private ObservableCollection<BudgetModel> _budgets;
-
-        public bool IsEdit { get; set; }
-
-        [RelayCommand]
-        private async Task Save()
-        {
-            Budget.Name = Name ?? "New Budget";
-            Budget.StartDate = StartDate;
-            Budget.TimePeriodId = TimePeriod.Id;
-            Budget.TimePeriod = TimePeriod.Name;
-
-            BudgetRequestModel postResult = new();
-
-            try
-            {
-                var plannedExpensesRequest = new List<PlannedExpensesDTO>();
-                var plannedIncomesRequest = new List<PlannedIncomesDTO>();
-
-                if (IsEdit)
+                plannedIncomesRequest.AddRange(Budget.PlannedIncomes.Select(plannedIncomes => new PlannedIncomesDto
                 {
-                    foreach (var plannedExpenses in Budget.PlannedExpenses)
-                    {
-                        plannedExpensesRequest.Add(new PlannedExpensesDTO
-                        {
-                            Id = plannedExpenses.Id,
-                            Sum = (double?)plannedExpenses.Sum,
-                            BudgetId = plannedExpenses.BudgetId,
-                            ExpenseTypeId = plannedExpenses.ExpenseTypeId
-                        });
-                    }
+                    Id = plannedIncomes.Id, Sum = (double?)plannedIncomes.Sum, BudgetId = plannedIncomes.BudgetId,
+                    IncomeTypeId = plannedIncomes.IncomeTypeId
+                }));
 
-                    foreach (var plannedIncomes in Budget.PlannedIncomes)
+                var budgetRequest = new BudgetRequestModel
+                {
+                    Budget = new BudgetDto
                     {
-                        plannedIncomesRequest.Add(new PlannedIncomesDTO
-                        {
-                            Id = plannedIncomes.Id,
-                            Sum = (double?)plannedIncomes.Sum,
-                            BudgetId = plannedIncomes.BudgetId,
-                            IncomeTypeId = plannedIncomes.IncomeTypeId
-                        });
-                    }
+                        Id = Budget.Id,
+                        Name = Budget.Name,
+                        StartDate = Budget.StartDate,
+                        TimePeriodId = Budget.TimePeriodId,
+                        UserId = Budget.UserId,
+                    },
+                    PlannedExpenses = plannedExpensesRequest,
+                    PlannedIncomes = plannedIncomesRequest
+                };
 
-                    var budgetRequest = new BudgetRequestModel()
+                await _client.BudgetPUTAsync(Budget.Id, budgetRequest);
+            }
+            else
+            {
+                plannedExpensesRequest.AddRange(Budget.PlannedExpenses.Select(plannedExpenses =>
+                    new PlannedExpensesDto
                     {
-                        Budget = new BudgetDTO()
+                        Sum = (double?)plannedExpenses.Sum, BudgetId = plannedExpenses.BudgetId,
+                        ExpenseTypeId = plannedExpenses.ExpenseTypeId
+                    }));
+
+                plannedIncomesRequest.AddRange(Budget.PlannedIncomes.Select(plannedIncomes => new PlannedIncomesDto
+                {
+                    Sum = (double?)plannedIncomes.Sum, BudgetId = plannedIncomes.BudgetId,
+                    IncomeTypeId = plannedIncomes.IncomeTypeId
+                }));
+
+                postResult = await _client.BudgetPOSTAsync(
+                    new BudgetRequestModel
+                    {
+                        Budget = new BudgetDto
                         {
-                            Id = Budget.Id,
                             Name = Budget.Name,
                             StartDate = Budget.StartDate,
                             TimePeriodId = Budget.TimePeriodId,
@@ -116,121 +137,85 @@ namespace client.ViewModel
                         },
                         PlannedExpenses = plannedExpensesRequest,
                         PlannedIncomes = plannedIncomesRequest
-                    };
-
-                    await _client.BudgetPUTAsync(Budget.Id, budgetRequest);
-                }
-                else
-                {
-                    foreach (var plannedExpenses in Budget.PlannedExpenses)
-                    {
-                        plannedExpensesRequest.Add(new PlannedExpensesDTO
-                        {
-                            Sum = (double?)plannedExpenses.Sum,
-                            BudgetId = plannedExpenses.BudgetId,
-                            ExpenseTypeId = plannedExpenses.ExpenseTypeId
-                        });
-                    }
-
-                    foreach (var plannedIncomes in Budget.PlannedIncomes)
-                    {
-                        plannedIncomesRequest.Add(new PlannedIncomesDTO
-                        {
-                            Sum = (double?)plannedIncomes.Sum,
-                            BudgetId = plannedIncomes.BudgetId,
-                            IncomeTypeId = plannedIncomes.IncomeTypeId
-                        });
-                    }
-
-                    postResult = await _client.BudgetPOSTAsync(
-                        new BudgetRequestModel()
-                        {
-                            Budget = new BudgetDTO()
-                            {
-                                Name = Budget.Name,
-                                StartDate = Budget.StartDate,
-                                TimePeriodId = Budget.TimePeriodId,
-                                UserId = Budget.UserId,
-                            },
-                            PlannedExpenses = plannedExpensesRequest,
-                            PlannedIncomes = plannedIncomesRequest
-                        });
-                }
+                    });
             }
-            catch (Exception ex)
+        }
+        catch
+        {
+            var mainPage = Application.Current!.MainPage;
+            if (mainPage is not null)
             {
-                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
-                return;
+                await mainPage.DisplayAlert("Fail", Resources.AddEditBudgetFailed, "OK");
             }
+                
+            return;
+        }
 
-            // обновление списка бюджетов
-            if (IsEdit)
+        // обновление списка бюджетов
+        if (IsEdit)
+        {
+            var found = Budgets.FirstOrDefault(x => x.Id == Budget.Id);
+            if (found is not null)
             {
-                var found = Budgets.FirstOrDefault(x => x.Id == Budget.Id);
-                int i = Budgets.IndexOf(found);
+                var i = Budgets.IndexOf(found);
                 Budgets[i] = Budget;
             }
-            else
+        }
+        else
+        {
+            var plannedExpensesResponse = postResult.PlannedExpenses.Select(plannedExpenses => new PlannedExpensesModel
+                {
+                    Id = plannedExpenses.Id,
+                    Sum = (decimal?)plannedExpenses.Sum,
+                    ExpenseTypeId = plannedExpenses.ExpenseTypeId,
+                    ExpenseType = ExpenseTypes.FirstOrDefault(x => x.Id == plannedExpenses.ExpenseTypeId)!.Name,
+                    BudgetId = plannedExpenses.BudgetId,
+                })
+                .ToList();
+
+            var plannedIncomesResponse = postResult.PlannedIncomes.Select(plannedIncomes => new PlannedIncomesModel
+                {
+                    Id = plannedIncomes.Id,
+                    Sum = (decimal?)plannedIncomes.Sum,
+                    IncomeTypeId = plannedIncomes.IncomeTypeId,
+                    IncomeType = IncomeTypes.FirstOrDefault(x => x.Id == plannedIncomes.IncomeTypeId)!.Name,
+                    BudgetId = plannedIncomes.BudgetId,
+                })
+                .ToList();
+
+            Budgets.Add(new BudgetModel
             {
-                var plannedExpensesResponse = new List<PlannedExpensesModel>();
-                foreach (var plannedExpenses in postResult.PlannedExpenses)
-                {
-                    plannedExpensesResponse.Add(new PlannedExpensesModel()
-                    {
-                        Id = plannedExpenses.Id,
-                        Sum = (decimal?)plannedExpenses.Sum,
-                        ExpenseTypeId = plannedExpenses.ExpenseTypeId,
-                        ExpenseType = ExpenseTypes.Where(x => x.Id == plannedExpenses.ExpenseTypeId).FirstOrDefault().Name,
-                        BudgetId = plannedExpenses.BudgetId,
-                    });
-                }
-
-                var plannedIncomesResponse = new List<PlannedIncomesModel>();
-                foreach (var plannedIncomes in postResult.PlannedIncomes)
-                {
-                    plannedIncomesResponse.Add(new PlannedIncomesModel()
-                    {
-                        Id = plannedIncomes.Id,
-                        Sum = (decimal?)plannedIncomes.Sum,
-                        IncomeTypeId = plannedIncomes.IncomeTypeId,
-                        IncomeType = IncomeTypes.Where(x => x.Id == plannedIncomes.IncomeTypeId).FirstOrDefault().Name,
-                        BudgetId = plannedIncomes.BudgetId,
-                    });
-                }
-
-                Budgets.Add(new BudgetModel()
-                {
-                    Id = postResult.Budget.Id,
-                    Name = postResult.Budget.Name,
-                    StartDate = postResult.Budget.StartDate.DateTime,
-                    TimePeriodId = postResult.Budget.TimePeriodId,
-                    TimePeriod = TimePeriods.Where(x => x.Id == postResult.Budget.TimePeriodId).FirstOrDefault().Name,
-                    UserId = postResult.Budget.UserId,
-                    PlannedExpenses = plannedExpensesResponse,
-                    PlannedIncomes = plannedIncomesResponse,
-                });
-            }
-
-            await Shell.Current.GoToAsync("..");
-
+                Id = postResult.Budget.Id,
+                Name = postResult.Budget.Name,
+                StartDate = postResult.Budget.StartDate.DateTime,
+                TimePeriodId = postResult.Budget.TimePeriodId,
+                TimePeriod = TimePeriods.FirstOrDefault(x => x.Id == postResult.Budget.TimePeriodId)!.Name,
+                UserId = postResult.Budget.UserId,
+                PlannedExpenses = plannedExpensesResponse,
+                PlannedIncomes = plannedIncomesResponse,
+            });
         }
 
-        [RelayCommand]
-        private async Task Cancel()
-        {
-            await Shell.Current.GoToAsync("..");
-        }
+        await Shell.Current.GoToAsync("..");
+    }
 
-        [RelayCommand]
-        private async Task PlannedExpenses()
-        {
-            await _popupNavigation.PushAsync(new PlannedExpensesPopup(new PlannedExpensesPopupViewModel(_popupNavigation, Budget)));
-        }
+    [RelayCommand]
+    private async Task Cancel()
+    {
+        await Shell.Current.GoToAsync("..");
+    }
 
-        [RelayCommand]
-        private async Task PlannedIncomes()
-        {
-            await _popupNavigation.PushAsync(new PlannedIncomesPopup(new PlannedIncomesPopupViewModel(_popupNavigation, Budget)));
-        }
+    [RelayCommand]
+    private async Task PlannedExpenses()
+    {
+        await _popupNavigation.PushAsync(new PlannedExpensesPopup(
+            new PlannedExpensesPopupViewModel(_popupNavigation, Budget)));
+    }
+
+    [RelayCommand]
+    private async Task PlannedIncomes()
+    {
+        await _popupNavigation.PushAsync(new PlannedIncomesPopup(
+            new PlannedIncomesPopupViewModel(_popupNavigation, Budget)));
     }
 }

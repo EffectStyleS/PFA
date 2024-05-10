@@ -1,7 +1,8 @@
-﻿namespace client.Model.Models
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace client.Model.Models;
+
+public partial class BaseModel : ObservableObject
 {
-    public class BaseModel
-    {
-        public int Id { get; set; }
-    }
+    public int Id { get; set; }
 }

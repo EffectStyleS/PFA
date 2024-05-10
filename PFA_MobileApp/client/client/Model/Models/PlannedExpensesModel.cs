@@ -1,11 +1,14 @@
-﻿namespace client.Model.Models
-{
-    public class PlannedExpensesModel : BaseModel
-    {
-        public decimal? Sum { get; set; }
-        public int ExpenseTypeId { get; set; }
-        public int BudgetId { get; set; }
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-        public string ExpenseType { get; set; }
-    }
+namespace client.Model.Models;
+
+public partial class PlannedExpensesModel : BaseModel
+{
+    [ObservableProperty] private decimal? _sum;
+    
+    [ObservableProperty] private int _expenseTypeId;
+    
+    [ObservableProperty] private int _budgetId;
+
+    [ObservableProperty] private string _expenseType;
 }

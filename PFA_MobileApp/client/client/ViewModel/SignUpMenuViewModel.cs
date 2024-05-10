@@ -1,63 +1,89 @@
 ﻿using ApiClient;
 using client.Infrastructure;
+using client.Infrastructure.Cache;
 using client.View;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace client.ViewModel
+namespace client.ViewModel;
+
+public partial class SignUpMenuViewModel : BaseViewModel
 {
-    public partial class SignUpMenuViewModel : BaseViewModel
+    private readonly Client _client;
+    private readonly ICacheService _cacheService;
+
+    public SignUpMenuViewModel(Client client, ICacheService cacheService)
     {
-        private readonly Client _client;
+        _client = client;
+        _cacheService = cacheService;
+        EventManager.OnUserExit += UserExitHandler;
+        OnUserLogin += EventManager.UserLoginHandler;
+    }
 
-        public SignUpMenuViewModel(Client client)
+    [ObservableProperty] private string _login;
+
+    [ObservableProperty] private string _password;
+
+    [ObservableProperty] private string _passwordConfirm;
+
+    [RelayCommand]
+    private async Task SignUpTap()
+    {
+        AuthResponse result;
+
+        try
         {
-            _client = client;
-            EventManager.OnUserExit += UserExitHandler;
+            result = await _client.RegisterAsync(new RegisterRequest
+            {
+                Login = Login,
+                Password = Password,
+                PasswordConfirm = PasswordConfirm,
+            });
+        }
+        catch
+        {
+            var mainPage = Application.Current!.MainPage;
+            if (mainPage is not null)
+            {
+                await mainPage.DisplayAlert("Fail", Resources.RegisterFailed, "OK");
+            }
+                
+            return;
         }
 
-        [ObservableProperty] private string _login;
-
-        [ObservableProperty] private string _password;
-
-        [ObservableProperty] private string _passwordConfirm;
-
-        [RelayCommand]
-        private async Task SignUpTap()
+        if (result == null)
         {
-            AuthResponse result;
-
-            try
+            var mainPage = Application.Current!.MainPage;
+            if (mainPage != null)
             {
-                result = await _client.RegisterAsync(new RegisterRequest
-                {
-                    Login = Login,
-                    Password = Password,
-                    PasswordConfirm = PasswordConfirm,
-                });
+                await mainPage.DisplayAlert("Fail", Resources.WrongCredentials, "OK");
             }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
-                return;
-            }
-
-            if (result == null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Fail", "Login or password isn't valid", "OK");
-                return;
-            }
-
-            _client.AddBearerToken(result.Token);
-
-            await Shell.Current.GoToAsync($"//{nameof(IncomesMenu)}");
+                
+            return;
         }
+
+        await _cacheService.SaveCredentialsToFile(new AuthCacheModel
+        {
+            Login = Login,
+            Password = Password
+        });
+            
+        _client.AddBearerToken(result.Token);
+        PublishUserLogin();
+            
+        await Shell.Current.GoToAsync($"//{nameof(HistoryPage)}");
+    }
         
-        private async Task UserExitHandler()
-        {
-            Login = string.Empty;
-            Password = string.Empty;
-            PasswordConfirm = string.Empty;
-        }
+    public delegate void StringDelegate(string login);
+    public event StringDelegate? OnUserLogin;
+
+    private void PublishUserLogin() => OnUserLogin?.Invoke(Login);
+        
+    private Task UserExitHandler()
+    {
+        Login = string.Empty;
+        Password = string.Empty;
+        PasswordConfirm = string.Empty;
+        return Task.CompletedTask;
     }
 }

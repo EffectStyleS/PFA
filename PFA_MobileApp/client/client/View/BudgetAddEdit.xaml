@@ -4,7 +4,6 @@
              Shell.NavBarIsVisible="False"  
              x:Class="client.View.BudgetAddEdit"
              xmlns:viewmodel="clr-namespace:client.ViewModel"
-             xmlns:models="clr-namespace:client.Model.Models"
              x:DataType="viewmodel:BudgetAddEditViewModel">
     
     <Grid Margin="16, 8, 16, 8"

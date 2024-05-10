@@ -4,10 +4,9 @@
                   x:Class="client.View.IncomesPopup"
                   xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
                   BackgroundColor="#80000000"
-                  xmlns:models="clr-namespace:client.Model.Models"
                   xmlns:viewmodel="clr-namespace:client.ViewModel"
                   x:DataType="viewmodel:IncomesPopupViewModel">
-
+    
     <ScrollView HorizontalOptions="Center"
                 VerticalOptions="Center">
         
@@ -66,8 +65,8 @@
                         <Entry FontSize="18"
                                Margin="8,4,8,4"
                                Placeholder="Enter income name"
-                               Text="{Binding Name}"/>
-
+                               Text="{Binding Name}">
+                        </Entry>
                     </Border>
 
                     <Label FontSize="16"
@@ -76,6 +75,7 @@
                            Text="Value: "/>
 
                     <HorizontalStackLayout Spacing="8">
+                        
                         <Border HorizontalOptions="Start"
                                 WidthRequest="208">
 
@@ -111,9 +111,7 @@
 
                         <DatePicker FontSize="18"
                                     Margin="8,4,8,4"
-                                    Date="{Binding Date, StringFormat='{0:d}'}"
-                                    />
-
+                                    Date="{Binding Date, StringFormat='{0:d}'}"/>
                     </Border>
 
                     <Label FontSize="16"
@@ -133,10 +131,7 @@
                                 ItemsSource="{Binding IncomeTypes}"
                                 SelectedItem="{Binding IncomeType}"
                                 ItemDisplayBinding="{Binding Name}"/>
-                        
-                        <!--TODO: решить проблему с привязкой picker'а-->
                     </Border>
-
                 </VerticalStackLayout>
 
                 <HorizontalStackLayout Grid.Row="2"
@@ -149,15 +144,14 @@
                             FontSize="20"
                             ImageSource="icon_done.png"
                             Text="Save"
-                            Command="{Binding SaveCommand}"/>
+                            Command="{Binding SaveCommand}" />
 
                     <Button x:Name="CancelButton"
                             CornerRadius="20"
                             FontSize="20"
                             ImageSource="icon_close.png"
                             Text="Cancel"
-                            Command="{Binding CancelCommand}"/>
-
+                            Command="{Binding CancelCommand}" />
                 </HorizontalStackLayout>
 
             </Grid>

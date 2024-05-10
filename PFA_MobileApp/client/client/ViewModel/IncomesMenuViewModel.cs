@@ -7,133 +7,152 @@ using CommunityToolkit.Mvvm.Input;
 using Mopups.Interfaces;
 using System.Collections.ObjectModel;
 
-namespace client.ViewModel
+namespace client.ViewModel;
+
+public partial class IncomesMenuViewModel : BaseViewModel
 {
-    public partial class IncomesMenuViewModel : BaseViewModel
+    private readonly IPopupNavigation _popupNavigation;
+    private readonly Client _client;
+
+    public IncomesMenuViewModel(IPopupNavigation popupNavigation, Client client)
     {
-        private readonly IPopupNavigation _popupNavigation;
-        private readonly Client _client;
+        _popupNavigation = popupNavigation;
+        _client = client;
+        EventManager.OnUserExit += UserExitHandler;
+    }
 
-        public IncomesMenuViewModel(IPopupNavigation popupNavigation, Client client)
+    private async Task GetAllIncomeTypes()
+    {
+        if (IncomeTypes is not null)
         {
-            _popupNavigation = popupNavigation;
-            _client = client;
-            EventManager.OnUserExit += UserExitHandler;
+            return;
         }
 
-        private async Task GetAllIncomeTypes()
+        List<IncomeTypeModel> result = [];
+
+        var incomeTypesDto = await _client.IncomeTypeAllAsync();
+
+        result.AddRange(incomeTypesDto.Select(incomeType => new IncomeTypeModel
         {
-            if (IncomeTypes != null)
-                return;
+            Id = incomeType.Id,
+            Name = incomeType.Name
+        }));
 
-            List<IncomeTypeModel> result = new();
-
-            var incomeTypesDto = await _client.IncomeTypeAllAsync();
-
-            foreach (var incomeType in incomeTypesDto)
+        if (result.Count == 0)
+        {
+            var mainPage = Application.Current!.MainPage;
+            if (mainPage is not null)
             {
-                result.Add(new IncomeTypeModel() 
-                { 
-                    Id = incomeType.Id,
-                    Name = incomeType.Name
-                });
+                await mainPage.DisplayAlert("Fail", Resources.NullIncomeTypes, "OK");
             }
-
-            if (result.Count == 0)
-            {
-                await Application.Current.MainPage.DisplayAlert("Fail", "Null Income Types", "OK");
-                return;
-            }
-
-            IncomeTypes = result;
+            
+            return;
         }
 
-        public async Task CompleteDataAfterNavigation()
+        IncomeTypes = result;
+    }
+
+    public async Task CompleteDataAfterNavigation()
+    {
+        var userLogin = _client.GetCurrentUserLogin();
+        var userDto = await _client.UserAsync(userLogin);
+        
+        User = new UserModel
         {
-            var userLogin = _client.GetCurrentUserLogin();
-            var userDto = await _client.UserAsync(userLogin);
-            User = new UserModel
+            Id = userDto.Id,
+            Login = userDto.Login,
+            RefreshToken = userDto.RefreshToken,
+            RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime
+        };
+
+        await GetAllIncomeTypes().ConfigureAwait(false);
+        Incomes = [];
+
+        ICollection<IncomeDto> result;
+
+        try
+        {
+            result = _client.UserAll4Async(User.Id).Result;
+        }
+        catch
+        {
+            var mainPage = Application.Current!.MainPage;
+            if (mainPage is not null)
             {
-                Id = userDto.Id,
-                Login = userDto.Login,
-                RefreshToken = userDto.RefreshToken,
-                RefreshTokenExpireTime = userDto.RefreshTokenExpiryTime.DateTime
-            };
-
-            await GetAllIncomeTypes().ConfigureAwait(false);
-            Incomes = new ObservableCollection<IncomeModel>();
-
-            ICollection<IncomeDTO> result = new List<IncomeDTO>();
-
-            try
-            {
-                result = _client.UserAll4Async(User.Id).Result;
+                await mainPage.DisplayAlert("Fail", Resources.GetUserIncomesFailed, "OK");
             }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
-                return;
-            }
-
-            foreach (var income in result)
-            {
-                Incomes.Add(new IncomeModel
-                {
-                    Id = income.Id,
-                    Name = income.Name,
-                    Value = (decimal)income.Value,
-                    Date = income.Date.DateTime,
-                    IncomeTypeId = income.IncomeTypeId,
-                    IncomeType = IncomeTypes.Where(x => x.Id == income.IncomeTypeId).FirstOrDefault().Name,
-                    UserId = income.UserId
-                });
-            }
+            
+            return;
         }
 
-        [ObservableProperty] private ObservableCollection<IncomeModel> _incomes;
-
-        [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
-
-        [ObservableProperty] private UserModel _user;
-
-        [RelayCommand]
-        private async Task DeleteIncome(IncomeModel income)
+        foreach (var income in result)
         {
-            try
+            Incomes.Add(new IncomeModel
             {
-                await _client.IncomeDELETEAsync(income.Id);
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
-                return;
-            }
+                Id = income.Id,
+                Name = income.Name,
+                Value = (decimal)income.Value,
+                Date = income.Date.DateTime,
+                IncomeTypeId = income.IncomeTypeId,
+                IncomeType = IncomeTypes.FirstOrDefault(x => x.Id == income.IncomeTypeId)!.Name,
+                UserId = income.UserId
+            });
+        }
+    }
 
-            Incomes.Remove(income);
+    [ObservableProperty] private ObservableCollection<IncomeModel> _incomes;
+
+    [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
+
+    [ObservableProperty] private UserModel? _user;
+
+    [RelayCommand]
+    private async Task DeleteIncome(IncomeModel income)
+    {
+        try
+        {
+            await _client.IncomeDELETEAsync(income.Id);
+        }
+        catch
+        {
+            var mainPage = Application.Current!.MainPage;
+            if (mainPage is not null)
+            {
+                await mainPage.DisplayAlert("Fail", Resources.DeleteIncomeFailed, "OK");
+            }
+            
+            return;
         }
 
-        [RelayCommand]
-        private async Task AddIncome()
+        Incomes.Remove(income);
+    }
+
+    [RelayCommand]
+    private async Task AddIncome()
+    {
+        if (User is not null)
         {
             IncomeModel income = new()
             {
                 UserId = User.Id,
             };
-            await _popupNavigation.PushAsync(new IncomesPopup(new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, false)))
-                .ConfigureAwait(false);
-        }
-
-        [RelayCommand]
-        private async Task EditIncome(IncomeModel income)
-        {
-            await _popupNavigation.PushAsync(new IncomesPopup(new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, true)))
-                .ConfigureAwait(false);
-        }
         
-        private async Task UserExitHandler()
-        {
-            User = null;
-            Incomes = new ObservableCollection<IncomeModel>();
+            await _popupNavigation.PushAsync(new IncomesPopup(
+                new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, false)));
         }
+    }
+
+    [RelayCommand]
+    private async Task EditIncome(IncomeModel income)
+    {
+        await _popupNavigation.PushAsync(new IncomesPopup(
+            new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, true)));
+    }
+        
+    private Task UserExitHandler()
+    {
+        User = null;
+        Incomes = [];
+        return Task.CompletedTask;
     }
 }

@@ -10,6 +10,7 @@ namespace client
             Routing.RegisterRoute(nameof(StartMenu), typeof(StartMenu));
             Routing.RegisterRoute(nameof(LoginMenu), typeof(LoginMenu));
             Routing.RegisterRoute(nameof(SignUpMenu), typeof(SignUpMenu));
+            Routing.RegisterRoute(nameof(HistoryPage), typeof(HistoryPage));
             Routing.RegisterRoute(nameof(IncomesMenu), typeof(IncomesMenu));
             Routing.RegisterRoute(nameof(ExpensesMenu), typeof(ExpensesMenu));
             Routing.RegisterRoute(nameof(GoalsMenu), typeof(GoalsMenu));

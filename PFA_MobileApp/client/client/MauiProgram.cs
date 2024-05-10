@@ -1,17 +1,17 @@
 ﻿using ApiClient;
+using client.Infrastructure.Cache;
 using client.Model.Interfaces;
 using client.Model.Services;
 using client.View;
 using client.ViewModel;
 using Mopups.Hosting;
-using Mopups.Interfaces;
 using Mopups.Services;
 
 namespace client
 {
     public static class MauiProgram
     {
-        private static readonly string _baseUrl = "https://80d6-94-25-227-62.ngrok-free.app";
+        private const string BaseUrl = "https://a6c2-94-25-227-3.ngrok-free.app";
 
         public static MauiApp CreateMauiApp()
         {
@@ -43,8 +43,9 @@ namespace client
                     fonts.AddFont("Montserrat-ThinItalic.ttf", "MontserratThinItalic");
                 });
 
-            builder.Services.AddSingleton<IPopupNavigation>(MopupService.Instance);
+            builder.Services.AddSingleton(MopupService.Instance);
             builder.Services.AddScoped<IBudgetService, BudgetService>();
+            builder.Services.AddSingleton<ICacheService, CacheService>();
 
             #region Views and ViewModels injection
 
@@ -58,6 +59,9 @@ namespace client
 
             builder.Services.AddScoped<SignUpMenu>();
             builder.Services.AddScoped<SignUpMenuViewModel>();
+
+            builder.Services.AddScoped<HistoryPage>();
+            builder.Services.AddScoped<HistoryPageViewModel>();
 
             builder.Services.AddScoped<IncomesMenu>();
             builder.Services.AddScoped<IncomesMenuViewModel>();
@@ -87,17 +91,14 @@ namespace client
             #endregion
 
             builder.Services.AddHttpClient("myhttpclient")
-                .ConfigurePrimaryHttpMessageHandler(() =>
+                .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
                 {
-                    return new SocketsHttpHandler()
-                    {
-                        PooledConnectionLifetime = TimeSpan.FromMinutes(2)
-                    };
+                    PooledConnectionLifetime = TimeSpan.FromMinutes(2)
                 })
                 .SetHandlerLifetime(Timeout.InfiniteTimeSpan);
 
-            builder.Services.AddSingleton<Client>(provider => new Client(_baseUrl, provider.GetService<HttpClient>()));
-
+            builder.Services.AddSingleton<Client>(provider => new Client(BaseUrl, provider.GetService<HttpClient>()));
+            
             return builder.Build();
         }
     }

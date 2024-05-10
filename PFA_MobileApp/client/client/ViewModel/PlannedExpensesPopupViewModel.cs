@@ -4,51 +4,51 @@ using CommunityToolkit.Mvvm.Input;
 using Mopups.Interfaces;
 using System.Collections.ObjectModel;
 
-namespace client.ViewModel
+namespace client.ViewModel;
+
+public partial class PlannedExpensesPopupViewModel : BaseViewModel
 {
-    public partial class PlannedExpensesPopupViewModel : BaseViewModel
+    private readonly IPopupNavigation _popupNavigation;
+    private readonly BudgetModel _budget;
+
+    public PlannedExpensesPopupViewModel(IPopupNavigation popupNavigation ,BudgetModel budget)
     {
-        private readonly IPopupNavigation _popupNavigation;
-        private readonly BudgetModel _budget;
+        _popupNavigation = popupNavigation;
+        _budget = budget;
 
-        public PlannedExpensesPopupViewModel(IPopupNavigation popupNavigation ,BudgetModel budget)
+        PageTitle = "Planned Expenses";
+
+        PlannedExpenses = new ObservableCollection<PlannedExpensesModel>(_budget.PlannedExpenses);
+        if (PlannedExpenses.All(x => x.Sum != null))
         {
-            _popupNavigation = popupNavigation;
-            _budget = budget;
-
-            PageTitle = "Planned Expenses";
-
-            PlannedExpenses = new ObservableCollection<PlannedExpensesModel>(_budget.PlannedExpenses);
+            return;
+        }
             
-            if (PlannedExpenses.All(x => x.Sum != null))
-                return;
-            
-            foreach (var plannedExpensesItem in PlannedExpenses)
-            {
-                plannedExpensesItem.Sum = 0;
-            }
-        }
-
-        [ObservableProperty] private string _pageTitle;
-
-        [ObservableProperty] private ObservableCollection<PlannedExpensesModel> _plannedExpenses;
-
-        [RelayCommand]
-        private async Task Save()
+        foreach (var plannedExpensesItem in PlannedExpenses)
         {
-            foreach (var plannedExpensesItem in PlannedExpenses)
-            {
-                plannedExpensesItem.Sum ??= 0;
-            }
-
-            _budget.PlannedExpenses = new List<PlannedExpensesModel>(PlannedExpenses);
-            await _popupNavigation.PopAsync();
+            plannedExpensesItem.Sum = 0;
         }
+    }
 
-        [RelayCommand]
-        private async Task Cancel()
+    [ObservableProperty] private string _pageTitle;
+
+    [ObservableProperty] private ObservableCollection<PlannedExpensesModel> _plannedExpenses;
+
+    [RelayCommand]
+    private async Task Save()
+    {
+        foreach (var plannedExpensesItem in PlannedExpenses)
         {
-            await _popupNavigation.PopAsync();
+            plannedExpensesItem.Sum ??= 0;
         }
+
+        _budget.PlannedExpenses = [..PlannedExpenses];
+        await _popupNavigation.PopAsync();
+    }
+
+    [RelayCommand]
+    private async Task Cancel()
+    {
+        await _popupNavigation.PopAsync();
     }
 }

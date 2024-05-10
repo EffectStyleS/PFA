@@ -5,137 +5,139 @@ using CommunityToolkit.Mvvm.Input;
 using Mopups.Interfaces;
 using System.Collections.ObjectModel;
 
-namespace client.ViewModel
+namespace client.ViewModel;
+
+public partial class ExpensesPopupViewModel : BaseViewModel
 {
-    public partial class ExpensesPopupViewModel : BaseViewModel
+    private readonly Client _client;
+    private readonly IPopupNavigation _popupNavigation;
+    private readonly ObservableCollection<ExpenseModel> _expenses;
+    private readonly ExpenseModel _expense;
+    private readonly bool _isEdit;
+
+    public ExpensesPopupViewModel(IPopupNavigation popupNavigation, Client client, ExpenseModel expense,
+        ObservableCollection<ExpenseModel> expenses, List<ExpenseTypeModel> expenseTypes, bool isEdit)
     {
-        private readonly Client _client;
-        private readonly IPopupNavigation _popupNavigation;
-        private readonly ObservableCollection<ExpenseModel> _expenses;
-        private readonly ExpenseModel _expense;
-        private readonly bool _isEdit;
+        _client = client;
+        _popupNavigation = popupNavigation;
 
-        public ExpensesPopupViewModel(IPopupNavigation popupNavigation, Client client, ExpenseModel expense, ObservableCollection<ExpenseModel> expenses, List<ExpenseTypeModel> expenseTypes, bool isEdit)
+        _expense = expense;
+        _expenses = expenses;
+        ExpenseTypes = new ObservableCollection<ExpenseTypeModel>(expenseTypes);
+        _isEdit = isEdit;
+
+        if (_isEdit)
         {
-            _client = client;
-            _popupNavigation = popupNavigation;
+            PageTitle = "Edit Expense";
 
-            _expense = expense;
-            _expenses = expenses;
-            ExpenseTypes = new ObservableCollection<ExpenseTypeModel>(expenseTypes);
-            _isEdit = isEdit;
+            Name = expense.Name;
+            Date = expense.Date;
+            Value = expense.Value;
+            ExpenseType = ExpenseTypes.FirstOrDefault(x => x.Id == expense.ExpenseTypeId)!;
 
-            if (_isEdit)
-            {
-                PageTitle = "Edit Expense";
-
-                Name = expense.Name;
-                Date = expense.Date;
-                Value = expense.Value;
-                ExpenseType = ExpenseTypes.Where(x => x.Id == expense.ExpenseTypeId).FirstOrDefault();
-
-                return;
-            }
-
-            PageTitle = "Add Expense";
-
-            Date = DateTime.Today;
-            Value = 0;
-            ExpenseType = ExpenseTypes[0];
+            return;
         }
 
-        [ObservableProperty]
-        string _pageTitle;
+        PageTitle = "Add Expense";
 
-        [ObservableProperty]
-        string _name;
+        Date = DateTime.Today;
+        Value = 0;
+        ExpenseType = ExpenseTypes[0];
+    }
 
-        [ObservableProperty]
-        decimal? _value;
+    [ObservableProperty] private string _pageTitle;
 
-        [ObservableProperty]
-        DateTime _date;
+    [ObservableProperty] private string _name;
 
-        [ObservableProperty]
-        ObservableCollection<ExpenseTypeModel> _expenseTypes;
+    [ObservableProperty] private decimal? _value;
 
-        [ObservableProperty]
-        ExpenseTypeModel _expenseType;
+    [ObservableProperty] private DateTime _date;
 
-        [RelayCommand]
-        async Task Save()
+    [ObservableProperty] private ObservableCollection<ExpenseTypeModel> _expenseTypes;
+
+    [ObservableProperty] private ExpenseTypeModel _expenseType;
+
+    [RelayCommand]
+    private async Task Save()
+    {
+        _expense.Name = Name ?? "New Expense";
+        _expense.Value = Value ?? 0;
+        _expense.Date = Date;
+        _expense.ExpenseTypeId = ExpenseType.Id;
+        _expense.ExpenseType = ExpenseType.Name;
+
+        ExpenseDto postResult = new();
+
+        try
         {
-            _expense.Name = Name ?? "New Expense";
-            _expense.Value = Value ?? 0;
-            _expense.Date = Date;
-            _expense.ExpenseTypeId = ExpenseType.Id;
-            _expense.ExpenseType = ExpenseType.Name;
-
-            ExpenseDTO postResult = new();
-
-            try
+            if (_isEdit)
             {
-                if (_isEdit)
+                var expenseRequest = new ExpenseDto
                 {
-                    var expenseRequest = new ExpenseDTO()
+                    Id = _expense.Id,
+                    Name = _expense.Name,
+                    Value = (double)_expense.Value,
+                    Date = _expense.Date,
+                    ExpenseTypeId = _expense.ExpenseTypeId,
+                    UserId = _expense.UserId,
+                };
+
+                await _client.ExpensePUTAsync(_expense.Id, expenseRequest);
+            }
+            else
+            {
+                postResult = await _client.ExpensePOSTAsync(
+                    new ExpenseDto
                     {
-                        Id = _expense.Id,
                         Name = _expense.Name,
                         Value = (double)_expense.Value,
                         Date = _expense.Date,
                         ExpenseTypeId = _expense.ExpenseTypeId,
                         UserId = _expense.UserId,
-                    };
-
-                    await _client.ExpensePUTAsync(_expense.Id, expenseRequest);
-                }
-                else
-                {
-                    postResult = await _client.ExpensePOSTAsync(
-                        new ExpenseDTO()
-                        {
-                            Name = _expense.Name,
-                            Value = (double)_expense.Value,
-                            Date = _expense.Date,
-                            ExpenseTypeId = _expense.ExpenseTypeId,
-                            UserId = _expense.UserId,
-                        });
-                }
+                    });
             }
-            catch (Exception ex)
+        }
+        catch
+        {
+            var mainPage = Application.Current!.MainPage;
+            if (mainPage is not null)
             {
-                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
-                return;
+                await mainPage.DisplayAlert("Fail", Resources.AddEditExpenseFailed, "OK");
             }
+                
+            return;
+        }
 
-            // обновление списка расходов
-            if (_isEdit)
+        // обновление списка расходов
+        if (_isEdit)
+        {
+            var found = _expenses.FirstOrDefault(x => x.Id == _expense.Id);
+            if (found is not null)
             {
-                var found = _expenses.FirstOrDefault(x => x.Id == _expense.Id);
-                int i = _expenses.IndexOf(found);
+                var i = _expenses.IndexOf(found);
                 _expenses[i] = _expense;
             }
-            else
-            {
-                _expenses.Add(new ExpenseModel()
-                {
-                    Id = postResult.Id,
-                    Name = postResult.Name,
-                    Value = (decimal)postResult.Value,
-                    Date = postResult.Date.DateTime,
-                    ExpenseTypeId = postResult.ExpenseTypeId,
-                    ExpenseType = ExpenseTypes.Where(x => x.Id == postResult.ExpenseTypeId).FirstOrDefault().Name,
-                    UserId = postResult.UserId
-                });
-            }
-
-            await _popupNavigation.PopAsync();
         }
-
-        [RelayCommand]
-        Task Cancel()
+        else
         {
-            return _popupNavigation.PopAsync();
+            _expenses.Add(new ExpenseModel
+            {
+                Id = postResult.Id,
+                Name = postResult.Name,
+                Value = (decimal)postResult.Value,
+                Date = postResult.Date.DateTime,
+                ExpenseTypeId = postResult.ExpenseTypeId,
+                ExpenseType = ExpenseTypes.FirstOrDefault(x => x.Id == postResult.ExpenseTypeId)!.Name,
+                UserId = postResult.UserId
+            });
         }
+
+        await _popupNavigation.PopAsync();
+    }
+
+    [RelayCommand]
+    Task Cancel()
+    {
+        return _popupNavigation.PopAsync();
     }
 }

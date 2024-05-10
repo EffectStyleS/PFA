@@ -1,7 +1,8 @@
-﻿namespace client.Model.Models
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace client.Model.Models;
+
+public partial class TimePeriodModel : BaseModel
 {
-    public class TimePeriodModel : BaseModel
-    {
-        public string Name { get; set; }
-    }
+    [ObservableProperty] private string _name;
 }

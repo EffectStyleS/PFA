@@ -6,8 +6,13 @@
              Shell.FlyoutItemIsVisible="True"
              xmlns:viewmodel="clr-namespace:client.ViewModel"
              xmlns:models="clr-namespace:client.Model.Models"
+             xmlns:converters="clr-namespace:client.Infrastructure.Converters"
              x:DataType="viewmodel:BudgetsMenuViewModel">
-
+    
+    <ContentPage.Resources>
+        <converters:BalanceConverter x:Key="BalanceConverter" Cutoff="0"/>
+    </ContentPage.Resources>
+    
     <Grid Margin="16, 8, 16, 8"
           RowDefinitions="Auto, *"
           Padding="8"
@@ -46,18 +51,16 @@
                             </Frame.GestureRecognizers>
 
                             <StackLayout Spacing="8">
-                                <Label Text="{Binding Name}" FontSize = "20" />
-                                <Label Text="{Binding StartDate, StringFormat='{0:d}'}" FontSize = "20" />
-                                <Label Text="{Binding TimePeriod}" FontSize = "20" />
-                                <Label Text="{Binding Saldo, StringFormat='Saldo: {0:C}'}" FontSize = "20"/>
+                                <Label Text="{Binding Name, StringFormat='Name: {0}'}" FontSize = "20" />
+                                <Label Text="{Binding StartDate, StringFormat='Start date: {0:d}'}" FontSize = "20" />
+                                <Label Text="{Binding TimePeriod, StringFormat='Period: {0}'}" FontSize = "20" />
+                                <Label Text="{Binding Balance, StringFormat='Balance: {0:C}'}" FontSize = "20"
+                                       TextColor="{Binding Path=Balance, Converter={StaticResource BalanceConverter}}"/>
                             </StackLayout>
                         </Frame>
                     </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
         </CollectionView>
-
     </Grid>
-
 </ContentPage>

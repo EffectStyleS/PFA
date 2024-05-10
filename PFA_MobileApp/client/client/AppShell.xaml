@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:client.View"
-    Shell.FlyoutBehavior="Flyout"
+    FlyoutBehavior="Flyout"
     xmlns:viewmodel="clr-namespace:client.ViewModel"
     x:DataType="viewmodel:AppShellViewModel">
 
@@ -17,20 +17,30 @@
     </Shell.FlyoutHeader>
 
     <Shell.FlyoutFooter>
-        <Label Text="PFA Mobile App @2023"
+        <Label Text="PFA Mobile App @2024"
                Margin="16"
                FontSize="16"
                HorizontalOptions="Center"
                VerticalOptions="Center"/>
     </Shell.FlyoutFooter>
 
+    <MenuItem
+        Text="{Binding UserName}"
+        IconImageSource="icon_user.png" />
+    
     <ShellContent
         FlyoutItemIsVisible="False"
         Title="Start"
         FlyoutIcon="dotnet_bot.png"
         ContentTemplate="{DataTemplate local:StartMenu}"
         Route="StartMenu" />
-
+    
+    <ShellContent
+        Title="History"
+        FlyoutIcon="icon_history_2.png"
+        ContentTemplate="{DataTemplate local:HistoryPage}"
+        Route="HistoryPage" />
+    
     <ShellContent
         Title="Incomes"
         FlyoutIcon="icon_income.png"

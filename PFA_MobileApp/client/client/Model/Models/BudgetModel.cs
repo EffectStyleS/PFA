@@ -1,15 +1,21 @@
-﻿namespace client.Model.Models
-{
-    public class BudgetModel : BaseModel
-    {
-        public string Name { get; set; }
-        public DateTime StartDate { get; set; }
-        public int TimePeriodId { get; set; }
-        public int UserId { get; set; }
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-        public decimal? Saldo { get; set; }
-        public string TimePeriod {  get; set; }
-        public List<PlannedIncomesModel> PlannedIncomes { get; set; }
-        public List<PlannedExpensesModel> PlannedExpenses { get; set; }
-    }
+namespace client.Model.Models;
+
+public partial class BudgetModel : BaseModel
+{
+    [ObservableProperty] private string _name;
+        
+    [ObservableProperty] private DateTime _startDate;
+        
+    [ObservableProperty] private int _timePeriodId;
+        
+    [ObservableProperty] private decimal? _balance;
+    [ObservableProperty] private string _timePeriod;
+        
+    public int UserId { get; set; }
+        
+    public List<PlannedIncomesModel> PlannedIncomes { get; set; }
+        
+    public List<PlannedExpensesModel> PlannedExpenses { get; set; }
 }

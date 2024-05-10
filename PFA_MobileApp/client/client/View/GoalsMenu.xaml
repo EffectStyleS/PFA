@@ -6,8 +6,13 @@
              Shell.FlyoutItemIsVisible="True"
              xmlns:viewmodel="clr-namespace:client.ViewModel"
              xmlns:models="clr-namespace:client.Model.Models"
+             xmlns:converters="clr-namespace:client.Infrastructure.Converters"
              x:DataType="viewmodel:GoalsMenuViewModel">
 
+    <ContentPage.Resources>
+        <converters:GoalStatusConverter x:Key="GoalStatusConverter"/>
+    </ContentPage.Resources>
+    
     <Grid Margin="16, 8, 16, 8"
           RowDefinitions="Auto, *"
           ColumnDefinitions=".2*, .100*, .2*"
@@ -42,20 +47,23 @@
                             <SwipeItems>
                                 <SwipeItem 
                                     IconImageSource="icon_trash.png"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:GoalsMenuViewModel}}, Path=DeleteGoalCommand}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:GoalsMenuViewModel}},
+                                    Path=DeleteGoalCommand}"
                                     CommandParameter="{Binding .}"/>
                             </SwipeItems>
                         </SwipeView.RightItems>
 
-                        <Frame CornerRadius="20">
+                        <Frame CornerRadius="20" 
+                               BorderColor="{Binding Path=Status, Converter={StaticResource GoalStatusConverter}}">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer 
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:GoalsMenuViewModel}}, Path=EditGoalCommand}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:GoalsMenuViewModel}},
+                                    Path=EditGoalCommand}"
                                     CommandParameter="{Binding .}"/>
                             </Frame.GestureRecognizers>
 
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="{Binding Name}" FontSize = "20" />
+                                <Label Text="{Binding Name, StringFormat='Name: {0}'}" FontSize = "20" />
                                 
                                 <HorizontalStackLayout Spacing="4">
                                     <Label Text="{Binding StartDate, StringFormat='{0:d}'}" FontSize = "20" />
@@ -63,7 +71,7 @@
                                     <Label Text="{Binding EndDate, StringFormat='{0:d}'}" FontSize = "20" />
                                 </HorizontalStackLayout>
                                 
-                                <Label Text="{Binding Sum, StringFormat='{0:C}'}" FontSize = "20" />
+                                <Label Text="{Binding Sum, StringFormat='Goal: {0:C}'}" FontSize = "20" />
                             </VerticalStackLayout>
                         </Frame>
                     </SwipeView>

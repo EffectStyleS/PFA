@@ -1,19 +1,19 @@
-using client.ViewModel;
-
+﻿using client.ViewModel;
 
 namespace client.View;
 
-public partial class GoalsMenu : ContentPage
+public partial class HistoryPage : ContentPage
 {
     public delegate Task TaskDelegate();
     public event TaskDelegate OnNavigatedToEvent;
-
-    public GoalsMenu(GoalsMenuViewModel vm)
-	{
-		InitializeComponent();
+    
+    public HistoryPage(HistoryPageViewModel vm)
+    {
+        InitializeComponent();
         OnNavigatedToEvent += vm.CompleteDataAfterNavigation;
         BindingContext = vm;
     }
+    
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);

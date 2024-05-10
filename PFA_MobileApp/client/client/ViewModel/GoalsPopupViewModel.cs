@@ -1,145 +1,159 @@
-﻿using ApiClient;
+﻿using System;
+using ApiClient;
 using client.Model.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Interfaces;
-using Mopups.Services;
 using System.Collections.ObjectModel;
+using client.Infrastructure;
 
-namespace client.ViewModel
+namespace client.ViewModel;
+
+public partial class GoalsPopupViewModel : BaseViewModel
 {
-    public partial class GoalsPopupViewModel : BaseViewModel
+    private readonly Client _client;
+    private readonly IPopupNavigation _popupNavigation;
+    private readonly ObservableCollection<GoalModel> _goals;
+    private readonly GoalModel _goal;
+    private readonly bool _isEdit;
+
+    public GoalsPopupViewModel(IPopupNavigation popupNavigation, Client client, GoalModel goal,
+        ObservableCollection<GoalModel> goals, bool isEdit)
     {
-        private readonly Client _client;
-        private readonly IPopupNavigation _popupNavigation;
-        private readonly ObservableCollection<GoalModel> _goals;
-        private readonly GoalModel _goal;
-        private readonly bool _isEdit;
+        _client = client;
+        _popupNavigation = popupNavigation;
 
-        public GoalsPopupViewModel(IPopupNavigation popupNavigation, Client client, GoalModel goal, ObservableCollection<GoalModel> goals, bool isEdit)
+        _goal = goal;
+        _goals = goals;
+        _isEdit = isEdit;
+        
+        OnGoalChange += EventManager.GoalChangeHandler;
+
+        if (_isEdit)
         {
-            _client = client;
-            _popupNavigation = popupNavigation;
+            PageTitle = "Edit Goal";
 
-            _goal = goal;
-            _goals = goals;
-            _isEdit = isEdit;
+            Name = goal.Name;
+            StartDate = goal.StartDate;
+            EndDate = goal.EndDate;
+            Sum = goal.Sum.GetValueOrDefault(0);
+            IsCompleted = goal.IsCompleted;
 
-            if (_isEdit)
-            {
-                PageTitle = "Edit Goal";
-
-                Name = goal.Name;
-                StartDate = goal.StartDate;
-                EndDate = goal.EndDate;
-                Sum = goal.Sum.Value;
-                IsCompleted = goal.IsCompleted;
-
-                return;
-            }
-
-            PageTitle = "Add Goal";
-
-            StartDate = DateTime.Today;
-            EndDate = DateTime.Today.AddMonths(1);
-            Sum = 0;
-            IsCompleted = false;      
+            return;
         }
 
-        [ObservableProperty]
-        string _pageTitle;
+        PageTitle = "Add Goal";
 
-        [ObservableProperty]
-        string _name;
+        StartDate = DateTime.Today;
+        EndDate = DateTime.Today.AddMonths(1);
+        Sum = 0;
+        IsCompleted = false;
+    }
 
-        [ObservableProperty]
-        decimal? _sum;
+    [ObservableProperty] private string _pageTitle;
 
-        [ObservableProperty]
-        DateTime _startDate;
+    [ObservableProperty] private string _name;
 
-        [ObservableProperty]
-        DateTime _endDate;
+    [ObservableProperty] private decimal? _sum;
 
-        [ObservableProperty]
-        bool _isCompleted;
+    [ObservableProperty] private DateTime _startDate;
 
-        [RelayCommand]
-        async Task Save()
+    [ObservableProperty] private DateTime _endDate;
+
+    [ObservableProperty] private bool _isCompleted;
+
+    [RelayCommand]
+    private async Task Save()
+    {
+        _goal.Name = Name ?? "New Goal";
+        _goal.Sum = Sum ?? 0;
+        _goal.StartDate = StartDate;
+        _goal.EndDate = EndDate;
+        _goal.IsCompleted = IsCompleted;
+
+        GoalDto postResult = new();
+
+        try
         {
-            _goal.Name = Name ?? "New Goal";
-            _goal.Sum = Sum ?? 0;
-            _goal.StartDate = StartDate;
-            _goal.EndDate = EndDate;
-            _goal.IsCompleted = IsCompleted;
-
-            GoalDTO postResult = new();
-
-            try
+            if (_isEdit)
             {
-                if (_isEdit)
+                var goalRequest = new GoalDto
                 {
-                    var goalRequest = new GoalDTO()
+                    Id = _goal.Id,
+                    Name = _goal.Name,
+                    StartDate = _goal.StartDate,
+                    EndDate = _goal.EndDate,
+                    Sum = (double?)_goal.Sum,
+                    IsCompleted = _goal.IsCompleted,
+                    UserId = _goal.UserId,
+                };
+
+                await _client.GoalPUTAsync(_goal.Id, goalRequest);
+            }
+            else
+            {
+                postResult = await _client.GoalPOSTAsync(
+                    new GoalDto
                     {
-                        Id = _goal.Id,
                         Name = _goal.Name,
                         StartDate = _goal.StartDate,
                         EndDate = _goal.EndDate,
                         Sum = (double?)_goal.Sum,
                         IsCompleted = _goal.IsCompleted,
                         UserId = _goal.UserId,
-                    };
-
-                    await _client.GoalPUTAsync(_goal.Id, goalRequest);
-                }
-                else
-                {
-                    postResult = await _client.GoalPOSTAsync(
-                        new GoalDTO()
-                        {
-                            Name = _goal.Name,
-                            StartDate = _goal.StartDate,
-                            EndDate = _goal.EndDate,
-                            Sum = (double?)_goal.Sum,
-                            IsCompleted = _goal.IsCompleted,
-                            UserId = _goal.UserId,
-                        });
-                }
+                    });
             }
-            catch (Exception ex)
+        }
+        catch
+        {
+            var mainPage = Application.Current!.MainPage;
+            if (mainPage is not null)
             {
-                await Application.Current.MainPage.DisplayAlert("Fail", ex.Message, "OK");
-                return;
+                await mainPage.DisplayAlert("Fail", Resources.AddEditGoalFailed, "OK");
             }
-
-            // обновление списка доходов
-            if (_isEdit)
+                
+            return;
+        }
+        
+        if (_isEdit)
+        {
+            PublishGoalChange(_goal);
+            
+            var found = _goals.FirstOrDefault(x => x.Id == _goal.Id);
+            if (found is not null)
             {
-                var found = _goals.FirstOrDefault(x => x.Id == _goal.Id);
-                int i = _goals.IndexOf(found);
+                var i = _goals.IndexOf(found);
                 _goals[i] = _goal;
             }
-            else
-            {
-                _goals.Add(new GoalModel()
-                {
-                    Id = postResult.Id,
-                    Name = postResult.Name,
-                    StartDate = postResult.StartDate.DateTime,
-                    EndDate = postResult.EndDate.Value.DateTime,
-                    Sum = (decimal?)postResult.Sum,
-                    IsCompleted = postResult.IsCompleted,
-                    UserId = postResult.UserId,
-                });
-            }
-
-            await _popupNavigation.PopAsync();
         }
-
-        [RelayCommand]
-        Task Cancel()
+        else
         {
-            return _popupNavigation.PopAsync();
+            var newGoal = new GoalModel
+            {
+                Id = postResult.Id,
+                Name = postResult.Name,
+                StartDate = postResult.StartDate.DateTime,
+                EndDate = postResult.EndDate.GetValueOrDefault(postResult.StartDate.DateTime).DateTime,
+                Sum = (decimal?)postResult.Sum,
+                IsCompleted = postResult.IsCompleted,
+                UserId = postResult.UserId,
+            };
+
+            PublishGoalChange(newGoal);
+            _goals.Add(newGoal);
         }
+        
+        await _popupNavigation.PopAsync();
+    }
+
+    public delegate void GoalDelegate(GoalModel goal);
+    public event GoalDelegate? OnGoalChange;
+    
+    private void PublishGoalChange(GoalModel goal) => OnGoalChange?.Invoke(goal);
+    
+    [RelayCommand]
+    private Task Cancel()
+    {
+        return _popupNavigation.PopAsync();
     }
 }

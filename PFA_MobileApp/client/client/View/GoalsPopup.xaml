@@ -4,7 +4,6 @@
                   x:Class="client.View.GoalsPopup"
                   xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
                   BackgroundColor="#80000000" 
-                  xmlns:models="clr-namespace:client.Model.Models" 
                   xmlns:viewmodel="clr-namespace:client.ViewModel" 
                   x:DataType="viewmodel:GoalsPopupViewModel">
 
@@ -130,9 +129,7 @@
 
                         <DatePicker FontSize="18"
                                     Margin="8,4,8,4"
-                                    Date="{Binding EndDate, StringFormat='{0:d}'}"
-                                    />
-
+                                    Date="{Binding EndDate, StringFormat='{0:d}'}" />
                     </Border>
 
                 </VerticalStackLayout>

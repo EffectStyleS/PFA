@@ -55,10 +55,10 @@
                             </Frame.GestureRecognizers>
 
                             <StackLayout Spacing="8">
-                                <Label Text="{Binding Name}" FontSize = "20" />
-                                <Label Text="{Binding Value, StringFormat='{0:C}'}" FontSize = "20" />
-                                <Label Text="{Binding Date, StringFormat='{0:d}'}" FontSize = "20" />
-                                <Label Text="{Binding IncomeType}" FontSize = "20" />
+                                <Label Text="{Binding Name, StringFormat='Name: {0}'}" FontSize = "20" />
+                                <Label Text="{Binding Value, StringFormat='Value: {0:C}'}" FontSize = "20" />
+                                <Label Text="{Binding Date, StringFormat='Date: {0:d}'}" FontSize = "20" />
+                                <Label Text="{Binding IncomeType, StringFormat='Type: {0}'}" FontSize = "20" />
                             </StackLayout>
                         </Frame>
                     </SwipeView>

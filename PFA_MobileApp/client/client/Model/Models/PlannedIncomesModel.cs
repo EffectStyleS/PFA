@@ -1,11 +1,14 @@
-﻿namespace client.Model.Models
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace client.Model.Models;
+
+public partial class PlannedIncomesModel : BaseModel
 {
-    public class PlannedIncomesModel : BaseModel
-    {
-        public decimal? Sum { get; set; }
-        public int IncomeTypeId { get; set; }
-        public int BudgetId { get; set; }
-         
-        public string IncomeType { get; set; }
-    }
+    [ObservableProperty] private decimal? _sum;
+    
+    [ObservableProperty] private int _incomeTypeId;
+    
+    [ObservableProperty] private int _budgetId;
+    
+    [ObservableProperty] private string _incomeType;
 }

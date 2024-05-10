@@ -6,7 +6,7 @@
              Shell.FlyoutItemIsVisible="False"
              xmlns:viewmodel="clr-namespace:client.ViewModel"
              x:DataType="viewmodel:SignUpMenuViewModel">
-
+    
     <StackLayout VerticalOptions="FillAndExpand">
 
         <VerticalStackLayout x:Name="Title"
@@ -62,7 +62,8 @@
                 <Entry FontSize="18"
                        Margin="8,4,8,4"
                        Placeholder="Enter your login"
-                       Text="{Binding Login}"/>
+                       Text="{Binding Login}">
+                </Entry>
 
             </Border>
 
@@ -116,13 +117,12 @@
                     Command="{Binding SignUpTapCommand}"/>
 
         </VerticalStackLayout>
-
-
+        
         <VerticalStackLayout x:Name="Footer"
                              Margin="0,0,0,16">
 
             <Label HorizontalTextAlignment="Center">
-                PFA Mobile App @2023
+                PFA Mobile App @2024
             </Label>
 
         </VerticalStackLayout>

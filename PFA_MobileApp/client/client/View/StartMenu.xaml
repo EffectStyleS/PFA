@@ -35,8 +35,7 @@
                      WidthRequest="240"/>
             
         </VerticalStackLayout>
-
-
+        
         <VerticalStackLayout x:Name="Buttons"
                              Margin="0,168,0,0"
                              VerticalOptions="FillAndExpand"
@@ -48,8 +47,7 @@
                     WidthRequest="268"
                     FontSize="24"
                     Text="Log in"
-                    Command="{Binding LoginTapCommand}"
-                    />
+                    Command="{Binding LoginTapCommand}"/>
 
             <Button HorizontalOptions="Center"
                     CornerRadius="20"
@@ -64,7 +62,7 @@
                              Margin="0,0,0,16">
 
             <Label HorizontalTextAlignment="Center">
-                PFA Mobile App @2023
+                PFA Mobile App @2024
             </Label>
             
         </VerticalStackLayout>

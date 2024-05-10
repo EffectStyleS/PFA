@@ -7,7 +7,6 @@ namespace client
         public App()
         {
             InitializeComponent();
-
             MainPage = new AppShell(new AppShellViewModel());
         }
     }
