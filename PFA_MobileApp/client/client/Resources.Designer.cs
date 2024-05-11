@@ -195,6 +195,42 @@ namespace client {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Completed.
+        /// </summary>
+        internal static string GoalStatusCompleted {
+            get {
+                return ResourceManager.GetString("GoalStatusCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        internal static string GoalStatusFailed {
+            get {
+                return ResourceManager.GetString("GoalStatusFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to InProgress.
+        /// </summary>
+        internal static string GoalStatusInProgress {
+            get {
+                return ResourceManager.GetString("GoalStatusInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NotStarted.
+        /// </summary>
+        internal static string GoalStatusNotStarted {
+            get {
+                return ResourceManager.GetString("GoalStatusNotStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fail: Null expense types.
         /// </summary>
         internal static string NullExpenseTypes {

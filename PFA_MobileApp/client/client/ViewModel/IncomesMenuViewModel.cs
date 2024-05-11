@@ -148,6 +148,20 @@ public partial class IncomesMenuViewModel : BaseViewModel
         await _popupNavigation.PushAsync(new IncomesPopup(
             new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, true)));
     }
+
+    [RelayCommand]
+    private async Task GoToIncomesStatistics()
+    {
+        if (User is not null)
+        {
+            var navigationParameter = new Dictionary<string, object>
+            {
+                { "Incomes", Incomes }
+            };
+
+            await Shell.Current.GoToAsync($"{nameof(IncomesStatisticsPage)}", navigationParameter);
+        }
+    }
         
     private Task UserExitHandler()
     {

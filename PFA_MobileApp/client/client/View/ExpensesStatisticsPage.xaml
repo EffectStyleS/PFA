@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Shell.FlyoutBehavior="Flyout"
+             Shell.FlyoutItemIsVisible="True"
+             Title="Expenses Statistics"
+             x:Class="client.View.ExpensesStatisticsPage"
+             xmlns:viewmodel="clr-namespace:client.ViewModel"
+             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             xmlns:models="clr-namespace:client.Model.Models"
+             x:DataType="viewmodel:ExpensesStatisticsViewModel">
+    <Frame>
+        <Frame.GestureRecognizers>
+            <SwipeGestureRecognizer Direction="Right" Command="{Binding SwipeRightCommand}" />
+            <SwipeGestureRecognizer Direction="Left" Command="{Binding SwipeLeftCommand}"/>
+        </Frame.GestureRecognizers>
+        
+        <Grid RowDefinitions="Auto, 50*, 50*"
+              RowSpacing="8">
+            
+            <Label Text ="{Binding ChartMonth}"
+                   FontSize = "20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Start"/>
+            
+            <micro:ChartView Grid.Row="1" Chart="{Binding Chart}" Margin="8" />
+            
+            <CollectionView Grid.Row="2"
+                            Margin="0, 8, 0, 8"
+                            ItemsSource="{Binding ExpensesStatisticModels}"
+                            HorizontalOptions="Center"
+                            SelectionMode="None">
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Type models:StatisticModel(x:Decimal)}">
+                        <Grid ColumnDefinitions="*, *"
+                              ColumnSpacing="8"
+                              Padding="8"
+                              Margin="0,8,0,0">
+                        
+                            <Label Grid.Column="0"
+                                   FontSize = "16"
+                                   HorizontalOptions="Start"
+                                   Text="{Binding TypeName, StringFormat='{0}'}" />
+                        
+                            <Label Grid.Column="1"
+                                   FontSize = "16" 
+                                   HorizontalOptions="End"
+                                   Text="{Binding Value, StringFormat='{0:C}'}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate> 
+            </CollectionView>
+        </Grid>
+    </Frame> 
+</ContentPage>

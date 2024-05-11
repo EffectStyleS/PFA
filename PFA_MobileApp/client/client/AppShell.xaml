@@ -21,7 +21,7 @@
                Margin="16"
                FontSize="16"
                HorizontalOptions="Center"
-               VerticalOptions="Center"/>
+               VerticalOptions="Center" />
     </Shell.FlyoutFooter>
 
     <MenuItem
@@ -64,6 +64,24 @@
         FlyoutIcon="icon_budget.png"
         ContentTemplate="{DataTemplate local:BudgetsMenu}"
         Route="BudgetsMenu" />
+    
+    <ShellContent
+        FlyoutItemIsVisible="False"
+        Title="IncomesStatistics"
+        ContentTemplate="{DataTemplate local:IncomesStatisticsPage}"
+        Route="IncomesStatisticsPage" />
+    
+    <ShellContent
+        FlyoutItemIsVisible="False"
+        Title="ExpensesStatistics"
+        ContentTemplate="{DataTemplate local:ExpensesStatisticsPage}"
+        Route="ExpensesStatisticsPage" />
+    
+    <ShellContent
+        FlyoutItemIsVisible="False"
+        Title="GoalsStatistics"
+        ContentTemplate="{DataTemplate local:GoalsStatisticsPage}"
+        Route="GoalsStatisticsPage" />
     
     <MenuItem
         Text="Exit"

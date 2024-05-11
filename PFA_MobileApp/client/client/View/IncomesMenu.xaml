@@ -20,13 +20,12 @@
                 ImageSource="icon_plus.png"
                 Command="{Binding AddIncomeCommand}"/>
         
-        <!-- Изменить команду на переключение на страницу анализа-->
         <Button x:Name="AnalysisIncomesButton"
                 Grid.Column="2"
                 CornerRadius="20"
                 HeightRequest="55"
                 ImageSource="icon_chart.png"
-                Command="{Binding AddIncomeCommand}"/>
+                Command="{Binding GoToIncomesStatisticsCommand}"/>
         
         <CollectionView x:Name="IncomesView"
                         Grid.Row="1"

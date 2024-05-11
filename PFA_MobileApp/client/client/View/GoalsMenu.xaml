@@ -24,14 +24,13 @@
                 CornerRadius="20"
                 ImageSource="icon_plus.png"
                 Command="{Binding AddGoalCommand}"/>
-
-        <!-- Изменить команду на переключение на страницу анализа-->
+        
         <Button x:Name="AnalysisGoalsButton"
                 Grid.Column="2"
                 CornerRadius="20"
                 HeightRequest="55"
                 ImageSource="icon_chart.png"
-                Command="{Binding AddGoalCommand}"/>
+                Command="{Binding GoToGoalsStatisticsCommand}"/>
         
         <CollectionView x:Name="GoalsView"
                         Grid.Row="1"

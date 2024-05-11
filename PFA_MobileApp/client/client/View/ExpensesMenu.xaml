@@ -20,13 +20,12 @@
                 ImageSource="icon_plus.png"
                 Command="{Binding AddExpenseCommand}"/>
         
-        <!-- Изменить команду на переключение на страницу анализа-->
         <Button x:Name="AnalysisExpensesButton"
                 Grid.Column="1"
                 CornerRadius="20"
                 HeightRequest="55"
                 ImageSource="icon_chart.png"
-                Command="{Binding AddExpenseCommand}"/>
+                Command="{Binding GoToExpensesStatisticsCommand}"/>
         
         <Button x:Name="BudgetOverruns"
                 Grid.Column="2"

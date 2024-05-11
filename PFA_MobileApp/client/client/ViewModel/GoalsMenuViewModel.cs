@@ -122,6 +122,20 @@ public partial class GoalsMenuViewModel : BaseViewModel
     [RelayCommand]
     private Task EditGoal(GoalModel goal) => _popupNavigation.PushAsync(new GoalsPopup(
         new GoalsPopupViewModel(_popupNavigation, _client, goal, Goals, true)));
+    
+    [RelayCommand]
+    private async Task GoToGoalsStatistics()
+    {
+        if (User is not null)
+        {
+            var navigationParameter = new Dictionary<string, object>
+            {
+                { "Goals", Goals }
+            };
+
+            await Shell.Current.GoToAsync($"{nameof(GoalsStatisticsPage)}", navigationParameter);
+        }
+    }
         
     private Task UserExitHandler()
     {

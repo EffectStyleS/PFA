@@ -16,6 +16,9 @@ namespace client
             Routing.RegisterRoute(nameof(GoalsMenu), typeof(GoalsMenu));
             Routing.RegisterRoute(nameof(BudgetsMenu), typeof(BudgetsMenu));
             Routing.RegisterRoute(nameof(BudgetAddEdit), typeof(BudgetAddEdit));
+            Routing.RegisterRoute(nameof(IncomesStatisticsPage), typeof(IncomesStatisticsPage));
+            Routing.RegisterRoute(nameof(ExpensesStatisticsPage), typeof(ExpensesStatisticsPage));
+            Routing.RegisterRoute(nameof(GoalsStatisticsPage), typeof(GoalsStatisticsPage));
 
             BindingContext = vm;
 

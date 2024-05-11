@@ -160,6 +160,20 @@ public partial class ExpensesMenuViewModel : BaseViewModel
                 new BudgetOverrunsPopupViewModel(_client, User.Id)));
         }
     }
+    
+    [RelayCommand]
+    private async Task GoToExpensesStatistics()
+    {
+        if (User is not null)
+        {
+            var navigationParameter = new Dictionary<string, object>
+            {
+                { "Expenses", Expenses }
+            };
+
+            await Shell.Current.GoToAsync($"{nameof(ExpensesStatisticsPage)}", navigationParameter);
+        }
+    }
 
     private Task UserExitHandler()
     {

@@ -78,4 +78,16 @@
     <data name="RegisterFailed" xml:space="preserve">
         <value>Fail: Register failed. Try again</value>
     </data>
+    <data name="GoalStatusNotStarted" xml:space="preserve">
+        <value>NotStarted</value>
+    </data>
+    <data name="GoalStatusInProgress" xml:space="preserve">
+        <value>InProgress</value>
+    </data>
+    <data name="GoalStatusCompleted" xml:space="preserve">
+        <value>Completed</value>
+    </data>
+    <data name="GoalStatusFailed" xml:space="preserve">
+        <value>Failed</value>
+    </data>
 </root>
