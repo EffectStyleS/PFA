@@ -73,28 +73,21 @@
                            HorizontalOptions="Center"
                            WidthRequest="268"
                            Text="Value: "/>
+                    
+                    <Border HorizontalOptions="Center"
+                            WidthRequest="268">
 
-                    <HorizontalStackLayout Spacing="8">
-                        <Border HorizontalOptions="Start"
-                                WidthRequest="208">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
 
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="20" />
-                            </Border.StrokeShape>
+                        <Entry FontSize="18"
+                               Keyboard="Numeric"
+                               Margin="8,4,8,4"
+                               Placeholder="Enter goal sum"
+                               Text="{Binding Sum}"/>
 
-                            <Entry FontSize="18"
-                                   Keyboard="Numeric"
-                                   Margin="8,4,8,4"
-                                   Placeholder="Enter goal sum"
-                                   Text="{Binding Sum}"/>
-
-                        </Border>
-
-                        <Label FontSize="16"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                               Text="Pуб." />
-                    </HorizontalStackLayout>
+                    </Border>
 
                     <Label FontSize="16"
                            HorizontalOptions="Center"

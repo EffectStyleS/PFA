@@ -38,17 +38,17 @@ public class IncomeTypeService : BaseService, IIncomeTypeService
             return false;
         }
 
-        // Тип "Другое" - неудаляемый
+        // Тип "Other" - неудаляемый
         var incomeType = await UnitOfWork.IncomeType.GetItem(id);
-        if (incomeType!.Name == "Другое")
+        if (incomeType!.Name == "Other")
         {
             return false;
         }
 
         // Заменяем IncomeTypeId у доходов и
-        // запланированных доходов на id типа дохода "Другое"
+        // запланированных доходов на id типа дохода "Other"
         var allIncomesTypes = await UnitOfWork.IncomeType.GetAll();
-        var typeOtherId = allIncomesTypes.FirstOrDefault(x => x.Name == "Другое")!.Id;
+        var typeOtherId = allIncomesTypes.FirstOrDefault(x => x.Name == "Other")!.Id;
 
         var thisIncomeTypeIncomes = await UnitOfWork.Income.GetAll();
         foreach (var income in thisIncomeTypeIncomes.Where(x => x.IncomeTypeId == id).ToList())

@@ -12,7 +12,7 @@ namespace client;
 
 public static class MauiProgram
 {
-    private const string BaseUrl = "https://39eb-94-25-227-87.ngrok-free.app";
+    private const string BaseUrl = "https://98fa-94-25-227-89.ngrok-free.app/";
 
     public static MauiApp CreateMauiApp()
     {

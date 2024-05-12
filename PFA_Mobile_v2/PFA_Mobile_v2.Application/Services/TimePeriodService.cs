@@ -38,16 +38,16 @@ public class TimePeriodService : BaseService, ITimePeriodService
             return false;
         }
 
-        // Период "Месяц" - неудаляемый,
+        // Период "Month" - неудаляемый,
         var timePeriod = await UnitOfWork.TimePeriod.GetItem(id);
-        if (timePeriod!.Name == "Месяц")
+        if (timePeriod!.Name == "Month")
         {
             return false;
         }
 
-        // Заменяем TimePeriodId у бюджетов на id периода "Месяц"
+        // Заменяем TimePeriodId у бюджетов на id периода "Month"
         var allTimePeriods = await UnitOfWork.TimePeriod.GetAll();
-        var monthId = allTimePeriods.FirstOrDefault(x => x.Name == "Месяц")!.Id;
+        var monthId = allTimePeriods.FirstOrDefault(x => x.Name == "Month")!.Id;
 
         var thisTimePeriodBudgets = await UnitOfWork.Budget.GetAll();
         foreach (var budget in thisTimePeriodBudgets.Where(x => x.TimePeriodId == id).ToList())

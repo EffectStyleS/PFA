@@ -40,15 +40,15 @@ public class ExpenseTypeService : BaseService, IExpenseTypeService
 
         // Тип "Другое" - неудаляемый,
         var expenseType = await UnitOfWork.ExpenseType.GetItem(id);
-        if (expenseType!.Name == "Другое")
+        if (expenseType!.Name == "Other")
         {
             return false;
         }
 
         // Заменяем ExpenseTypeId у расходов и
-        // запланированных расходов на id типа расхода "Другое"
+        // запланированных расходов на id типа расхода "Other"
         var allExpenseTypes = await UnitOfWork.ExpenseType.GetAll();
-        var typeOtherId = allExpenseTypes.FirstOrDefault(x => x.Name == "Другое")!.Id;
+        var typeOtherId = allExpenseTypes.FirstOrDefault(x => x.Name == "Other")!.Id;
 
         var thisExpenseTypeExpenses = await UnitOfWork.Expense.GetAll();
         foreach (var expense in thisExpenseTypeExpenses.Where(x => x.ExpenseTypeId == id).ToList())

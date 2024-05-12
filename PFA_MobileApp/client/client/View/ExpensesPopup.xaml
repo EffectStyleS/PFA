@@ -75,27 +75,20 @@
                            WidthRequest="268"
                            Text="Value: "/>
 
-                    <HorizontalStackLayout Spacing="8">
-                        <Border HorizontalOptions="Start"
-                                WidthRequest="208">
+                    <Border HorizontalOptions="Center"
+                            WidthRequest="268">
 
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="20" />
-                            </Border.StrokeShape>
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
 
-                            <Entry FontSize="18"
-                                   Keyboard="Numeric"
-                                   Margin="8,4,8,4"
-                                   Placeholder="Enter expense value"
-                                   Text="{Binding Value}"/>
-
-                        </Border>
-
-                        <Label FontSize="16"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                               Text="Pуб." />
-                    </HorizontalStackLayout>
+                        <Entry FontSize="18"
+                               Keyboard="Numeric"
+                               Margin="8,4,8,4"
+                               Placeholder="Enter value"
+                               Text="{Binding Value}">
+                        </Entry>
+                    </Border>
 
                     <Label FontSize="16"
                            HorizontalOptions="Center"
@@ -111,8 +104,7 @@
 
                         <DatePicker FontSize="18"
                                     Margin="8,4,8,4"
-                                    Date="{Binding Date}"
-                                    />
+                                    Date="{Binding Date}"/>
 
                     </Border>
 
@@ -133,8 +125,6 @@
                                 ItemsSource="{Binding ExpenseTypes}"
                                 SelectedItem="{Binding ExpenseType}"
                                 ItemDisplayBinding="{Binding Name}"/>
-
-                        <!--TODO: решить проблему с привязкой picker'а-->
                     </Border>
 
                 </VerticalStackLayout>
