@@ -3,10 +3,11 @@
 namespace client.Infrastructure.Converters;
 
 /// <summary>
-/// Конвертер для разного отображения свойств с разными значениями
+/// Конвертер для цветового отображения свойств с разными значениями
 /// </summary>
 public class BalanceConverter : IValueConverter
 {
+    /// <inheritdoc />
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return value switch
@@ -17,9 +18,13 @@ public class BalanceConverter : IValueConverter
         };
     }
 
+    /// <inheritdoc />
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Разделитель значений
+    /// </summary>
     public int Cutoff { get; set; }
 }

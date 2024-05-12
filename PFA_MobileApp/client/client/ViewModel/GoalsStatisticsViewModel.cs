@@ -10,14 +10,23 @@ using SkiaSharp.Views.Maui;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления статистики целей
+/// </summary>
 [QueryProperty(nameof(Goals), "Goals")]
 public partial class GoalsStatisticsViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Модель представления статистики целей
+    /// </summary>
     public GoalsStatisticsViewModel()
     {
         EventManager.OnUserExit += UserExitHandler;
     }
  
+    /// <summary>
+    /// Заполнение данных после перехода на страницу
+    /// </summary>
     public Task CompleteDataAfterNavigation()
     {
         ChartDateTime = DateTime.Now;
@@ -28,18 +37,39 @@ public partial class GoalsStatisticsViewModel : BaseViewModel
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Диаграмма
+    /// </summary>
     [ObservableProperty] private DonutChart _chart;
     
+    /// <summary>
+    /// Данные диаграммы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<ChartEntry> _entries;
     
+    /// <summary>
+    /// Цели
+    /// </summary>
     [ObservableProperty] private ObservableCollection<GoalModel> _goals;
     
+    /// <summary>
+    /// Модели статистики целей
+    /// </summary>
     [ObservableProperty] private ObservableCollection<StatisticModel<int>> _goalsStatisticModels;
 
+    /// <summary>
+    /// Дата и время статистики
+    /// </summary>
     [ObservableProperty] private DateTime _chartDateTime;
 
+    /// <summary>
+    /// Год статистики
+    /// </summary>
     [ObservableProperty] private string _chartYear;
 
+    /// <summary>
+    /// Команда свайпа вправо
+    /// </summary>
     [RelayCommand]
     private void SwipeRight()
     {
@@ -49,6 +79,9 @@ public partial class GoalsStatisticsViewModel : BaseViewModel
         CompleteEntries();
     }
     
+    /// <summary>
+    /// Команда свайпа влево
+    /// </summary>
     [RelayCommand]
     private void SwipeLeft()
     {
@@ -58,6 +91,9 @@ public partial class GoalsStatisticsViewModel : BaseViewModel
         CompleteEntries();
     }
 
+    /// <summary>
+    /// Заполнение данных
+    /// </summary>
     private void CompleteEntries()
     {
         Entries = [];
@@ -118,6 +154,11 @@ public partial class GoalsStatisticsViewModel : BaseViewModel
         };
     }
 
+    /// <summary>
+    /// Получение цвета статуса цели
+    /// </summary>
+    /// <param name="statusName">Название статуса</param>
+    /// <returns></returns>
     private SKColor GetStatusColor(string statusName)
     {
         return statusName switch
@@ -130,6 +171,9 @@ public partial class GoalsStatisticsViewModel : BaseViewModel
         };
     }
     
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         Goals = [];

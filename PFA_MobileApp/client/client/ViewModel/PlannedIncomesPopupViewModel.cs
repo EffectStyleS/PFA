@@ -6,11 +6,19 @@ using System.Collections.ObjectModel;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления попапа запланированных доходов
+/// </summary>
 public partial class PlannedIncomesPopupViewModel : BaseViewModel
 {
     private readonly IPopupNavigation _popupNavigation;
     private readonly BudgetModel _budget;
 
+    /// <summary>
+    /// Модель представления попапа запланированных доходов
+    /// </summary>
+    /// <param name="popupNavigation">Навигация попапов</param>
+    /// <param name="budget">Бюджет</param>
     public PlannedIncomesPopupViewModel(IPopupNavigation popupNavigation, BudgetModel budget)
     {
         _popupNavigation = popupNavigation;
@@ -30,10 +38,19 @@ public partial class PlannedIncomesPopupViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Название страницы
+    /// </summary>
     [ObservableProperty] private string _pageTitle;
 
+    /// <summary>
+    /// Запланированные расходы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<PlannedIncomesModel> _plannedIncomes;
 
+    /// <summary>
+    /// Команда сохранения
+    /// </summary>
     [RelayCommand]
     private async Task Save()
     {
@@ -46,6 +63,9 @@ public partial class PlannedIncomesPopupViewModel : BaseViewModel
         await _popupNavigation.PopAsync();
     }
 
+    /// <summary>
+    /// Команда отмены
+    /// </summary>
     [RelayCommand]
     private async Task Cancel()
     {

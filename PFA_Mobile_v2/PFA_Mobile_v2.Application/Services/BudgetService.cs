@@ -45,19 +45,16 @@ public class BudgetService : BaseService, IBudgetService
         var plannedExpenses = await UnitOfWork.PlannedExpenses.GetAll();
         foreach (var budgetPlannedExpenses in plannedExpenses.Where(x => x.BudgetId ==id).ToList())
         {
-            /*var result = */await UnitOfWork.PlannedExpenses.Delete(budgetPlannedExpenses.Id);
-            //if (result == false) // добавить лог недудачного удаления с id 
+            await UnitOfWork.PlannedExpenses.Delete(budgetPlannedExpenses.Id);
         }
 
         var plannedIncomes = await UnitOfWork.PlannedIncomes.GetAll();
         foreach (var budgetPlannedIncomes in plannedIncomes.Where(x => x.BudgetId == id).ToList())
         {
             await UnitOfWork.PlannedIncomes.Delete(budgetPlannedIncomes.Id);
-            //if (result == false) // добавить лог недудачного удаления с id 
         }
 
         await UnitOfWork.Budget.Delete(id);
-        //if (result == false) // добавить лог недудачного удаления с id 
         return await SaveAsync();
     }
 

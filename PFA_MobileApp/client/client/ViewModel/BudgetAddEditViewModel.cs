@@ -8,6 +8,9 @@ using System.Collections.ObjectModel;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления страница добавления/редактирования бюджета
+/// </summary>
 [QueryProperty(nameof(Budget), "Budget")]
 [QueryProperty(nameof(Budgets), "Budgets")]
 [QueryProperty(nameof(ExpenseTypes), "ExpenseTypes")]
@@ -19,12 +22,20 @@ public partial class BudgetAddEditViewModel : BaseViewModel
     private readonly IPopupNavigation _popupNavigation;
     private readonly Client _client;
 
+    /// <summary>
+    /// Модель представления страница добавления/редактирования бюджета
+    /// </summary>
+    /// <param name="popupNavigation">Навигация попапов</param>
+    /// <param name="client">Клиент</param>
     public BudgetAddEditViewModel(IPopupNavigation popupNavigation, Client client)
     {
         _popupNavigation = popupNavigation;
         _client = client;
     }
 
+    /// <summary>
+    /// Заполнение данных после перехода на страницу
+    /// </summary>
     public void CompleteDataAfterNavigation()
     {
         if (IsEdit)
@@ -44,26 +55,59 @@ public partial class BudgetAddEditViewModel : BaseViewModel
         TimePeriod = TimePeriods[0];
     }
 
+    /// <summary>
+    /// Бюджет
+    /// </summary>
     [ObservableProperty] private BudgetModel _budget;
 
+    /// <summary>
+    /// Название страницы
+    /// </summary>
     [ObservableProperty] private string _pageTitle;
 
+    /// <summary>
+    /// Название
+    /// </summary>
     [ObservableProperty] private string _name;
 
+    /// <summary>
+    /// Начальная дата
+    /// </summary>
     [ObservableProperty] private DateTime _startDate;
 
+    /// <summary>
+    /// Временной период
+    /// </summary>
     [ObservableProperty] private TimePeriodModel _timePeriod;
 
+    /// <summary>
+    /// Временные периоды
+    /// </summary>
     [ObservableProperty] private List<TimePeriodModel> _timePeriods;  
 
+    /// <summary>
+    /// Типы расходов
+    /// </summary>
     [ObservableProperty] private List<ExpenseTypeModel> _expenseTypes;
 
+    /// <summary>
+    /// Типы доходов
+    /// </summary>
     [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
 
+    /// <summary>
+    /// Бюджетов
+    /// </summary>
     [ObservableProperty] private ObservableCollection<BudgetModel> _budgets;
 
+    /// <summary>
+    /// Признак редактирования
+    /// </summary>
     public bool IsEdit { get; set; }
 
+    /// <summary>
+    /// Команда сохранения
+    /// </summary>
     [RelayCommand]
     private async Task Save()
     {
@@ -199,19 +243,28 @@ public partial class BudgetAddEditViewModel : BaseViewModel
         await Shell.Current.GoToAsync("..");
     }
 
+    /// <summary>
+    /// Команда отмены
+    /// </summary>
     [RelayCommand]
     private async Task Cancel()
     {
         await Shell.Current.GoToAsync("..");
     }
 
+    /// <summary>
+    /// Команда открытия попапа запланированных расходов
+    /// </summary>
     [RelayCommand]
     private async Task PlannedExpenses()
     {
         await _popupNavigation.PushAsync(new PlannedExpensesPopup(
             new PlannedExpensesPopupViewModel(_popupNavigation, Budget)));
     }
-
+    
+    /// <summary>
+    /// Команда открытия попапа запланированных доходов
+    /// </summary>
     [RelayCommand]
     private async Task PlannedIncomes()
     {

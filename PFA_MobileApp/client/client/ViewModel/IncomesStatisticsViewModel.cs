@@ -9,14 +9,23 @@ using SkiaSharp;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления статистики доходов
+/// </summary>
 [QueryProperty(nameof(Incomes), "Incomes")]
 public partial class IncomesStatisticsViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Модель представления статистики доходов
+    /// </summary>
     public IncomesStatisticsViewModel()
     {
         EventManager.OnUserExit += UserExitHandler;
     }
  
+    /// <summary>
+    /// Заполнение данных после перехода на страницу
+    /// </summary>
     public Task CompleteDataAfterNavigation()
     {
         ChartDateTime = DateTime.Now;
@@ -27,18 +36,39 @@ public partial class IncomesStatisticsViewModel : BaseViewModel
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Диаграмма
+    /// </summary>
     [ObservableProperty] private DonutChart _chart;
     
+    /// <summary>
+    /// Данные диаграммы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<ChartEntry> _entries;
     
+    /// <summary>
+    /// Доходы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<IncomeModel> _incomes;
     
+    /// <summary>
+    /// Модели статистики доходов
+    /// </summary>
     [ObservableProperty] private ObservableCollection<StatisticModel<decimal>> _incomesStatisticModels;
 
+    /// <summary>
+    /// Дата статистики
+    /// </summary>
     [ObservableProperty] private DateTime _chartDateTime;
 
+    /// <summary>
+    /// Месяц статистики
+    /// </summary>
     [ObservableProperty] private string _chartMonth;
 
+    /// <summary>
+    /// Команда свайпа вправо
+    /// </summary>
     [RelayCommand]
     private void SwipeRight()
     {
@@ -48,8 +78,11 @@ public partial class IncomesStatisticsViewModel : BaseViewModel
         CompleteEntries();
     }
     
+    /// <summary>
+    /// Команда свайпа влево
+    /// </summary>
     [RelayCommand]
-    private void SwipeLeft ()
+    private void SwipeLeft()
     {
         ChartDateTime = ChartDateTime.AddMonths(1);
         ChartMonth = ChartDateTime.ToString("Y", CultureInfo.InvariantCulture);
@@ -57,6 +90,9 @@ public partial class IncomesStatisticsViewModel : BaseViewModel
         CompleteEntries();
     }
 
+    /// <summary>
+    /// Заполнение данных для статистики
+    /// </summary>
     private void CompleteEntries()
     {
         Entries = [];
@@ -121,6 +157,9 @@ public partial class IncomesStatisticsViewModel : BaseViewModel
         };
     }
     
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         Incomes = [];

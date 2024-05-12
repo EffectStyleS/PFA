@@ -12,6 +12,9 @@ using client.Model.Enums;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления меню целей
+/// </summary>
 public partial class GoalsMenuViewModel : BaseViewModel
 {
     private readonly IPopupNavigation _popupNavigation;
@@ -19,6 +22,11 @@ public partial class GoalsMenuViewModel : BaseViewModel
     private ICollection<IncomeDto> _userIncomes; 
     private ICollection<ExpenseDto> _userExpenses; 
 
+    /// <summary>
+    /// Модель представления меню целей
+    /// </summary>
+    /// <param name="popupNavigation">Навигация попапов</param>
+    /// <param name="client">Клиент</param>
     public GoalsMenuViewModel(IPopupNavigation popupNavigation, Client client)
     {
         _popupNavigation = popupNavigation;
@@ -27,6 +35,9 @@ public partial class GoalsMenuViewModel : BaseViewModel
         EventManager.OnGoalChange += GoalChangeHandler;
     }
 
+    /// <summary>
+    /// Заполнение данных после перехода на страницу
+    /// </summary>
     public async Task CompleteDataAfterNavigation()
     {
         var userLogin = _client.GetCurrentUserLogin();
@@ -78,11 +89,21 @@ public partial class GoalsMenuViewModel : BaseViewModel
             Goals.Add(goalModel);
         }
     } 
-        
+      
+    /// <summary>
+    /// Цели
+    /// </summary>
     [ObservableProperty] private ObservableCollection<GoalModel> _goals;
 
+    /// <summary>
+    /// Пользователь
+    /// </summary>
     [ObservableProperty] private UserModel? _user;
     
+    /// <summary>
+    /// Команда удаления цели
+    /// </summary>
+    /// <param name="goal">Цель</param>
     [RelayCommand]
     private async Task DeleteGoal(GoalModel goal)
     {
@@ -104,6 +125,9 @@ public partial class GoalsMenuViewModel : BaseViewModel
         Goals.Remove(goal);
     }
 
+    /// <summary>
+    /// Команда добавления цели
+    /// </summary>
     [RelayCommand]
     private async Task AddGoal()
     {
@@ -119,10 +143,18 @@ public partial class GoalsMenuViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Команда редактирования цели
+    /// </summary>
+    /// <param name="goal">Цель</param>
+    /// <returns></returns>
     [RelayCommand]
     private Task EditGoal(GoalModel goal) => _popupNavigation.PushAsync(new GoalsPopup(
         new GoalsPopupViewModel(_popupNavigation, _client, goal, Goals, true)));
     
+    /// <summary>
+    /// Команда перехода на страницу статистики целей
+    /// </summary>
     [RelayCommand]
     private async Task GoToGoalsStatistics()
     {
@@ -137,6 +169,9 @@ public partial class GoalsMenuViewModel : BaseViewModel
         }
     }
         
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         User = null;
@@ -144,6 +179,10 @@ public partial class GoalsMenuViewModel : BaseViewModel
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Устанавливает статус цели
+    /// </summary>
+    /// <param name="goal">Цель</param>
     private void SetGoalStatus(GoalModel goal)
     {
         if (DateTime.Now < goal.StartDate)

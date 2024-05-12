@@ -1,13 +1,18 @@
 using client.ViewModel;
 
-namespace client.View
+namespace client.View;
+
+/// <summary>
+/// Меню аутентификации
+/// </summary>
+public partial class LoginMenu : ContentPage
 {
-	public partial class LoginMenu : ContentPage
+	/// <summary>
+	/// Меню аутентификации
+	/// </summary>
+	public LoginMenu(LoginMenuViewModel vm)
 	{
-        public LoginMenu(LoginMenuViewModel vm)
-		{
-			InitializeComponent();
-			BindingContext = vm;
-		}
+		InitializeComponent();
+		BindingContext = vm;
 	}
 }

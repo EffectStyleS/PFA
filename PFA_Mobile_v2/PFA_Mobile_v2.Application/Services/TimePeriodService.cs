@@ -39,17 +39,15 @@ public class TimePeriodService : BaseService, ITimePeriodService
         }
 
         // Период "Месяц" - неудаляемый,
-        // TODO: сделать на клиенте неудаляемым, возможно задать имя неудаляемого таймпериода где-нибудь в другом месте?
         var timePeriod = await UnitOfWork.TimePeriod.GetItem(id);
         if (timePeriod!.Name == "Месяц")
         {
-            //if (result == false) // добавить лог недудачного удаления "Месяц"
             return false;
         }
 
         // Заменяем TimePeriodId у бюджетов на id периода "Месяц"
         var allTimePeriods = await UnitOfWork.TimePeriod.GetAll();
-        var monthId = allTimePeriods.FirstOrDefault(x => x.Name == "Месяц")!.Id; // период "Месяц" всегда будет найден
+        var monthId = allTimePeriods.FirstOrDefault(x => x.Name == "Месяц")!.Id;
 
         var thisTimePeriodBudgets = await UnitOfWork.Budget.GetAll();
         foreach (var budget in thisTimePeriodBudgets.Where(x => x.TimePeriodId == id).ToList())
@@ -58,7 +56,6 @@ public class TimePeriodService : BaseService, ITimePeriodService
         }
 
         await UnitOfWork.TimePeriod.Delete(id);
-        //if (result == false) // добавить лог недудачного удаления с id 
         return await SaveAsync();
     }
 

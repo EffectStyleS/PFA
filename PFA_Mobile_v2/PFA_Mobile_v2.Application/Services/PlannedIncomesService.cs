@@ -41,7 +41,6 @@ public class PlannedIncomesService : BaseService, IPlannedIncomesService
         }
 
         await UnitOfWork.PlannedIncomes.Delete(id);
-        //if (result == false) // добавить лог недудачного удаления с id 
         return await SaveAsync();
     }
 

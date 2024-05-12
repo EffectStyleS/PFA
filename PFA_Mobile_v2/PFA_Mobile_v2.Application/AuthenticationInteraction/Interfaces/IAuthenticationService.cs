@@ -5,6 +5,9 @@ using PFA_Mobile_v2.Domain.Entities;
 
 namespace PFA_Mobile_v2.Application.AuthenticationInteraction.Interfaces;
 
+/// <summary>
+/// Интерфейс сервиса аутентификации
+/// </summary>
 public interface IAuthenticationService
 {
     /// <summary>

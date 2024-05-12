@@ -9,12 +9,20 @@ using System.Collections.ObjectModel;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления меню расходов
+/// </summary>
 [QueryProperty(nameof(User), "User")]
 public partial class ExpensesMenuViewModel : BaseViewModel
 {
     private readonly IPopupNavigation _popupNavigation;
     private readonly Client _client;
 
+    /// <summary>
+    /// Модель представления меню расходов
+    /// </summary>
+    /// <param name="popupNavigation">Навигация попапов</param>
+    /// <param name="client">Клиент</param>
     public ExpensesMenuViewModel(IPopupNavigation popupNavigation, Client client)
     {
         _popupNavigation = popupNavigation;
@@ -23,6 +31,9 @@ public partial class ExpensesMenuViewModel : BaseViewModel
             
     }
 
+    /// <summary>
+    /// Получение всех типов расходов
+    /// </summary>
     private async Task GetAllExpenseTypes()
     {
         if (ExpenseTypes is not null)
@@ -54,6 +65,9 @@ public partial class ExpensesMenuViewModel : BaseViewModel
         ExpenseTypes = result;
     }
 
+    /// <summary>
+    /// Заполнение данных после перехода на страницу
+    /// </summary>
     public async Task CompleteDataAfterNavigation()
     {
         var userLogin = _client.GetCurrentUserLogin();
@@ -102,12 +116,25 @@ public partial class ExpensesMenuViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Расходы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<ExpenseModel> _expenses;
 
+    /// <summary>
+    /// Типы расходов
+    /// </summary>
     [ObservableProperty] private List<ExpenseTypeModel> _expenseTypes;
 
+    /// <summary>
+    /// Пользователь
+    /// </summary>
     [ObservableProperty] private UserModel? _user;
 
+    /// <summary>
+    /// Команда удаления расхода
+    /// </summary>
+    /// <param name="expense">Расход</param>
     [RelayCommand]
     private async Task DeleteExpense(ExpenseModel expense)
     {
@@ -129,6 +156,9 @@ public partial class ExpensesMenuViewModel : BaseViewModel
         Expenses.Remove(expense);
     }
 
+    /// <summary>
+    /// Команда добавления расхода
+    /// </summary>
     [RelayCommand]
     private async Task AddExpense()
     {
@@ -144,6 +174,11 @@ public partial class ExpensesMenuViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Команда редактирования расхода
+    /// </summary>
+    /// <param name="expense"></param>
+    /// <returns></returns>
     [RelayCommand]
     private Task EditExpense(ExpenseModel expense)
     {
@@ -151,6 +186,9 @@ public partial class ExpensesMenuViewModel : BaseViewModel
             new ExpensesPopupViewModel(_popupNavigation, _client, expense, Expenses, ExpenseTypes, true)));
     }
 
+    /// <summary>
+    /// Команда открытия попапа превышения бюджетов
+    /// </summary>
     [RelayCommand]
     private async Task OpenBudgetOverruns()
     {
@@ -161,6 +199,9 @@ public partial class ExpensesMenuViewModel : BaseViewModel
         }
     }
     
+    /// <summary>
+    /// Команда перехода на страницу статистики расходов
+    /// </summary>
     [RelayCommand]
     private async Task GoToExpensesStatistics()
     {
@@ -175,6 +216,9 @@ public partial class ExpensesMenuViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         User = null;

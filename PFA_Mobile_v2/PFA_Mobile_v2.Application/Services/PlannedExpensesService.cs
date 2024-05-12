@@ -41,7 +41,6 @@ public class PlannedExpensesService : BaseService, IPlannedExpensesService
         }
 
         await UnitOfWork.PlannedExpenses.Delete(id);
-        //if (result == false) // добавить лог недудачного удаления с id 
         return await SaveAsync();
     }
 

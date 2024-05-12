@@ -26,7 +26,11 @@ public class ExpenseController : ControllerBase
         _expenseService = expenseService;
     }
 
-    // GET: api/<ExpenseController>/user/userId
+    /// <summary>
+    /// Получает все расходы пользователя
+    /// </summary>
+    /// <param name="userId">Id пользователя</param>
+    /// <returns></returns>
     [HttpGet("user/{userId:int}")]
     public async Task<ActionResult<IEnumerable<ExpenseDto>>> GetAllUserExpenses(int userId)
     {
@@ -34,7 +38,11 @@ public class ExpenseController : ControllerBase
         return Ok(expenses);
     }
 
-    // GET api/<ExpenseController>/id
+    /// <summary>
+    /// Получает расход по Id
+    /// </summary>
+    /// <param name="id">Id расхода</param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ExpenseDto>> GetById(int id)
     {
@@ -47,7 +55,11 @@ public class ExpenseController : ControllerBase
         return Ok(expense);
     }
 
-    // POST api/<ExpenseController>
+    /// <summary>
+    /// Создает расход
+    /// </summary>
+    /// <param name="expense">Расход</param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<ExpenseDto>> Create([FromBody] ExpenseDto expense)
     {
@@ -67,7 +79,12 @@ public class ExpenseController : ControllerBase
         return Ok(createdItem);
     }
 
-    // PUT api/<ExpenseController>/5
+    /// <summary>
+    /// Обновляет данные расхода
+    /// </summary>
+    /// <param name="id">Id расхода</param>
+    /// <param name="expense">Расход</param>
+    /// <returns></returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult<int>> Put(int id, [FromBody] ExpenseDto expense)
     {
@@ -84,7 +101,11 @@ public class ExpenseController : ControllerBase
         return Ok(expense.Id);
     }
 
-    // DELETE api/<ExpenseController>/5
+    /// <summary>
+    /// Удаляет расход
+    /// </summary>
+    /// <param name="id">Id расхода</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<int>> Delete(int id)
     {
@@ -97,7 +118,11 @@ public class ExpenseController : ControllerBase
         return Ok(id);
     }
 
-    // GET api/<ExpenseController>/difference/userId
+    /// <summary>
+    /// Получает превышения бюджетов пользователя
+    /// </summary>
+    /// <param name="userId">Id пользователя</param>
+    /// <returns></returns>
     [HttpGet("difference/{userId:int}")]
     public async Task<ActionResult<List<BudgetOverrunDto>>> GetBudgetsOverruns(int userId)
     {

@@ -38,19 +38,17 @@ public class IncomeTypeService : BaseService, IIncomeTypeService
             return false;
         }
 
-        // Тип "Другое" - неудаляемый,
-        // TODO: сделать на клиенте неудаляемым
+        // Тип "Другое" - неудаляемый
         var incomeType = await UnitOfWork.IncomeType.GetItem(id);
         if (incomeType!.Name == "Другое")
         {
-            //if (result == false) // добавить лог недудачного удаления "Другое"
             return false;
         }
 
         // Заменяем IncomeTypeId у доходов и
         // запланированных доходов на id типа дохода "Другое"
         var allIncomesTypes = await UnitOfWork.IncomeType.GetAll();
-        var typeOtherId = allIncomesTypes.FirstOrDefault(x => x.Name == "Другое")!.Id; // тип "Другое" всегда будет найден
+        var typeOtherId = allIncomesTypes.FirstOrDefault(x => x.Name == "Другое")!.Id;
 
         var thisIncomeTypeIncomes = await UnitOfWork.Income.GetAll();
         foreach (var income in thisIncomeTypeIncomes.Where(x => x.IncomeTypeId == id).ToList())
@@ -65,7 +63,6 @@ public class IncomeTypeService : BaseService, IIncomeTypeService
         }
 
         await UnitOfWork.IncomeType.Delete(id);
-        //if (result == false) // добавить лог недудачного удаления с id 
         return await SaveAsync();
     }
 

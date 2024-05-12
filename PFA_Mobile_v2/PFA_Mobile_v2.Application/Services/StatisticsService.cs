@@ -6,10 +6,17 @@ using PFA_Mobile_v2.Domain.Entities;
 
 namespace PFA_Mobile_v2.Application.Services;
 
+/// <summary>
+/// Сервис статистики использования системы
+/// </summary>
 public class StatisticsService : BaseService, IStatisticsService
 {
+    /// <summary>
+    /// Сервис статистики использования системы
+    /// </summary>
     public StatisticsService(IUnitOfWork unitOfWork) : base(unitOfWork) { }
     
+    /// <inheritdoc />
     public async Task<List<CountStatisticRequestModel>> GetUsersExpensesCount(UserManager<AppUser> userManager)
     {
         var result = new List<CountStatisticRequestModel>();
@@ -33,6 +40,7 @@ public class StatisticsService : BaseService, IStatisticsService
         return result;
     }
 
+    /// <inheritdoc />
     public async Task<List<CountStatisticRequestModel>> GetExpensesByTypeCount()
     {
         var result = new List<CountStatisticRequestModel>();
@@ -56,6 +64,7 @@ public class StatisticsService : BaseService, IStatisticsService
         return result;
     }
 
+    /// <inheritdoc />
     public async Task<List<CountStatisticRequestModel>> GetUsersIncomesCount(UserManager<AppUser> userManager)
     {
         var result = new List<CountStatisticRequestModel>();
@@ -78,7 +87,8 @@ public class StatisticsService : BaseService, IStatisticsService
 
         return result;
     }
-
+    
+    /// <inheritdoc />
     public async Task<List<CountStatisticRequestModel>> GetIncomesByTypeCount()
     {
         var result = new List<CountStatisticRequestModel>();
@@ -102,6 +112,7 @@ public class StatisticsService : BaseService, IStatisticsService
         return result;
     }
 
+    /// <inheritdoc />
     public async Task<List<CountStatisticRequestModel>> GetUsersBudgetsCount(UserManager<AppUser> userManager)
     {
         var result = new List<CountStatisticRequestModel>();
@@ -125,6 +136,7 @@ public class StatisticsService : BaseService, IStatisticsService
         return result;
     }
 
+    /// <inheritdoc />
     public async Task<List<CountStatisticRequestModel>> GetBudgetsByTimePeriodsCount()
     {
         var result = new List<CountStatisticRequestModel>();
@@ -148,6 +160,7 @@ public class StatisticsService : BaseService, IStatisticsService
         return result;
     }
 
+    /// <inheritdoc />
     public async Task<List<CountStatisticRequestModel>> GetUsersGoalsCount(UserManager<AppUser> userManager)
     {
         var result = new List<CountStatisticRequestModel>();

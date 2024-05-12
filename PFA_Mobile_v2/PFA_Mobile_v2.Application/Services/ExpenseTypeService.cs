@@ -39,18 +39,16 @@ public class ExpenseTypeService : BaseService, IExpenseTypeService
         }
 
         // Тип "Другое" - неудаляемый,
-        // TODO: сделать на клиенте неудаляемым
         var expenseType = await UnitOfWork.ExpenseType.GetItem(id);
         if (expenseType!.Name == "Другое")
         {
-            //if (result == false) // добавить лог недудачного удаления "Другое"
             return false;
         }
 
         // Заменяем ExpenseTypeId у расходов и
         // запланированных расходов на id типа расхода "Другое"
         var allExpenseTypes = await UnitOfWork.ExpenseType.GetAll();
-        var typeOtherId = allExpenseTypes.FirstOrDefault(x => x.Name == "Другое")!.Id; // тип "Другое" всегда будет найден
+        var typeOtherId = allExpenseTypes.FirstOrDefault(x => x.Name == "Другое")!.Id;
 
         var thisExpenseTypeExpenses = await UnitOfWork.Expense.GetAll();
         foreach (var expense in thisExpenseTypeExpenses.Where(x => x.ExpenseTypeId == id).ToList())
@@ -65,7 +63,6 @@ public class ExpenseTypeService : BaseService, IExpenseTypeService
         }
 
         await UnitOfWork.ExpenseType.Delete(id);
-        //if (result == false) // добавить лог недудачного удаления с id 
         return await SaveAsync();
     }
 

@@ -26,7 +26,11 @@ public class IncomeController : ControllerBase
         _incomeService = incomeService;
     }
 
-    // GET: api/<IncomeController>/user/userId
+    /// <summary>
+    /// Получает все доходы пользователя
+    /// </summary>
+    /// <param name="userId">Id пользователя</param>
+    /// <returns></returns>
     [HttpGet("user/{userId:int}")]
     public async Task<ActionResult<IEnumerable<IncomeDto>>> GetAllUserIncomes(int userId)
     {
@@ -34,7 +38,11 @@ public class IncomeController : ControllerBase
         return Ok(incomes);
     }
 
-    // GET api/<IncomeController>/id
+    /// <summary>
+    /// Получает доход по Id
+    /// </summary>
+    /// <param name="id">Id дохода</param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<IncomeDto>> GetById(int id)
     {
@@ -47,7 +55,11 @@ public class IncomeController : ControllerBase
         return Ok(income);
     }
 
-    // POST api/<IncomeController>
+    /// <summary>
+    /// Создает доход
+    /// </summary>
+    /// <param name="income">Доход</param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<IncomeDto>> Create([FromBody] IncomeDto income)
     {
@@ -65,7 +77,12 @@ public class IncomeController : ControllerBase
         return Ok(createdItem);
     }
 
-    // PUT api/<IncomeController>/5
+    /// <summary>
+    /// Обновляет данные дохода
+    /// </summary>
+    /// <param name="id">Id дохода</param>
+    /// <param name="income">Доход</param>
+    /// <returns></returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult<int>> Put(int id, [FromBody] IncomeDto income)
     {
@@ -82,7 +99,11 @@ public class IncomeController : ControllerBase
         return Ok(income.Id);
     }
 
-    // DELETE api/<IncomeController>/5
+    /// <summary>
+    /// Удаляет доход
+    /// </summary>
+    /// <param name="id">Id дохода</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<int>> Delete(int id)
     {

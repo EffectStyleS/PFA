@@ -2,11 +2,19 @@ using client.ViewModel;
 
 namespace client.View;
 
+/// <summary>
+/// Меню расходов
+/// </summary>
 public partial class ExpensesMenu : ContentPage
 {
-    public delegate Task TaskDelegate();
-    public event TaskDelegate OnNavigatedToEvent;
+    /// <summary>
+    /// Событие перехода на страницу
+    /// </summary>
+    public event Func<Task> OnNavigatedToEvent = () => Task.CompletedTask;
 
+    /// <summary>
+    /// Меню расходов
+    /// </summary>
     public ExpensesMenu(ExpensesMenuViewModel vm)
 	{
 		InitializeComponent();
@@ -14,6 +22,7 @@ public partial class ExpensesMenu : ContentPage
         BindingContext = vm;
 	}
 
+    /// <inheritdoc />
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);

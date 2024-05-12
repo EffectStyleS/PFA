@@ -8,8 +8,17 @@ using PFA_Mobile_v2.Infrastructure.Persistence;
 
 namespace PFA_Mobile_v2.Infrastructure;
 
+/// <summary>
+/// Класс внедрения зависимостей слоя Infrastructure
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Внедряет зависимости слоя Infrastructure
+    /// </summary>
+    /// <param name="services">Коллекция сервисов</param>
+    /// <param name="configuration">Конфигурация</param>
+    /// <returns></returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ITokenService, TokenService>();

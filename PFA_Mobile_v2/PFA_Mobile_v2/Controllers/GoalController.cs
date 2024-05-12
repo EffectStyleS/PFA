@@ -26,7 +26,11 @@ public class GoalController : ControllerBase
         _goalService = goalService;
     }
 
-    // GET: api/<GoalController>/user/userId
+    /// <summary>
+    /// Получает все цели пользователя
+    /// </summary>
+    /// <param name="userId">Id пользователя</param>
+    /// <returns></returns>
     [HttpGet("user/{userId:int}")]
     public async Task<ActionResult<IEnumerable<GoalDto>>> GetAllUserGoals(int userId)
     {
@@ -34,7 +38,11 @@ public class GoalController : ControllerBase
         return Ok(goals);
     }
 
-    // GET api/<GoalController>/id
+    /// <summary>
+    /// Получает цель по Id
+    /// </summary>
+    /// <param name="id">Id цели</param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<GoalDto>> GetById(int id)
     {
@@ -47,7 +55,11 @@ public class GoalController : ControllerBase
         return Ok(goal);
     }
 
-    // POST api/<GoalController>
+    /// <summary>
+    /// Создает цель
+    /// </summary>
+    /// <param name="goal">Цель</param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<GoalDto>> Create([FromBody] GoalDto goal)
     {
@@ -65,7 +77,12 @@ public class GoalController : ControllerBase
         return Ok(createdItem);
     }
 
-    // PUT api/<GoalController>/5
+    /// <summary>
+    /// Обновляет данные цели
+    /// </summary>
+    /// <param name="id">Id цели</param>
+    /// <param name="goal">Цель</param>
+    /// <returns></returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult<int>> Put(int id, [FromBody] GoalDto goal)
     {
@@ -82,7 +99,11 @@ public class GoalController : ControllerBase
         return Ok(goal.Id);
     }
 
-    // DELETE api/<GoalController>/5
+    /// <summary>
+    /// Удаляет цель
+    /// </summary>
+    /// <param name="id">Id цели</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<int>> Delete(int id)
     {

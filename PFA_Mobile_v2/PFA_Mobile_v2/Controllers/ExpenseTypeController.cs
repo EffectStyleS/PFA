@@ -26,7 +26,10 @@ public class ExpenseTypeController : ControllerBase
         _expenseTypeService = expenseTypeService;
     }
 
-    // GET: api/<ExpenseTypeController>
+    /// <summary>
+    /// Получает все типы расходов
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ExpenseTypeDto>>> GetAll()
     {
@@ -34,7 +37,11 @@ public class ExpenseTypeController : ControllerBase
         return Ok(expenseTypes);
     }
 
-    // GET api/<ExpenseTypeController>/id
+    /// <summary>
+    /// Получает тип расхода по Id
+    /// </summary>
+    /// <param name="id">Id типа расхода</param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ExpenseTypeDto>> GetById(int id)
     {
@@ -47,7 +54,11 @@ public class ExpenseTypeController : ControllerBase
         return Ok(expenseType);
     }
 
-    // POST api/<ExpenseTypeController>
+    /// <summary>
+    /// Создает тип расхода
+    /// </summary>
+    /// <param name="expenseType">Тип расхода</param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<ExpenseTypeDto>> Create([FromBody] ExpenseTypeDto expenseType)
     {
@@ -65,7 +76,12 @@ public class ExpenseTypeController : ControllerBase
         return Ok(createdItem);
     }
 
-    // PUT api/<ExpenseTypeController>/5
+    /// <summary>
+    /// Обновляет данные типа расхода
+    /// </summary>
+    /// <param name="id">Id типа расхода</param>
+    /// <param name="expenseType">Тип расхода</param>
+    /// <returns></returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult<int>> Put(int id, [FromBody] ExpenseTypeDto expenseType)
     {
@@ -82,7 +98,11 @@ public class ExpenseTypeController : ControllerBase
         return Ok(expenseType.Id);
     }
 
-    // DELETE api/<ExpenseTypeController>/5
+    /// <summary>
+    /// Удаляет тип расхода
+    /// </summary>
+    /// <param name="id">Id типа расхода</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<int>> Delete(int id)
     {

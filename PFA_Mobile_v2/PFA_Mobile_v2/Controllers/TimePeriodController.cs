@@ -26,7 +26,10 @@ public class TimePeriodController : ControllerBase
         _timePeriodService = timePeriodService;
     }
 
-    // GET: api/<TimePeriodController>
+    /// <summary>
+    /// Получает все временные периоды
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TimePeriodDto>>> GetAll()
     {
@@ -34,7 +37,11 @@ public class TimePeriodController : ControllerBase
         return Ok(timePeriods);
     }
 
-    // GET api/<TimePeriodController>/id
+    /// <summary>
+    /// Получает временной период по Id
+    /// </summary>
+    /// <param name="id">Id временного периода</param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<TimePeriodDto>> GetById(int id)
     {
@@ -47,7 +54,11 @@ public class TimePeriodController : ControllerBase
         return Ok(timePeriod);
     }
 
-    // POST api/<TimePeriodController>
+    /// <summary>
+    /// Создает временной период
+    /// </summary>
+    /// <param name="timePeriod">Временной период</param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<TimePeriodDto>> Create([FromBody] TimePeriodDto timePeriod)
     {
@@ -65,7 +76,12 @@ public class TimePeriodController : ControllerBase
         return Ok(createdItem);
     }
 
-    // PUT api/<TimePeriodController>/5
+    /// <summary>
+    /// Обновляет данные временного периода
+    /// </summary>
+    /// <param name="id">Id временного периода</param>
+    /// <param name="timePeriod">Временной период</param>
+    /// <returns></returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult<int>> Put(int id, [FromBody] TimePeriodDto timePeriod)
     {
@@ -82,7 +98,11 @@ public class TimePeriodController : ControllerBase
         return Ok(timePeriod.Id);
     }
 
-    // DELETE api/<TimePeriodController>/5
+    /// <summary>
+    /// Удаляет временной период
+    /// </summary>
+    /// <param name="id">Id временного периода</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<int>> Delete(int id)
     {

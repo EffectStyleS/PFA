@@ -2,11 +2,19 @@
 
 namespace client.View;
 
+/// <summary>
+/// Страница статистики доходов
+/// </summary>
 public partial class IncomesStatisticsPage : ContentPage
 {
-    public delegate Task TaskDelegate();
-    public event TaskDelegate OnNavigatedToEvent;
+    /// <summary>
+    /// Событие перехода на страницу
+    /// </summary>
+    public event Func<Task> OnNavigatedToEvent = () => Task.CompletedTask;
     
+    /// <summary>
+    /// Страница статистики доходов
+    /// </summary>
     public IncomesStatisticsPage(IncomesStatisticsViewModel vm)
     {
         InitializeComponent();
@@ -14,6 +22,7 @@ public partial class IncomesStatisticsPage : ContentPage
         BindingContext = vm;
     }
     
+    /// <inheritdoc />
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);

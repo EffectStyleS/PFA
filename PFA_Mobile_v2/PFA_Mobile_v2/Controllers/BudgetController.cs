@@ -31,7 +31,11 @@ public class BudgetController : ControllerBase
         _plannedIncomesService = plannedIncomesService;
     }
 
-    // GET: api/<BudgetController>/user/userId
+    /// <summary>
+    /// Получает все бюджеты пользователя
+    /// </summary>
+    /// <param name="userId">Id пользователя</param>
+    /// <returns></returns>
     [HttpGet("user/{userId:int}")]
     public async Task<ActionResult<IEnumerable<BudgetDto>>> GetAllUserBudgets(int userId)
     {
@@ -39,14 +43,22 @@ public class BudgetController : ControllerBase
         return Ok(budgets);
     }
 
-    // GET api/<BudgetController>/id
+    /// <summary>
+    /// Получает бюджет по id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public Task<BudgetDto?> GetById(int id)
     {
         return _budgetService.GetById(id);
     }
 
-    // POST api/<BudgetController>
+    /// <summary>
+    /// Создает бюджет
+    /// </summary>
+    /// <param name="budget">Модель бюджета</param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<BudgetRequestModel>> Create([FromBody]BudgetRequestModel budget)
     {
@@ -91,7 +103,12 @@ public class BudgetController : ControllerBase
         return Ok(createdBudgetRequestModel);
     }
 
-    // PUT api/<BudgetController>/5
+    /// <summary>
+    /// Обновляет данные бюджета
+    /// </summary>
+    /// <param name="id">Id бюджета</param>
+    /// <param name="budget">Модель бюджета</param>
+    /// <returns></returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult<int>> Put(int id, [FromBody]BudgetRequestModel budget)
     {
@@ -124,7 +141,11 @@ public class BudgetController : ControllerBase
         return Ok(budget.Budget.Id);
     }
 
-    // DELETE api/<BudgetController>/5
+    /// <summary>
+    /// Удаляет бюджет
+    /// </summary>
+    /// <param name="id">Id бюджета</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<int>> Delete(int id)
     {

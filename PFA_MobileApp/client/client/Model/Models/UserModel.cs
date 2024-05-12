@@ -1,9 +1,22 @@
-﻿namespace client.Model.Models
+﻿namespace client.Model.Models;
+
+/// <summary>
+/// Модель пользователя
+/// </summary>
+public class UserModel : BaseModel
 {
-    public class UserModel : BaseModel
-    {
-        public string Login { get; set; }
-        public string RefreshToken { get; set; }
-        public DateTime RefreshTokenExpireTime { get; set; }
-    }
+    /// <summary>
+    /// Логин
+    /// </summary>
+    public string Login { get; set; }
+    
+    /// <summary>
+    /// Refresh токен
+    /// </summary>
+    public string RefreshToken { get; set; }
+    
+    /// <summary>
+    /// Время истечения refresh токена
+    /// </summary>
+    public DateTime RefreshTokenExpireTime { get; set; }
 }

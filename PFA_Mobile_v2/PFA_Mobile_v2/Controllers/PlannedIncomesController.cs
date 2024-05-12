@@ -26,7 +26,11 @@ public class PlannedIncomesController : ControllerBase
         _plannedIncomesService = plannedIncomesService;
     }
 
-    // GET: api/<PlannedIncomesController>/budget/budgetId
+    /// <summary>
+    /// Получает все запланированные доходы бюджета
+    /// </summary>
+    /// <param name="budgetId">Id бюджета</param>
+    /// <returns></returns>
     [HttpGet("budget/{budgetId:int}")]
     public async Task<ActionResult<IEnumerable<PlannedIncomesDto>>> GetAllBudgetPlannedIncomes(int budgetId)
     {
@@ -34,7 +38,11 @@ public class PlannedIncomesController : ControllerBase
         return Ok(plannedIncomes);
     }
 
-    // GET api/<PlannedIncomesController>/id
+    /// <summary>
+    /// Получает запланированные доходы по id
+    /// </summary>
+    /// <param name="id">Id запланированных доходов</param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PlannedIncomesDto>> GetById(int id)
     {
@@ -47,7 +55,11 @@ public class PlannedIncomesController : ControllerBase
         return Ok(plannedIncomes);
     }
 
-    // POST api/<PlannedIncomesController>
+    /// <summary>
+    /// Создает запланированные доходы
+    /// </summary>
+    /// <param name="plannedIncomes">Запланированные доходы</param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<PlannedIncomesDto>> Create([FromBody] PlannedIncomesDto plannedIncomes)
     {
@@ -65,7 +77,12 @@ public class PlannedIncomesController : ControllerBase
         return Ok(createdItem);
     }
 
-    // PUT api/<PlannedIncomesController>/5
+    /// <summary>
+    /// Обновляет данные запланированных доходов
+    /// </summary>
+    /// <param name="id">Id запланированных доходов</param>
+    /// <param name="plannedIncomes">Запланированные доходы</param>
+    /// <returns></returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult<int>> Put(int id, [FromBody] PlannedIncomesDto plannedIncomes)
     {
@@ -82,7 +99,11 @@ public class PlannedIncomesController : ControllerBase
         return Ok(plannedIncomes.Id);
     }
 
-    // DELETE api/<PlannedIncomesController>/5
+    /// <summary>
+    /// Удаление запланированных доходов
+    /// </summary>
+    /// <param name="id">Id запланированных доходов</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<int>> Delete(int id)
     {

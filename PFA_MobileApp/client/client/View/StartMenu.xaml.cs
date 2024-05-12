@@ -1,24 +1,31 @@
 using client.ViewModel;
 
+namespace client.View;
 
-namespace client.View
+/// <summary>
+/// Стартовое меню
+/// </summary>
+public partial class StartMenu : ContentPage
 {
-    public partial class StartMenu : ContentPage
+    /// <summary>
+    /// Событие перехода на страницу
+    /// </summary>
+    public event Func<Task> OnNavigatedToEvent = () => Task.CompletedTask;
+        
+    /// <summary>
+    /// Стартовое меню
+    /// </summary>
+    public StartMenu(StartMenuViewModel vm)
     {
-        public delegate Task TaskDelegate();
-        public event TaskDelegate OnNavigatedToEvent;
+        InitializeComponent();
+        OnNavigatedToEvent += vm.CompleteDataAfterNavigation;
+        BindingContext = vm;
+    }
         
-        public StartMenu(StartMenuViewModel vm)
-        {
-            InitializeComponent();
-            OnNavigatedToEvent += vm.CompleteDataAfterNavigation;
-            BindingContext = vm;
-        }
-        
-        protected override void OnNavigatedTo(NavigatedToEventArgs args)
-        {
-            base.OnNavigatedTo(args);
-            OnNavigatedToEvent?.Invoke();
-        }
+    /// <inheritdoc />
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+        OnNavigatedToEvent?.Invoke();
     }
 }

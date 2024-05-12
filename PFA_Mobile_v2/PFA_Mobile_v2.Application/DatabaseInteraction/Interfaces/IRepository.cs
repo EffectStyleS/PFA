@@ -12,8 +12,7 @@ public interface IRepository<T> where T : class
     Task<List<T>> GetAll();
 
     /// <returns>
-    ///     Возвращает найденную сущность,
-    ///     иначе null
+    /// Возвращает найденную сущность, иначе null
     /// </returns>
     Task<T?> GetItem(int id);
     

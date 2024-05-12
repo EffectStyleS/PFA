@@ -26,7 +26,10 @@ public class IncomeTypeController : ControllerBase
         _incomeTypeService = incomeTypeService;
     }
 
-    // GET: api/<IncomeTypeController>
+    /// <summary>
+    /// Получает все типы доходов
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<IncomeTypeDto>>> GetAll()
     {
@@ -34,7 +37,11 @@ public class IncomeTypeController : ControllerBase
         return Ok(incomeTypes);
     }
 
-    // GET api/<IncomeTypeController>/id
+    /// <summary>
+    /// Получает тип дохода по Id
+    /// </summary>
+    /// <param name="id">Id дохода</param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<IncomeTypeDto>> GetById(int id)
     {
@@ -47,7 +54,11 @@ public class IncomeTypeController : ControllerBase
         return Ok(incomeType);
     }
 
-    // POST api/<IncomeTypeController>
+    /// <summary>
+    /// Создает тип дохода
+    /// </summary>
+    /// <param name="incomeType">Тип дохода</param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<IncomeTypeDto>> Create([FromBody] IncomeTypeDto incomeType)
     {
@@ -65,7 +76,12 @@ public class IncomeTypeController : ControllerBase
         return Ok(createdItem);
     }
 
-    // PUT api/<IncomeTypeController>/5
+    /// <summary>
+    /// Обновляет данные типа дохода
+    /// </summary>
+    /// <param name="id">Id типа дохода</param>
+    /// <param name="incomeType">Тип дохода</param>
+    /// <returns></returns>
     [HttpPut("{id:int}")]
     public async Task<ActionResult<int>> Put(int id, [FromBody] IncomeTypeDto incomeType)
     {
@@ -82,7 +98,11 @@ public class IncomeTypeController : ControllerBase
         return Ok(incomeType.Id);
     }
 
-    // DELETE api/<IncomeTypeController>/5
+    /// <summary>
+    /// Удаляет тип дохода
+    /// </summary>
+    /// <param name="id">Id типа дохода</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<int>> Delete(int id)
     {

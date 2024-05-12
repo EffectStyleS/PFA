@@ -7,6 +7,9 @@ using System.Collections.ObjectModel;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления попапа расходов
+/// </summary>
 public partial class ExpensesPopupViewModel : BaseViewModel
 {
     private readonly Client _client;
@@ -15,6 +18,15 @@ public partial class ExpensesPopupViewModel : BaseViewModel
     private readonly ExpenseModel _expense;
     private readonly bool _isEdit;
 
+    /// <summary>
+    /// Модель представления попапа расходов
+    /// </summary>
+    /// <param name="popupNavigation">Навигация попапов</param>
+    /// <param name="client">Клиент</param>
+    /// <param name="expense">Расход</param>
+    /// <param name="expenses">Расход</param>
+    /// <param name="expenseTypes">Типы расходов</param>
+    /// <param name="isEdit">Признак редактирования</param>
     public ExpensesPopupViewModel(IPopupNavigation popupNavigation, Client client, ExpenseModel expense,
         ObservableCollection<ExpenseModel> expenses, List<ExpenseTypeModel> expenseTypes, bool isEdit)
     {
@@ -45,18 +57,39 @@ public partial class ExpensesPopupViewModel : BaseViewModel
         ExpenseType = ExpenseTypes[0];
     }
 
+    /// <summary>
+    /// Название страницы
+    /// </summary>
     [ObservableProperty] private string _pageTitle;
 
+    /// <summary>
+    /// Название
+    /// </summary>
     [ObservableProperty] private string _name;
 
+    /// <summary>
+    /// Значение
+    /// </summary>
     [ObservableProperty] private decimal? _value;
 
+    /// <summary>
+    /// Дата
+    /// </summary>
     [ObservableProperty] private DateTime _date;
 
+    /// <summary>
+    /// Типы расходов
+    /// </summary>
     [ObservableProperty] private ObservableCollection<ExpenseTypeModel> _expenseTypes;
 
+    /// <summary>
+    /// Тип расхода
+    /// </summary>
     [ObservableProperty] private ExpenseTypeModel _expenseType;
 
+    /// <summary>
+    /// Команда сохранения
+    /// </summary>
     [RelayCommand]
     private async Task Save()
     {
@@ -135,6 +168,10 @@ public partial class ExpensesPopupViewModel : BaseViewModel
         await _popupNavigation.PopAsync();
     }
 
+    /// <summary>
+    /// Команда отмены
+    /// </summary>
+    /// <returns></returns>
     [RelayCommand]
     Task Cancel()
     {

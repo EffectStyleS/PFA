@@ -9,14 +9,23 @@ using SkiaSharp;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления статистики расходов
+/// </summary>
 [QueryProperty(nameof(Expenses), "Expenses")]
 public partial class ExpensesStatisticsViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Модель представления статистики расходов
+    /// </summary>
     public ExpensesStatisticsViewModel()
     {
         EventManager.OnUserExit += UserExitHandler;
     }
  
+    /// <summary>
+    /// Заполнение данных после перехода на страницу
+    /// </summary>
     public Task CompleteDataAfterNavigation()
     {
         ChartDateTime = DateTime.Now;
@@ -27,18 +36,39 @@ public partial class ExpensesStatisticsViewModel : BaseViewModel
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Диаграмма
+    /// </summary>
     [ObservableProperty] private DonutChart _chart;
     
+    /// <summary>
+    /// Данные диаграммы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<ChartEntry> _entries;
     
+    /// <summary>
+    /// Расходы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<ExpenseModel> _expenses;
     
+    /// <summary>
+    /// Модели статистики расходов
+    /// </summary>
     [ObservableProperty] private ObservableCollection<StatisticModel<decimal>> _expensesStatisticModels;
 
+    /// <summary>
+    /// Дата статистики
+    /// </summary>
     [ObservableProperty] private DateTime _chartDateTime;
 
+    /// <summary>
+    /// Месяц статистики
+    /// </summary>
     [ObservableProperty] private string _chartMonth;
 
+    /// <summary>
+    /// Команда свайпа вправо
+    /// </summary>
     [RelayCommand]
     private void SwipeRight()
     {
@@ -48,6 +78,9 @@ public partial class ExpensesStatisticsViewModel : BaseViewModel
         CompleteEntries();
     }
     
+    /// <summary>
+    /// Команда свайпа влево
+    /// </summary>
     [RelayCommand]
     private void SwipeLeft()
     {
@@ -57,6 +90,9 @@ public partial class ExpensesStatisticsViewModel : BaseViewModel
         CompleteEntries();
     }
 
+    /// <summary>
+    /// Заполнение данных для статистики
+    /// </summary>
     private void CompleteEntries()
     {
         Entries = [];
@@ -121,6 +157,9 @@ public partial class ExpensesStatisticsViewModel : BaseViewModel
         };
     }
     
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         Expenses = [];

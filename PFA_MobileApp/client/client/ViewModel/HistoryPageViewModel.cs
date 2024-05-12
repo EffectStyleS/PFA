@@ -6,17 +6,26 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления страницы истории
+/// </summary>
 public partial class HistoryPageViewModel : BaseViewModel
 {
     private readonly Client _client;
 
+    /// <summary>
+    /// Модель представления страницы истории
+    /// </summary>
+    /// <param name="client">Клиент</param>
     public HistoryPageViewModel(Client client)
     {
         _client = client;
-        
         EventManager.OnUserExit += UserExitHandler;
     }
 
+    /// <summary>
+    /// Заполнение данных после перехода на страницу
+    /// </summary>
     public async Task CompleteDataAfterNavigation()
     {
         var userLogin = _client.GetCurrentUserLogin();
@@ -115,17 +124,35 @@ public partial class HistoryPageViewModel : BaseViewModel
         HistoryRecords = new ObservableCollection<Grouping<DateTime, HistoryRecordModel>>(groups);
     }
     
+    /// <summary>
+    /// Пользователь
+    /// </summary>
     [ObservableProperty] private UserModel? _user;
     
     // Привязка адекватно не работает почему-то, видимо баг
+    /// <summary>
+    /// Ключ
+    /// </summary>
     [ObservableProperty] private DateTime _key;
     
+    /// <summary>
+    /// Доходы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<IncomeModel> _incomes;
     
+    /// <summary>
+    /// Расходы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<ExpenseModel> _expenses;
     
+    /// <summary>
+    /// Записи истории
+    /// </summary>
     [ObservableProperty] private ObservableCollection<Grouping<DateTime, HistoryRecordModel>> _historyRecords;
     
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         User = null;

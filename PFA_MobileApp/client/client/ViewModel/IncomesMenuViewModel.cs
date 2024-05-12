@@ -9,11 +9,19 @@ using System.Collections.ObjectModel;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления меню доходов
+/// </summary>
 public partial class IncomesMenuViewModel : BaseViewModel
 {
     private readonly IPopupNavigation _popupNavigation;
     private readonly Client _client;
 
+    /// <summary>
+    /// Модель представления меню доходов
+    /// </summary>
+    /// <param name="popupNavigation">Навигация попапов</param>
+    /// <param name="client">Клиент</param>
     public IncomesMenuViewModel(IPopupNavigation popupNavigation, Client client)
     {
         _popupNavigation = popupNavigation;
@@ -21,6 +29,9 @@ public partial class IncomesMenuViewModel : BaseViewModel
         EventManager.OnUserExit += UserExitHandler;
     }
 
+    /// <summary>
+    /// Получение всех типов доходов
+    /// </summary>
     private async Task GetAllIncomeTypes()
     {
         if (IncomeTypes is not null)
@@ -52,6 +63,9 @@ public partial class IncomesMenuViewModel : BaseViewModel
         IncomeTypes = result;
     }
 
+    /// <summary>
+    /// Заполнение данных после перехода на страницу
+    /// </summary>
     public async Task CompleteDataAfterNavigation()
     {
         var userLogin = _client.GetCurrentUserLogin();
@@ -100,12 +114,25 @@ public partial class IncomesMenuViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Доходы
+    /// </summary>
     [ObservableProperty] private ObservableCollection<IncomeModel> _incomes;
 
+    /// <summary>
+    /// Типы доходов
+    /// </summary>
     [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
 
+    /// <summary>
+    /// Пользователь
+    /// </summary>
     [ObservableProperty] private UserModel? _user;
 
+    /// <summary>
+    /// Команда удаления дохода
+    /// </summary>
+    /// <param name="income">Доход</param>
     [RelayCommand]
     private async Task DeleteIncome(IncomeModel income)
     {
@@ -127,6 +154,9 @@ public partial class IncomesMenuViewModel : BaseViewModel
         Incomes.Remove(income);
     }
 
+    /// <summary>
+    /// Команда добавления дохода
+    /// </summary>
     [RelayCommand]
     private async Task AddIncome()
     {
@@ -142,6 +172,10 @@ public partial class IncomesMenuViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Команда редактирования дохода
+    /// </summary>
+    /// <param name="income">Доход</param>
     [RelayCommand]
     private async Task EditIncome(IncomeModel income)
     {
@@ -149,6 +183,9 @@ public partial class IncomesMenuViewModel : BaseViewModel
             new IncomesPopupViewModel(_popupNavigation, _client, income, Incomes, IncomeTypes, true)));
     }
 
+    /// <summary>
+    /// Команда перехода на страницу статистику доходов
+    /// </summary>
     [RelayCommand]
     private async Task GoToIncomesStatistics()
     {
@@ -163,6 +200,9 @@ public partial class IncomesMenuViewModel : BaseViewModel
         }
     }
         
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         User = null;

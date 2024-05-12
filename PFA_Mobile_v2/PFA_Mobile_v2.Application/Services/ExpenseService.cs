@@ -43,7 +43,6 @@ public class ExpenseService : BaseService, IExpenseService
         }
 
         await UnitOfWork.Expense.Delete(id);
-        //if (result == false) // добавить лог недудачного удаления с id 
         return await SaveAsync();
     }
 
@@ -91,6 +90,11 @@ public class ExpenseService : BaseService, IExpenseService
     }
     #endregion
 
+    /// <summary>
+    /// Получение конечной даты бюджета
+    /// </summary>
+    /// <param name="budget"></param>
+    /// <returns></returns>
     private DateTime GetEndDate(Budget budget)
     {
         var endDate = budget.TimePeriodId switch
@@ -120,13 +124,15 @@ public class ExpenseService : BaseService, IExpenseService
     /// <inheritdoc />
     public async Task<List<BudgetOverrunDto>> GetBudgetOverruns(int userId)
     {
-        List<BudgetOverrunDto> overruns = new();
+        List<BudgetOverrunDto> overruns = [];
 
         var userBudgets = (await UnitOfWork.Budget.GetAll()).Where(x => x.UserId == userId).ToList();
 
-        foreach (var budget in userBudgets) 
+        foreach (var budget in userBudgets)
         {
-            var plannedExpenses = (await UnitOfWork.PlannedExpenses.GetAll()).Where(x => x.BudgetId == budget.Id).ToList();
+            var plannedExpenses = (await UnitOfWork.PlannedExpenses.GetAll())
+                .Where(x => x.BudgetId == budget.Id)
+                .ToList();
             
             foreach (var plannedExpensesItem in plannedExpenses)
             {

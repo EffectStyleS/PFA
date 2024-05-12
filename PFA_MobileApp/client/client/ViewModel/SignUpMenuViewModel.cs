@@ -7,11 +7,19 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления меню регистрации
+/// </summary>
 public partial class SignUpMenuViewModel : BaseViewModel
 {
     private readonly Client _client;
     private readonly ICacheService _cacheService;
 
+    /// <summary>
+    /// Модель представления меню регистрации
+    /// </summary>
+    /// <param name="client">Клиент</param>
+    /// <param name="cacheService">Сервис работы с локальными файлами на девайсе</param>
     public SignUpMenuViewModel(Client client, ICacheService cacheService)
     {
         _client = client;
@@ -20,12 +28,24 @@ public partial class SignUpMenuViewModel : BaseViewModel
         OnUserLogin += EventManager.UserLoginHandler;
     }
 
+    /// <summary>
+    /// Логин
+    /// </summary>
     [ObservableProperty] private string _login;
 
+    /// <summary>
+    /// Пароль
+    /// </summary>
     [ObservableProperty] private string _password;
 
+    /// <summary>
+    /// Подтверждение пароля
+    /// </summary>
     [ObservableProperty] private string _passwordConfirm;
 
+    /// <summary>
+    /// Команда регистрации
+    /// </summary>
     [RelayCommand]
     private async Task SignUpTap()
     {
@@ -74,11 +94,24 @@ public partial class SignUpMenuViewModel : BaseViewModel
         await Shell.Current.GoToAsync($"//{nameof(HistoryPage)}");
     }
         
-    public delegate void StringDelegate(string login);
-    public event StringDelegate? OnUserLogin;
+    /// <summary>
+    /// Делегат логина пользователя
+    /// </summary>
+    public delegate void LoginDelegate(string login);
+    
+    /// <summary>
+    /// Событие логина пользователя
+    /// </summary>
+    public event LoginDelegate? OnUserLogin;
 
+    /// <summary>
+    /// Обработчик событие логина пользователя
+    /// </summary>
     private void PublishUserLogin() => OnUserLogin?.Invoke(Login);
         
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         Login = string.Empty;

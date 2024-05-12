@@ -2,11 +2,19 @@
 
 namespace client.View;
 
+/// <summary>
+/// Страница статистики целей
+/// </summary>
 public partial class GoalsStatisticsPage : ContentPage
 {
-    public delegate Task TaskDelegate();
-    public event TaskDelegate OnNavigatedToEvent;
+    /// <summary>
+    /// Событие перехода на страницу
+    /// </summary>
+    public event Func<Task> OnNavigatedToEvent = () => Task.CompletedTask;
     
+    /// <summary>
+    /// Страница статистики целей
+    /// </summary>
     public GoalsStatisticsPage(GoalsStatisticsViewModel vm)
     {
         InitializeComponent();
@@ -14,6 +22,7 @@ public partial class GoalsStatisticsPage : ContentPage
         BindingContext = vm;
     }
     
+    /// <inheritdoc />
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);

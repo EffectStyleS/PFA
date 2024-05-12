@@ -5,9 +5,11 @@ using CommunityToolkit.Mvvm.Input;
 using Mopups.Interfaces;
 using System.Collections.ObjectModel;
 
-
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления попапа доходов
+/// </summary>
 public partial class IncomesPopupViewModel : BaseViewModel
 {
     private readonly Client _client;
@@ -16,6 +18,15 @@ public partial class IncomesPopupViewModel : BaseViewModel
     private readonly IncomeModel _income;
     private readonly bool _isEdit;
 
+    /// <summary>
+    /// Модель представления попапа доходов
+    /// </summary>
+    /// <param name="popupNavigation">Навигация попапов</param>
+    /// <param name="client">Клиент</param>
+    /// <param name="income">Доход</param>
+    /// <param name="incomes">Доходы</param>
+    /// <param name="incomeTypes">Типы доходов</param>
+    /// <param name="isEdit">Признак редактирования</param>
     public IncomesPopupViewModel(IPopupNavigation popupNavigation, Client client, IncomeModel income,
         ObservableCollection<IncomeModel> incomes, List<IncomeTypeModel> incomeTypes, bool isEdit)
     {
@@ -45,18 +56,39 @@ public partial class IncomesPopupViewModel : BaseViewModel
         IncomeType = IncomeTypes[0];
     }
 
+    /// <summary>
+    /// Название страницы
+    /// </summary>
     [ObservableProperty] private string _pageTitle;
 
+    /// <summary>
+    /// Название
+    /// </summary>
     [ObservableProperty] private string _name;
 
+    /// <summary>
+    /// Значение
+    /// </summary>
     [ObservableProperty] private decimal? _value;
 
+    /// <summary>
+    /// Дата
+    /// </summary>
     [ObservableProperty] private DateTime _date;
 
+    /// <summary>
+    /// Типы доходов
+    /// </summary>
     [ObservableProperty] private ObservableCollection<IncomeTypeModel> _incomeTypes;
 
+    /// <summary>
+    /// Тип дохода
+    /// </summary>
     [ObservableProperty] private IncomeTypeModel _incomeType;
         
+    /// <summary>
+    /// Команда сохранения
+    /// </summary>
     [RelayCommand]
     private async Task Save()
     {
@@ -135,6 +167,10 @@ public partial class IncomesPopupViewModel : BaseViewModel
         await _popupNavigation.PopAsync();
     }
 
+    /// <summary>
+    /// Команда отмены
+    /// </summary>
+    /// <returns></returns>
     [RelayCommand]
     private Task Cancel()
     {

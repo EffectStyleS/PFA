@@ -7,6 +7,9 @@ namespace PFA_Mobile_v2.Application.Services;
 /// </summary>
 public abstract class BaseService
 {
+    /// <summary>
+    /// Единица работы
+    /// </summary>
     protected readonly IUnitOfWork UnitOfWork;
     
     /// <summary>

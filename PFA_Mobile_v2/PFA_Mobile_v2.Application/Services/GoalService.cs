@@ -44,7 +44,6 @@ public class GoalService : BaseService, IGoalService
         }
 
         await UnitOfWork.Goal.Delete(id);
-        //if (result == false) // добавить лог недудачного удаления с id 
         return await SaveAsync();
     }
 

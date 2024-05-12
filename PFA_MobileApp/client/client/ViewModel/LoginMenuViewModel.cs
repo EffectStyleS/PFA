@@ -7,11 +7,19 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления меню аутентификации
+/// </summary>
 public partial class LoginMenuViewModel : BaseViewModel
 {
     private readonly Client _client;
     private readonly ICacheService _cacheService;
         
+    /// <summary>
+    /// Модель представления меню аутентификации
+    /// </summary>
+    /// <param name="client">Клиент</param>
+    /// <param name="cacheService">Сервис работы с локальными файлами на девайсе</param>
     public LoginMenuViewModel(Client client, ICacheService cacheService)
     {
         _client = client;
@@ -20,10 +28,19 @@ public partial class LoginMenuViewModel : BaseViewModel
         OnUserLogin += EventManager.UserLoginHandler;
     }
 
+    /// <summary>
+    /// Логин
+    /// </summary>
     [ObservableProperty] private string _login;
 
+    /// <summary>
+    /// Пароль
+    /// </summary>
     [ObservableProperty] private string _password;
 
+    /// <summary>
+    /// Команда входа
+    /// </summary>
     [RelayCommand]
     private async Task SignInTap()
     {
@@ -71,11 +88,24 @@ public partial class LoginMenuViewModel : BaseViewModel
         await Shell.Current.GoToAsync($"//{nameof(HistoryPage)}");
     }
 
-    public delegate void StringDelegate(string login);
-    public event StringDelegate? OnUserLogin;
+    /// <summary>
+    /// Делегат логина пользователя
+    /// </summary>
+    public delegate void LoginDelegate(string login);
+    
+    /// <summary>
+    /// Событие логина пользователя
+    /// </summary>
+    public event LoginDelegate? OnUserLogin;
 
+    /// <summary>
+    /// Обработчик событие логина пользователя
+    /// </summary>
     private void PublishUserLogin() => OnUserLogin?.Invoke(Login);
         
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         Login = string.Empty;

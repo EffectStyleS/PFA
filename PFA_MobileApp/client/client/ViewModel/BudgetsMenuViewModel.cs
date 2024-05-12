@@ -9,11 +9,19 @@ using System.Collections.ObjectModel;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления меню бюджетов
+/// </summary>
 public partial class BudgetsMenuViewModel : BaseViewModel
 {
     private readonly Client _client;
     private readonly IBudgetService _budgetService;
 
+    /// <summary>
+    /// Модель представления меню бюджетов
+    /// </summary>
+    /// <param name="client">Клиент</param>
+    /// <param name="budgetService">Сервис бюджетов</param>
     public BudgetsMenuViewModel(Client client, IBudgetService budgetService)
     {
         _client = client;
@@ -21,6 +29,9 @@ public partial class BudgetsMenuViewModel : BaseViewModel
         EventManager.OnUserExit += UserExitHandler;
     }
 
+    /// <summary>
+    /// Получение всех временных периодов
+    /// </summary>
     private async Task GetAllTimePeriods()
     {
         if (TimePeriods is not null)
@@ -52,6 +63,9 @@ public partial class BudgetsMenuViewModel : BaseViewModel
         TimePeriods = result;
     }
 
+    /// <summary>
+    /// Получение всех типов расходов
+    /// </summary>
     private async Task GetAllExpenseTypes()
     {
         if (ExpenseTypes is not null)
@@ -83,6 +97,9 @@ public partial class BudgetsMenuViewModel : BaseViewModel
         ExpenseTypes = result;
     }
 
+    /// <summary>
+    /// Получение всех типов доходов
+    /// </summary>
     private async Task GetAllIncomeTypes()
     {
         if (IncomeTypes is not null)
@@ -114,6 +131,9 @@ public partial class BudgetsMenuViewModel : BaseViewModel
         IncomeTypes = result;
     }
 
+    /// <summary>
+    /// Заполнение данных после перехода на страницу
+    /// </summary>
     public async Task CompleteDataAfterNavigation()
     {
         var userLogin = _client.GetCurrentUserLogin();
@@ -213,17 +233,35 @@ public partial class BudgetsMenuViewModel : BaseViewModel
         }
     }
         
-
+    /// <summary>
+    /// Бюджеты
+    /// </summary>
     [ObservableProperty] private ObservableCollection<BudgetModel> _budgets;
 
+    /// <summary>
+    /// Временные периоды
+    /// </summary>
     [ObservableProperty] private List<TimePeriodModel> _timePeriods;
 
+    /// <summary>
+    /// Типы расходов
+    /// </summary>
     [ObservableProperty] private List<ExpenseTypeModel> _expenseTypes;
 
+    /// <summary>
+    /// Типы доходов
+    /// </summary>
     [ObservableProperty] private List<IncomeTypeModel> _incomeTypes;
 
+    /// <summary>
+    /// Пользователь
+    /// </summary>
     [ObservableProperty] private UserModel? _user;
 
+    /// <summary>
+    /// Команда удаления бюджета
+    /// </summary>
+    /// <param name="budget">Бюджет</param>
     [RelayCommand]
     private async Task DeleteBudget(BudgetModel budget)
     {
@@ -244,6 +282,9 @@ public partial class BudgetsMenuViewModel : BaseViewModel
         Budgets.Remove(budget);
     }
 
+    /// <summary>
+    /// Команда добавления бюджета
+    /// </summary>
     [RelayCommand]
     private async Task AddBudget()
     {
@@ -288,6 +329,10 @@ public partial class BudgetsMenuViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Команда редактирования бюджета
+    /// </summary>
+    /// <param name="budget"></param>
     [RelayCommand]
     private async Task EditBudget(BudgetModel budget)
     {
@@ -302,7 +347,10 @@ public partial class BudgetsMenuViewModel : BaseViewModel
         };
         await Shell.Current.GoToAsync($"{nameof(BudgetAddEdit)}", navigationParameter);
     }
-        
+    
+    /// <summary>
+    /// Обработчик выхода пользователя
+    /// </summary>
     private Task UserExitHandler()
     {
         User = null;

@@ -12,9 +12,18 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace PFA_Mobile_v2.Infrastructure.Authentication.Extensions;
 
+/// <summary>
+/// Расширения для работы с JWT по схеме Bearer
+/// </summary>
 public static class JwtBearerExtensions
 {
-    public static List<Claim> CreateClaims(this AppUser user, List<IdentityRole<int>> roles)
+    /// <summary>
+    /// Создает claims пользователя
+    /// </summary>
+    /// <param name="user">Пользователь</param>
+    /// <param name="roles">Коллекция ролей</param>
+    /// <returns></returns>
+    public static List<Claim> CreateClaims(this AppUser user, IEnumerable<IdentityRole<int>> roles)
     {
         var claims = new List<Claim>
         {
@@ -28,6 +37,11 @@ public static class JwtBearerExtensions
         return claims;
     }
 
+    /// <summary>
+    /// Создает данные подписи
+    /// </summary>
+    /// <param name="configuration">Конфигурация</param>
+    /// <returns>Данные подписи</returns>
     public static SigningCredentials CreateSigningCredentials(this IConfiguration configuration)
     {
         return new SigningCredentials(
@@ -38,6 +52,12 @@ public static class JwtBearerExtensions
         );
     }
 
+    /// <summary>
+    /// Создает JWT
+    /// </summary>
+    /// <param name="claims">Коллекция claims</param>
+    /// <param name="configuration">Конфигурация</param>
+    /// <returns>Json Web Token</returns>
     public static JwtSecurityToken CreateJwtToken(this IEnumerable<Claim> claims, IConfiguration configuration)
     {
         var expireFromConfiguration = configuration.GetSection("Jwt:Expire").Value;
@@ -52,11 +72,17 @@ public static class JwtBearerExtensions
         );
     }
 
-    public static JwtSecurityToken CreateToken(this IConfiguration configuration, List<Claim> authClaims)
+    /// <summary>
+    /// Создает JWT
+    /// </summary>
+    /// <param name="configuration">Конфигурация</param>
+    /// <param name="authClaims">Коллекция claims</param>
+    /// <returns>Json Web Token</returns>
+    public static JwtSecurityToken CreateToken(this IConfiguration configuration, IEnumerable<Claim> authClaims)
     {
         var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!));
-        var tokenValidityInMinutesFromConfiguraion = configuration.GetSection("Jwt:TokenValidityInMinutes").Value;
-        var tokenValidityInMinutes = int.Parse(tokenValidityInMinutesFromConfiguraion!);
+        var tokenValidityInMinutesFromConfiguration = configuration.GetSection("Jwt:TokenValidityInMinutes").Value;
+        var tokenValidityInMinutes = int.Parse(tokenValidityInMinutesFromConfiguration!);
 
         var token = new JwtSecurityToken(
             issuer: configuration["Jwt:Issuer"],
@@ -69,6 +95,11 @@ public static class JwtBearerExtensions
         return token;
     }
 
+    /// <summary>
+    /// Генерирует refresh токен
+    /// </summary>
+    /// <param name="configuration">Конфигурация</param>
+    /// <returns>Base64 представления refresh токена</returns>
     public static string GenerateRefreshToken(this IConfiguration configuration)
     {
         var randomNumber = new byte[64];
@@ -77,6 +108,13 @@ public static class JwtBearerExtensions
         return Convert.ToBase64String(randomNumber);
     }
 
+    /// <summary>
+    /// Получает контекст безлопасности пользователя из просроченного токена
+    /// </summary>
+    /// <param name="configuration">Конфигурация</param>
+    /// <param name="token">JWT</param>
+    /// <returns>Контекст безлопасности пользователя</returns>
+    /// <exception cref="SecurityTokenException"></exception>
     public static ClaimsPrincipal? GetPrincipalFromExpiredToken(this IConfiguration configuration, string? token)
     {
         var tokenValidationParameters = new TokenValidationParameters
@@ -91,8 +129,12 @@ public static class JwtBearerExtensions
         var tokenHandler = new JwtSecurityTokenHandler();
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
 
-        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                StringComparison.InvariantCultureIgnoreCase))
+        {
             throw new SecurityTokenException("Invalid token");
+        }
 
         return principal;
     }

@@ -37,6 +37,11 @@ public class AccountController : ControllerBase
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// Аутентификация
+    /// </summary>
+    /// <param name="request">Модель запроса аутентификации</param>
+    /// <returns>Модель ответа на запрос аутентификации</returns>
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request)
     {
@@ -79,6 +84,11 @@ public class AccountController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Регистрация
+    /// </summary>
+    /// <param name="request">Модель запроса аутентификации</param>
+    /// <returns>Модель ответа на запрос аутентификации></returns>
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
     {
@@ -103,8 +113,11 @@ public class AccountController : ControllerBase
             return BadRequest(request);
         }
 
-        var findUser = await _userService.GetByLoginAsync(request.Login, _userManager) ??
-                       throw new Exception($"User {request.Login} not found");
+        var findUser = await _userService.GetByLoginAsync(request.Login, _userManager);
+        if (findUser is null)
+        {
+            return BadRequest(request);
+        }
 
         await _userService.AddToRoleAsync(findUser, "Member", _userManager);
 
@@ -115,6 +128,11 @@ public class AccountController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Обновление токенов
+    /// </summary>
+    /// <param name="tokenModel">Access и refresh токены</param>
+    /// <returns></returns>
     [HttpPost]
     [Route("refresh-token")]
     public async Task<IActionResult> RefreshToken(TokenModel? tokenModel)
@@ -145,6 +163,11 @@ public class AccountController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Сброс refresh токена пользователя
+    /// </summary>
+    /// <param name="login">Логин пользователя</param>
+    /// <returns></returns>
     [Authorize]
     [HttpPost]
     [Route("revoke/{login}")]
@@ -165,6 +188,10 @@ public class AccountController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Сброс refresh токенов всех пользователей
+    /// </summary>
+    /// <returns></returns>
     [Authorize]
     [HttpPost]
     [Route("revoke-all")]
@@ -185,6 +212,11 @@ public class AccountController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Получение пользователя по его логину
+    /// </summary>
+    /// <param name="login">Логин пользователя</param>
+    /// <returns>Пользователь</returns>
     [Authorize]
     [HttpGet]
     [Route("user/{login}")]

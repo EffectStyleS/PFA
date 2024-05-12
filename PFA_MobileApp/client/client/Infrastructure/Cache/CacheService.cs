@@ -1,10 +1,14 @@
 ﻿namespace client.Infrastructure.Cache;
 
+/// <summary>
+/// Сервис работы с локальными файлами на девайсе
+/// </summary>
 public class CacheService : ICacheService
 {
     private static readonly string FilePath =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "auth.config");
     
+    /// <inheritdoc />
     public async Task<bool> SaveCredentialsToFile(AuthCacheModel authCacheModel)
     {
         try
@@ -21,6 +25,7 @@ public class CacheService : ICacheService
         }
     }
 
+    /// <inheritdoc />
     public AuthCacheModel GetCredentialsFromFile()
     {
         if (!File.Exists(FilePath))
@@ -41,6 +46,7 @@ public class CacheService : ICacheService
         return JsonConverter.StringToObject<AuthCacheModel>(strFromFile) ?? new AuthCacheModel();
     }
 
+    /// <inheritdoc />
     public void DeleteCredentialsFile()
     {
         if (!File.Exists(FilePath))

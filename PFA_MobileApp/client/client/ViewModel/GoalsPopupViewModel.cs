@@ -1,5 +1,4 @@
-﻿using System;
-using ApiClient;
+﻿using ApiClient;
 using client.Model.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,6 +8,9 @@ using client.Infrastructure;
 
 namespace client.ViewModel;
 
+/// <summary>
+/// Модель представления попапа целей
+/// </summary>
 public partial class GoalsPopupViewModel : BaseViewModel
 {
     private readonly Client _client;
@@ -17,6 +19,14 @@ public partial class GoalsPopupViewModel : BaseViewModel
     private readonly GoalModel _goal;
     private readonly bool _isEdit;
 
+    /// <summary>
+    /// Модель представления попапа целей
+    /// </summary>
+    /// <param name="popupNavigation">Навигация попапов</param>
+    /// <param name="client">Клиент</param>
+    /// <param name="goal">Цель</param>
+    /// <param name="goals">Цели</param>
+    /// <param name="isEdit">Признак редактирования</param>
     public GoalsPopupViewModel(IPopupNavigation popupNavigation, Client client, GoalModel goal,
         ObservableCollection<GoalModel> goals, bool isEdit)
     {
@@ -50,18 +60,39 @@ public partial class GoalsPopupViewModel : BaseViewModel
         IsCompleted = false;
     }
 
+    /// <summary>
+    /// Название страницы
+    /// </summary>
     [ObservableProperty] private string _pageTitle;
 
+    /// <summary>
+    /// Название
+    /// </summary>
     [ObservableProperty] private string _name;
 
+    /// <summary>
+    /// Сумма
+    /// </summary>
     [ObservableProperty] private decimal? _sum;
 
+    /// <summary>
+    /// Начальная дата
+    /// </summary>
     [ObservableProperty] private DateTime _startDate;
 
+    /// <summary>
+    /// Конечная дата
+    /// </summary>
     [ObservableProperty] private DateTime _endDate;
 
+    /// <summary>
+    /// Признак выполненности
+    /// </summary>
     [ObservableProperty] private bool _isCompleted;
 
+    /// <summary>
+    /// Команда сохранения
+    /// </summary>
     [RelayCommand]
     private async Task Save()
     {
@@ -146,11 +177,26 @@ public partial class GoalsPopupViewModel : BaseViewModel
         await _popupNavigation.PopAsync();
     }
 
+    /// <summary>
+    /// Делегат цели
+    /// </summary>
     public delegate void GoalDelegate(GoalModel goal);
+    
+    /// <summary>
+    /// Событие изменения цели
+    /// </summary>
     public event GoalDelegate? OnGoalChange;
     
+    /// <summary>
+    /// Обработчик изменения цели
+    /// </summary>
+    /// <param name="goal"></param>
     private void PublishGoalChange(GoalModel goal) => OnGoalChange?.Invoke(goal);
     
+    /// <summary>
+    /// Команда отмены
+    /// </summary>
+    /// <returns></returns>
     [RelayCommand]
     private Task Cancel()
     {

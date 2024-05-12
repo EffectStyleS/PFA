@@ -7,6 +7,9 @@ using PFA_Mobile_v2.Domain.Entities;
 
 namespace PFA_Mobile_v2.Controllers;
 
+/// <summary>
+/// Контроллер статистики использования системы
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(Roles = "Admin")]
@@ -16,7 +19,7 @@ public class StatisticsController : ControllerBase
     private readonly IStatisticsService _statisticsService;
 
     /// <summary>
-    /// Контроллер аккаунтов
+    /// Контроллер статистики использования системы
     /// </summary>
     public StatisticsController(UserManager<AppUser> userManager, IStatisticsService statisticsService)
     {
@@ -24,6 +27,10 @@ public class StatisticsController : ControllerBase
         _statisticsService = statisticsService;
     }
 
+    /// <summary>
+    /// Получает число расходов пользователей
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("usersexpenses")]
     public async Task<ActionResult<CountStatisticRequestModel>> GetUsersExpensesStatistics()
     {
@@ -31,6 +38,10 @@ public class StatisticsController : ControllerBase
         return Ok(usersExpensesStatistics);
     }
     
+    /// <summary>
+    /// Получает число расходов каждого типа 
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("expensesbytypes")]
     public async Task<ActionResult<CountStatisticRequestModel>> GetExpensesByTypesStatistics()
     {
@@ -38,6 +49,10 @@ public class StatisticsController : ControllerBase
         return Ok(expensesByTypesStatistics);
     }
     
+    /// <summary>
+    /// Получает число доходов пользователей
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("usersincomes")]
     public async Task<ActionResult<CountStatisticRequestModel>> GetUsersIncomesStatistics()
     {
@@ -45,6 +60,10 @@ public class StatisticsController : ControllerBase
         return Ok(usersIncomesStatistics);
     }
     
+    /// <summary>
+    /// Получает число доходов каждого типа 
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("incomesbytypes")]
     public async Task<ActionResult<CountStatisticRequestModel>> GetIncomesByTypesStatistics()
     {
@@ -52,6 +71,10 @@ public class StatisticsController : ControllerBase
         return Ok(incomesByTypesStatistics);
     }
     
+    /// <summary>
+    /// Получает число бюджетов пользователей
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("usersbudgets")]
     public async Task<ActionResult<CountStatisticRequestModel>> GetUsersBudgetsStatistics()
     {
@@ -59,6 +82,10 @@ public class StatisticsController : ControllerBase
         return Ok(usersBudgetsStatistics);
     }
     
+    /// <summary>
+    /// Получает число бюджетов каждого временного периода 
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("budgetsbytimeperiods")]
     public async Task<ActionResult<CountStatisticRequestModel>> GetBudgetsByTimePeriodsStatistics()
     {
@@ -66,6 +93,10 @@ public class StatisticsController : ControllerBase
         return Ok(budgetsByTimePeriodsStatistics);
     }
     
+    /// <summary>
+    /// Получает число целей пользователей
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("usersgoals")]
     public async Task<ActionResult<CountStatisticRequestModel>> GetUsersGoalsStatistics()
     {

@@ -2,7 +2,7 @@
 
 namespace client.ViewModel;
 
-public partial class BaseViewModel : ObservableObject
-{
-
-}
+/// <summary>
+/// Базовая модель представления
+/// </summary>
+public partial class BaseViewModel : ObservableObject;

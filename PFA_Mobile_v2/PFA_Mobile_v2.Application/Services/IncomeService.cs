@@ -43,7 +43,6 @@ public class IncomeService : BaseService, IIncomeService
         }
 
         await UnitOfWork.Income.Delete(id);
-        //if (result == false) // добавить лог недудачного удаления с id 
         return await SaveAsync();
     }
 

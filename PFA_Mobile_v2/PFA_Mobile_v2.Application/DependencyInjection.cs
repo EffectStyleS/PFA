@@ -5,8 +5,16 @@ using PFA_Mobile_v2.Application.Services.Interfaces;
 
 namespace PFA_Mobile_v2.Application;
 
+/// <summary>
+/// Внедрение зависимостей слоя Application
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Внедряет зависимости слоя Application
+    /// </summary>
+    /// <param name="services">Коллекция сервисов</param>
+    /// <returns>Коллекция сервисов</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IBudgetService, BudgetService>();

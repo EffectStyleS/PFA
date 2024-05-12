@@ -3,8 +3,14 @@ using SkiaSharp.Views.Maui;
 
 namespace client.Infrastructure;
 
+/// <summary>
+/// Класс помощника диаграмм
+/// </summary>
 public static class ChartHelpers
 {
+    /// <summary>
+    /// Цвета диаграммы
+    /// </summary>
     public static List<SKColor> ChartColors { get; } =
     [
         Colors.Aqua.ToSKColor(),
