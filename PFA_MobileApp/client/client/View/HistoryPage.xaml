@@ -8,6 +8,7 @@
              xmlns:viewmodel="clr-namespace:client.ViewModel"
              xmlns:models="clr-namespace:client.Model.Models"
              xmlns:converters="clr-namespace:client.Infrastructure.Converters"
+             xmlns:infra="clr-namespace:client.Infrastructure"
              x:DataType="viewmodel:HistoryPageViewModel">
     
     <ContentPage.Resources>
@@ -21,7 +22,7 @@
                     IsGrouped="True">
         
         <CollectionView.GroupHeaderTemplate>
-            <DataTemplate>
+            <DataTemplate x:DataType="{x:Type infra:HistoryRecordsGroup}">
                 <Label Margin="0,16,0,0" 
                        FontSize="18" 
                        FontAttributes="Bold"

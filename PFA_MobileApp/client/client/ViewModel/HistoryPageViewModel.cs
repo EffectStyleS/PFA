@@ -119,22 +119,16 @@ public partial class HistoryPageViewModel : BaseViewModel
         var groups = historyList
             .GroupBy(x => x.Date)
             .OrderByDescending(g => g.Key)
-            .Select(g => new Grouping<DateTime, HistoryRecordModel>(g.Key, g));
+            .Select(g => new HistoryRecordsGroup(g.Key, g));
         
-        HistoryRecords = new ObservableCollection<Grouping<DateTime, HistoryRecordModel>>(groups);
+        HistoryRecords = new ObservableCollection<HistoryRecordsGroup>(groups);
     }
     
     /// <summary>
     /// Пользователь
     /// </summary>
     [ObservableProperty] private UserModel? _user;
-    
-    // Привязка адекватно не работает почему-то, видимо баг
-    /// <summary>
-    /// Ключ
-    /// </summary>
-    [ObservableProperty] private DateTime _key;
-    
+
     /// <summary>
     /// Доходы
     /// </summary>
@@ -148,7 +142,7 @@ public partial class HistoryPageViewModel : BaseViewModel
     /// <summary>
     /// Записи истории
     /// </summary>
-    [ObservableProperty] private ObservableCollection<Grouping<DateTime, HistoryRecordModel>> _historyRecords;
+    [ObservableProperty] private ObservableCollection<HistoryRecordsGroup> _historyRecords;
     
     /// <summary>
     /// Обработчик выхода пользователя
