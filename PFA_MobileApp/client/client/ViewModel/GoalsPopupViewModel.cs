@@ -174,6 +174,15 @@ public partial class GoalsPopupViewModel : BaseViewModel
             _goals.Add(newGoal);
         }
         
+        var orderedGoals = _goals.OrderByDescending(x => x.StartDate).ToList();
+
+        _goals.Clear();
+
+        foreach (var goal in orderedGoals)
+        {
+            _goals.Add(goal);
+        }
+        
         await _popupNavigation.PopAsync();
     }
 

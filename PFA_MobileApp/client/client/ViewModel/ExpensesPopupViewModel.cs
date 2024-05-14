@@ -165,6 +165,15 @@ public partial class ExpensesPopupViewModel : BaseViewModel
             });
         }
 
+        var orderedExpenses = _expenses.OrderByDescending(x => x.Date).ToList();
+
+        _expenses.Clear();
+
+        foreach (var expense in orderedExpenses)
+        {
+            _expenses.Add(expense);
+        }
+
         await _popupNavigation.PopAsync();
     }
 

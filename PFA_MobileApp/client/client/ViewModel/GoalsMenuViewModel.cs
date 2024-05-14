@@ -72,7 +72,8 @@ public partial class GoalsMenuViewModel : BaseViewModel
                 
             return;
         }
-        
+
+        var goalsList = new List<GoalModel>();
         foreach (var goal in result)
         {
             var goalModel = new GoalModel
@@ -86,8 +87,10 @@ public partial class GoalsMenuViewModel : BaseViewModel
             };
 
             SetGoalStatus(goalModel);
-            Goals.Add(goalModel);
+            goalsList.Add(goalModel);
         }
+
+        Goals = new ObservableCollection<GoalModel>(goalsList.OrderByDescending(x => x.StartDate).ToList());
     } 
       
     /// <summary>

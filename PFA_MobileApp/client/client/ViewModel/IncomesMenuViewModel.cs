@@ -99,9 +99,7 @@ public partial class IncomesMenuViewModel : BaseViewModel
             return;
         }
 
-        foreach (var income in result)
-        {
-            Incomes.Add(new IncomeModel
+        var incomesList = result.Select(income => new IncomeModel
             {
                 Id = income.Id,
                 Name = income.Name,
@@ -110,8 +108,10 @@ public partial class IncomesMenuViewModel : BaseViewModel
                 IncomeTypeId = income.IncomeTypeId,
                 IncomeType = IncomeTypes.FirstOrDefault(x => x.Id == income.IncomeTypeId)!.Name,
                 UserId = income.UserId
-            });
-        }
+            })
+            .ToList();
+
+        Incomes = new ObservableCollection<IncomeModel>(incomesList.OrderByDescending(x => x.Date).ToList());
     }
 
     /// <summary>

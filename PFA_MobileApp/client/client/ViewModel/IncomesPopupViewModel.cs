@@ -163,6 +163,15 @@ public partial class IncomesPopupViewModel : BaseViewModel
                 UserId = postResult.UserId
             });
         }
+        
+        var orderedIncomes = _incomes.OrderByDescending(x => x.Date).ToList();
+
+        _incomes.Clear();
+
+        foreach (var income in orderedIncomes)
+        {
+            _incomes.Add(income);
+        }
 
         await _popupNavigation.PopAsync();
     }

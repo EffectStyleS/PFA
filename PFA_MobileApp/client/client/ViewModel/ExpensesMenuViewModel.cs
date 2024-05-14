@@ -101,9 +101,7 @@ public partial class ExpensesMenuViewModel : BaseViewModel
             return;
         }
 
-        foreach (var expense in result)
-        {
-            Expenses.Add(new ExpenseModel
+        var expensesList = result.Select(expense => new ExpenseModel
             {
                 Id = expense.Id,
                 Name = expense.Name,
@@ -112,8 +110,10 @@ public partial class ExpensesMenuViewModel : BaseViewModel
                 ExpenseTypeId = expense.ExpenseTypeId,
                 ExpenseType = ExpenseTypes.FirstOrDefault(x => x.Id == expense.ExpenseTypeId)!.Name,
                 UserId = expense.UserId
-            });
-        }
+            })
+            .ToList();
+
+        Expenses = new ObservableCollection<ExpenseModel>(expensesList.OrderByDescending(x => x.Date).ToList());
     }
 
     /// <summary>
